@@ -605,22 +605,12 @@ body.has-fog .bar-scrim {
 	gap: 0.4rem;
 }
 
-/* Work, About, Home, Index — true circles, the word centred. */
+/* Work, About, Home and Index are the same pill as every other button —
+   nothing is a special shape. */
 .btn--round {
 	display: inline-grid;
 	place-items: center;
-	width: 4.2rem;
-	height: 4.2rem;
-	padding: 0;
-	border-radius: 50%;
 	text-align: center;
-}
-
-@media (max-width: 720px) {
-	.btn--round {
-		width: 3.5rem;
-		height: 3.5rem;
-	}
 }
 
 /* Contact marks. Sized to the cap height of the label beside them. */
@@ -690,8 +680,9 @@ body.has-fog .bar-scrim {
 	height: 2.1rem;
 	padding: 0;
 	border: 1px solid currentColor;
-	/* square — hard corners, to sit with the corner frames on the buttons */
-	border-radius: 0;
+	/* the same fully-rounded ends as the buttons; the shell is square, so
+	   that reads as a circle and the whole cluster matches */
+	border-radius: 999px;
 	background: currentColor;
 	color: inherit;
 	cursor: pointer;

@@ -1,0 +1,55 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Wordmark from '../../components/Wordmark.astro';
+import { graphicProjects } from '../../data/graphic.js';
+import { artDirection } from '../../data/work.js';
+---
+
+<Base title="Home I — by the numbers" noindex bodyClass="home">
+	<video class="bg" autoplay muted loop playsinline preload="metadata" poster="/video/home-poster.jpg">
+		<source src="/video/home.webm" type="video/webm" />
+		<source src="/video/home.mp4" type="video/mp4" />
+	</video>
+	<div class="film" aria-hidden="true"><div class="film__grain"></div><div class="film__lines"></div></div>
+
+	<div class="overlay hi">
+		<div class="top">
+			<Wordmark />
+			<nav class="top__nav"><Nav bare /></nav>
+		</div>
+
+		<div class="hi__mid">
+			<a class="hi__stat" href="/work/graphic-design">
+				<span class="hi__n">{graphicProjects.length}</span>
+				<span class="hi__l">Projects</span>
+			</a>
+			<span class="hi__rule" aria-hidden="true"></span>
+			<a class="hi__stat" href="/work/art-direction-content">
+				<span class="hi__n">{artDirection.length}</span>
+				<span class="hi__l">Films</span>
+			</a>
+		</div>
+
+		<div class="hi__foot">
+			<span>Farah Awada — multidisciplinary designer</span>
+			<a href="/about">About</a>
+		</div>
+	</div>
+</Base>
+
+<style>
+	.hi { grid-template-rows: auto 1fr auto; }
+	.hi__mid { display: flex; align-items: center; justify-content: center; gap: clamp(1.4rem, 6vw, 5rem); flex-wrap: wrap; }
+	.hi__stat { color: var(--ink); text-decoration: none; pointer-events: auto; display: grid; justify-items: center; gap: .3rem; }
+	.hi__n {
+		font-size: clamp(4rem, 19vw, 14rem); line-height: .82; letter-spacing: -.06em;
+		font-variant-numeric: tabular-nums; transition: opacity .3s var(--ease-smooth);
+	}
+	.hi__stat:hover .hi__n { opacity: .55; }
+	.hi__l { font-size: clamp(.7rem, 2vw, 1.1rem); text-transform: uppercase; letter-spacing: .14em; opacity: .8; }
+	.hi__rule { width: 1px; align-self: stretch; background: currentColor; opacity: .3; }
+	.hi__foot { display: flex; justify-content: space-between; font-size: var(--fs-small); }
+	.hi__foot a { color: var(--ink); pointer-events: auto; }
+	@media (max-width: 560px) { .hi__rule { display: none; } }
+</style>
