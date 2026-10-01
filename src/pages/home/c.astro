@@ -1,0 +1,88 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Wordmark from '../../components/Wordmark.astro';
+import { graphicProjects } from '../../data/graphic.js';
+
+const projects = [...graphicProjects].sort((a, b) => a.title.localeCompare(b.title));
+---
+
+<Base title="Home C — split" noindex bodyClass="page">
+	<div class="hc">
+		<div class="hc__film">
+			{projects.map((p, i) => (
+				<img
+					class={`hc__shot${i === 0 ? ' is-current' : ''}`}
+					src={`/img/work/${p.slug}/${p.cover ?? p.images.find((x) => x.file).file}`}
+					alt=""
+					loading={i < 3 ? 'eager' : 'lazy'}
+					data-shot={i}
+				/>
+			))}
+			<video class="hc__bg" autoplay muted loop playsinline preload="metadata" poster="/video/home-poster.jpg">
+				<source src="/video/home.mp4" type="video/mp4" />
+			</video>
+		</div>
+
+		<div class="hc__side">
+			<header class="hc__top">
+				<Wordmark />
+				<Nav bare />
+			</header>
+
+			<p class="hc__lead">Multidisciplinary designer — graphic design, art direction and CGI.</p>
+
+			<ol class="hc__list">
+				{projects.map((p, i) => (
+					<li>
+						<a href={`/work/graphic-design/${p.slug}`} data-row={i}>
+							<span>{p.title}</span>
+							<em>{p.scope}</em>
+						</a>
+					</li>
+				))}
+			</ol>
+
+			<p class="hc__foot"><a href="/about">About</a> · <a href="/work">All work</a></p>
+		</div>
+	</div>
+</Base>
+
+<script>
+	const rows = [...document.querySelectorAll('[data-row]')];
+	const shots = [...document.querySelectorAll('[data-shot]')];
+	rows.forEach((r) =>
+		r.addEventListener('mouseenter', () => {
+			const i = Number(r.dataset.row);
+			shots.forEach((s, n) => s.classList.toggle('is-current', n === i));
+		})
+	);
+</script>
+
+<style>
+	.hc { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
+	.hc__film { position: relative; overflow: hidden; background: #000; }
+	.hc__bg, .hc__shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+	.hc__shot { opacity: 0; visibility: hidden; z-index: 2; transition: opacity .45s var(--ease-smooth), visibility 0s linear .45s; }
+	.hc__shot.is-current { opacity: 1; visibility: visible; transition: opacity .45s var(--ease-smooth), visibility 0s linear 0s; }
+	.hc__bg { z-index: 1; filter: grayscale(.4) brightness(.6); }
+	.hc__side { display: flex; flex-direction: column; padding: clamp(1.2rem, 3vw, 2.4rem); overflow-y: auto; }
+	.hc__top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+	.hc__lead { max-width: 30ch; font-size: clamp(.95rem, 1.6vw, 1.25rem); line-height: 1.35; margin: 0 0 2rem; }
+	.hc__list { list-style: none; margin: 0 0 auto; padding: 0; }
+	.hc__list li { border-top: 1px solid rgba(255,255,255,.14); }
+	.hc__list a {
+		display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: .42rem 0;
+		color: var(--ink); text-decoration: none; font-size: clamp(1rem, 2vw, 1.5rem);
+		text-transform: uppercase; letter-spacing: var(--track);
+		transition: padding-left .35s var(--ease-smooth), color .3s var(--ease-smooth);
+	}
+	.hc__list a:hover { padding-left: .6rem; color: var(--acid); }
+	.hc__list em { font-style: normal; font-size: var(--fs-small); opacity: .45; flex-shrink: 0; }
+	.hc__foot { margin: 1.6rem 0 0; font-size: var(--fs-small); opacity: .6; }
+	.hc__foot a { color: var(--ink); }
+	@media (max-width: 760px) {
+		.hc { grid-template-columns: 1fr; height: auto; }
+		.hc__film { height: 42vh; }
+	}
+</style>

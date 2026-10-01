@@ -1,0 +1,66 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Wordmark from '../../components/Wordmark.astro';
+import { graphicProjects } from '../../data/graphic.js';
+import { artDirection } from '../../data/work.js';
+
+const covers = graphicProjects.map((p) => ({
+	src: `/img/work/${p.slug}/${p.cover ?? p.images.find((x) => x.file).file}`,
+	href: `/work/graphic-design/${p.slug}`,
+	t: p.title,
+}));
+const clips = artDirection.slice(0, 10).map((c) => ({
+	src: `/video/work/${c.slug}.mp4`,
+	poster: `/video/work/posters/${c.slug}.jpg`,
+	href: '/work/art-direction-content',
+	t: c.title,
+}));
+---
+
+<Base title="Home E — contact sheet" noindex bodyClass="page">
+	<div class="he">
+		<div class="he__grid" aria-hidden="true">
+			{covers.map((c) => (<a class="he__cell" href={c.href} title={c.t}><img src={c.src} alt="" loading="lazy" /></a>))}
+			{clips.map((c) => (
+				<a class="he__cell" href={c.href} title={c.t}>
+					<video src={c.src} poster={c.poster} muted loop playsinline autoplay preload="none" />
+				</a>
+			))}
+		</div>
+
+		<div class="he__veil" aria-hidden="true"></div>
+
+		<div class="he__front">
+			<header class="he__top">
+				<Wordmark />
+				<nav class="top__nav">
+					<a class="btn btn--round" href="/work"><span>Work</span></a>
+					<a class="btn btn--round" href="/about"><span>About</span></a>
+					<Nav bare />
+				</nav>
+			</header>
+			<p class="he__lead">
+				Farah Awada — multidisciplinary designer. Brand identity, art direction,
+				type, photography, videography and CGI.
+			</p>
+		</div>
+	</div>
+</Base>
+
+<style>
+	.he { position: relative; min-height: 100vh; }
+	.he__grid {
+		position: fixed; inset: 0; z-index: 0;
+		display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+		grid-auto-rows: 1fr; gap: 2px;
+	}
+	.he__cell { position: relative; overflow: hidden; background: #0a0a0a; }
+	.he__cell img, .he__cell video { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(.85) brightness(.5); transition: filter .4s var(--ease-smooth); }
+	.he__cell:hover img, .he__cell:hover video { filter: grayscale(0) brightness(1); }
+	.he__veil { position: fixed; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(ellipse at 22% 28%, rgba(7,7,10,.92) 0%, rgba(7,7,10,.55) 45%, rgba(7,7,10,.2) 100%); }
+	.he__front { position: relative; z-index: 2; padding: clamp(1.2rem, 3vw, 2.4rem); pointer-events: none; }
+	.he__front a, .he__front button { pointer-events: auto; }
+	.he__top { display: flex; justify-content: space-between; align-items: center; }
+	.he__lead { max-width: 26ch; margin: clamp(3rem, 12vh, 9rem) 0 0; font-size: clamp(1.1rem, 2.6vw, 2rem); line-height: 1.25; letter-spacing: var(--track); text-shadow: 0 2px 18px rgba(0,0,0,.9); }
+</style>
