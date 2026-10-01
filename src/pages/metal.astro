@@ -1,0 +1,237 @@
+---
+import Base from '../layouts/Base.astro';
+
+// Throwaway comparison page: six metallic treatments for the Graphic Design
+// index rows, replacing the flat colour on hover. Delete once chosen.
+const rows = [
+	{ n: '01', t: 'Al‑Doulab', s: 'Branding' },
+	{ n: '02', t: 'Crumb Cult', s: 'Branding' },
+	{ n: '03', t: 'Dunkin Donuts', s: 'Branding · Packaging' },
+];
+
+const styles = [
+	{
+		id: 'chrome',
+		name: 'Polished chrome',
+		note: 'A hard horizon band across the middle of each letter — the classic mirrored-chrome read. Brightest of the six.',
+	},
+	{
+		id: 'iron',
+		name: 'Cast iron',
+		note: 'Matte and heavy. Lit from above and shadowed below so the letters sit in the page rather than on it. No shine at all.',
+	},
+	{
+		id: 'brushed',
+		name: 'Brushed steel',
+		note: 'Fine striations running through the letterform, the way brushed metal catches light. Quieter than chrome, still clearly metal.',
+	},
+	{
+		id: 'glow',
+		name: 'Chrome + halo',
+		note: 'Polished chrome with a soft light thrown around it. The closest to the neon in your own footage.',
+	},
+	{
+		id: 'sheen',
+		name: 'Sheen sweep',
+		note: 'Matte steel at rest; a highlight travels across the word as you arrive, then settles. The only one that moves.',
+	},
+	{
+		id: 'liquid',
+		name: 'Liquid mercury',
+		note: 'Harder contrast and more bands, so the surface reads as wet rather than solid. The most dramatic.',
+	},
+];
+---
+
+<Base title="Metal treatments" noindex bodyClass="page">
+	<div class="mt">
+		<p class="mt__h">Graphic Design rows — metal instead of colour</p>
+		<p class="mt__hint">Hover any row. The number fills and the title takes the same surface.</p>
+
+		{
+			styles.map((st, i) => (
+				<section class="mt__opt" data-m={st.id}>
+					<p class="mt__label">
+						<b>{String(i + 1).padStart(2, '0')}</b> &nbsp; {st.name}
+					</p>
+					<ol class="mt__list">
+						{rows.map((r) => (
+							<li>
+								<a class="mrow" href="#">
+									<span class="mrow__num">{r.n}</span>
+									<span class="mrow__title">{r.t}</span>
+									<span class="mrow__scope">{r.s}</span>
+								</a>
+							</li>
+						))}
+					</ol>
+					<p class="mt__note">{st.note}</p>
+				</section>
+			))
+		}
+	</div>
+</Base>
+
+<style>
+	.mt { max-width: 62rem; margin: 0 auto; padding: clamp(1.5rem, 5vw, 4rem); }
+	.mt__h { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.5; margin: 0 0 0.4rem; }
+	.mt__hint { font-size: 0.82rem; opacity: 0.42; margin: 0 0 2.6rem; }
+	.mt__opt { padding: clamp(1.6rem, 4vw, 2.6rem) 0; border-top: 1px solid rgba(255, 255, 255, 0.14); }
+	.mt__label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.5; margin: 0 0 1.2rem; }
+	.mt__note { margin: 1.2rem 0 0; max-width: 58ch; font-size: 0.85rem; line-height: 1.5; opacity: 0.55; }
+	.mt__list { list-style: none; margin: 0; padding: 0; }
+	.mt__list li { border-top: 1px solid rgba(255, 255, 255, 0.14); }
+	.mt__list li:last-child { border-bottom: 1px solid rgba(255, 255, 255, 0.14); }
+
+	.mrow {
+		display: grid;
+		grid-template-columns: clamp(2.4rem, 6vw, 4.4rem) 1fr auto;
+		align-items: end;
+		gap: clamp(0.8rem, 3vw, 2.2rem);
+		padding: 0.7rem 0;
+		color: var(--ink);
+		text-decoration: none;
+	}
+
+	.mrow__num {
+		display: block;
+		align-self: center;
+		font-size: clamp(1.1rem, 3.2vw, 2.4rem);
+		line-height: 1;
+		letter-spacing: 0.02em;
+		font-variant-numeric: tabular-nums;
+		color: transparent;
+		-webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.5);
+		transform: scale(0.62, 2) skewX(-9deg);
+		transform-origin: left center;
+		transition: transform 0.6s var(--ease-smooth);
+	}
+	.mrow:hover .mrow__num { transform: scale(0.62, 2.35) skewX(0deg); }
+
+	.mrow__title {
+		font-size: clamp(1.3rem, 4vw, 3rem);
+		line-height: 1;
+		letter-spacing: var(--track);
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.86);
+	}
+
+	.mrow__scope {
+		font-size: var(--fs-small);
+		text-transform: uppercase;
+		letter-spacing: var(--track-small);
+		opacity: 0.55;
+	}
+
+	/* The metal surfaces. Each is a gradient clipped to the glyphs, so the
+	   letters become a lit surface rather than a flat fill. */
+	.mrow:hover .mrow__title,
+	.mrow:hover .mrow__num {
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		-webkit-text-stroke-color: transparent;
+	}
+
+	/* 01 — polished chrome */
+	[data-m='chrome'] .mrow:hover .mrow__title,
+	[data-m='chrome'] .mrow:hover .mrow__num {
+		background-image: linear-gradient(
+			180deg,
+			#ffffff 0%,
+			#cfd4d8 22%,
+			#6e767d 48%,
+			#ffffff 50%,
+			#c3c9cf 56%,
+			#7d858c 78%,
+			#f2f5f7 100%
+		);
+	}
+
+	/* 02 — cast iron: no clip, a lit relief instead */
+	[data-m='iron'] .mrow:hover .mrow__title,
+	[data-m='iron'] .mrow:hover .mrow__num {
+		background-image: none;
+		-webkit-background-clip: border-box;
+		background-clip: border-box;
+		color: #8f949a;
+		-webkit-text-stroke-color: transparent;
+		text-shadow:
+			0 -1px 0 rgba(255, 255, 255, 0.55),
+			0 1px 0 rgba(0, 0, 0, 0.85),
+			0 3px 5px rgba(0, 0, 0, 0.7);
+	}
+
+	/* 03 — brushed steel */
+	[data-m='brushed'] .mrow:hover .mrow__title,
+	[data-m='brushed'] .mrow:hover .mrow__num {
+		background-image: repeating-linear-gradient(
+			178deg,
+			#e8ebee 0px,
+			#aeb4ba 1px,
+			#868d94 2px,
+			#d6dade 3px,
+			#9aa1a8 4px
+		);
+	}
+
+	/* 04 — chrome with a halo */
+	[data-m='glow'] .mrow:hover .mrow__title,
+	[data-m='glow'] .mrow:hover .mrow__num {
+		background-image: linear-gradient(
+			180deg,
+			#ffffff 0%,
+			#d3d8dc 24%,
+			#79818a 48%,
+			#ffffff 51%,
+			#c8ced4 58%,
+			#858d96 80%,
+			#f4f7fa 100%
+		);
+		filter: drop-shadow(0 0 7px rgba(214, 230, 255, 0.65))
+			drop-shadow(0 0 16px rgba(160, 196, 255, 0.35));
+	}
+
+	/* 05 — sheen sweeping across */
+	[data-m='sheen'] .mrow:hover .mrow__title,
+	[data-m='sheen'] .mrow:hover .mrow__num {
+		background-image: linear-gradient(
+			100deg,
+			#8c939a 0%,
+			#9ba2a9 38%,
+			#ffffff 48%,
+			#f2f5f8 52%,
+			#9ba2a9 62%,
+			#8c939a 100%
+		);
+		background-size: 280% 100%;
+		animation: sweep 1.1s var(--ease-smooth) forwards;
+	}
+	@keyframes sweep {
+		from { background-position: 120% 0; }
+		to { background-position: -20% 0; }
+	}
+
+	/* 06 — liquid mercury */
+	[data-m='liquid'] .mrow:hover .mrow__title,
+	[data-m='liquid'] .mrow:hover .mrow__num {
+		background-image: linear-gradient(
+			172deg,
+			#ffffff 0%,
+			#5c646c 14%,
+			#eef2f5 28%,
+			#434a51 42%,
+			#ffffff 54%,
+			#6b737b 68%,
+			#dfe4e8 82%,
+			#4e565e 100%
+		);
+		filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.8));
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		[data-m='sheen'] .mrow:hover .mrow__title,
+		[data-m='sheen'] .mrow:hover .mrow__num { animation: none; background-position: 40% 0; }
+		.mrow__num { transition: none; }
+	}
+</style>
