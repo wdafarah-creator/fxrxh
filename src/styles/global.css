@@ -146,6 +146,465 @@ a {
 	color: #000;
 }
 
+.btn:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Top bar — disciplines left, nav right. The centre of the frame is   */
+/* deliberately left empty so the footage is never covered.            */
+/* ------------------------------------------------------------------ */
+
+.top {
+	/* Three tracks so the mark sits on the true centre of the frame, the
+	   same place it holds in the bar on every other page. */
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: center;
+	gap: 2rem;
+}
+
+.top .wordmark {
+	grid-column: 2;
+}
+
+.top__nav {
+	grid-column: 3;
+	justify-self: end;
+	display: flex;
+	gap: 0.5rem;
+	flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Disciplines — the drifting block                                    */
+/* ------------------------------------------------------------------ */
+
+/* The block is now a full-frame stage; each line places itself. */
+.disciplines {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.disciplines span {
+	position: absolute;
+	top: var(--top);
+	left: var(--left);
+	display: block;
+	font-family: var(--font);
+	font-size: clamp(0.8rem, 1vw, 1rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track);
+	line-height: 1;
+	white-space: nowrap;
+	will-change: transform;
+	/* Position and bounce are driven by src/scripts/drift.js — a bounce has
+	   to measure against the viewport, which keyframes cannot do. */
+	transition: none;
+}
+
+
+@keyframes drift {
+	from {
+		transform: translateY(0.22rem);
+	}
+	to {
+		transform: translateY(-0.22rem);
+	}
+}
+
+/* ------------------------------------------------------------------ */
+/* Bottom bar                                                          */
+/* ------------------------------------------------------------------ */
+
+.bottom {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.4rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Responsive                                                          */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 640px) {
+	.disciplines {
+		font-size: 0.58rem;
+	}
+
+	.top {
+		gap: 1rem;
+	}
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion                                                              */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+	.disciplines span {
+		animation: none;
+	}
+}
+
+/* ================================================================== */
+/* Interior pages                                                      */
+/* ================================================================== */
+
+/* Only the home page is a locked single screen. */
+body.home {
+	overflow: hidden;
+}
+
+body.page {
+	overflow-y: auto;
+	background: #000;
+	color: var(--ink);
+}
+
+/* The band behind the fixed bar. Tinted pages mix their own background so
+   it reads as the page fading out under the nav; everywhere else it is the
+   site's near-black. Blurred rather than opaque so the work still shows
+   through rather than being cut off by a hard edge. */
+.bar-scrim {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: calc(var(--pad) * 2 + 2.6rem);
+	z-index: 9;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.35s var(--ease-smooth);
+	/* Soft fade: a gradient and nothing else. No blur — words soften as they
+	   pass under the bar rather than being covered by fog. */
+	background: linear-gradient(
+		to bottom,
+		var(--page-bg, #07070a) 0%,
+		color-mix(in srgb, var(--page-bg, #07070a) 55%, transparent) 45%,
+		transparent 100%
+	);
+}
+
+.bar-scrim.is-lit {
+	opacity: 1;
+}
+
+/* fogged pages keep their own dark ground rather than the page default */
+body.has-fog .bar-scrim {
+	z-index: 29;
+	background: linear-gradient(
+		to bottom,
+		rgba(7, 7, 10, 0.95) 0%,
+		rgba(7, 7, 10, 0.5) 45%,
+		transparent 100%
+	);
+}
+
+.page-bar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 10;
+	/* Three tracks, not a flex row: the outer two are equal, so the mark in
+	   the middle sits on the optical centre of the page no matter how wide
+	   the button groups get. */
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: center;
+	gap: 1rem;
+	padding: var(--pad);
+	mix-blend-mode: difference;
+	color: var(--ink);
+	font-family: var(--font-display);
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	pointer-events: none;
+}
+
+.page-bar > * {
+	pointer-events: auto;
+}
+
+.page-bar__nav {
+	display: flex;
+	gap: 0.5rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Work index                                                          */
+/* ------------------------------------------------------------------ */
+
+/* Two doors over the running film. Covers cross-fade behind frosted
+   glass; hovering clears the glass and brings the work forward. Only
+   opacity and blur animate — the earlier background-clip:text version
+   re-rasterised the glyphs every frame, which is what made it stutter. */
+.sections {
+	position: fixed;
+	inset: var(--pad);
+	top: calc(var(--pad) * 2 + 2.6rem);
+	z-index: 3;
+	color: var(--ink);
+	align-self: stretch;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: clamp(0.5rem, 1.5vw, 1.25rem);
+	width: 100%;
+	min-height: 0;
+	padding: clamp(0.5rem, 2vw, 1.5rem) 0;
+}
+
+.door {
+	position: relative;
+	display: block;
+	min-height: 0;
+	overflow: hidden;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 3px;
+	pointer-events: auto;
+	isolation: isolate;
+	transition: border-color 0.6s var(--ease-smooth);
+}
+
+.door:hover,
+.door:focus-visible {
+	border-color: var(--hot);
+}
+
+/* ---- frosted pane over the top ---- */
+
+.door__glass {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+	background: rgba(10, 10, 12, 0.34);
+	backdrop-filter: blur(16px) saturate(0.9);
+	-webkit-backdrop-filter: blur(16px) saturate(0.9);
+	transition:
+		backdrop-filter 0.6s var(--ease-smooth),
+		background-color 0.6s var(--ease-smooth),
+		opacity 0.6s var(--ease-smooth);
+}
+
+.door:hover .door__glass,
+.door:focus-visible .door__glass {
+	background: rgba(10, 10, 12, 0.12);
+	backdrop-filter: blur(2px) saturate(1.05);
+	-webkit-backdrop-filter: blur(2px) saturate(1.05);
+}
+
+/* ---- type ---- */
+
+.door__body {
+	position: absolute;
+	inset: auto var(--pad) var(--pad);
+	z-index: 2;
+	display: grid;
+	gap: 0.5rem;
+	pointer-events: none;
+}
+
+.door__title {
+	font-family: var(--font);
+	font-weight: 400;
+	font-size: clamp(1.6rem, 5.2vw, 4rem);
+	line-height: 0.92;
+	letter-spacing: -0.035em;
+	text-transform: uppercase;
+	color: #fff;
+	text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+	transition: color 0.45s var(--ease-smooth);
+}
+
+.door:hover .door__title,
+.door:focus-visible .door__title {
+	color: var(--hot);
+}
+
+.door__meta {
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	color: #fff;
+	opacity: 0.75;
+}
+
+@media (max-width: 720px) {
+	.sections {
+	position: fixed;
+	inset: var(--pad);
+	top: calc(var(--pad) * 2 + 2.6rem);
+	z-index: 3;
+	color: var(--ink);
+		grid-template-columns: 1fr;
+		gap: 0.6rem;
+	}
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Reel — one video per screen, snapped                                */
+/* ------------------------------------------------------------------ */
+
+.reel {
+	height: 100vh;
+	overflow-y: auto;
+	scroll-snap-type: y mandatory;
+	scroll-behavior: smooth;
+}
+
+.reel__item {
+	position: relative;
+	height: 100vh;
+	scroll-snap-align: start;
+	overflow: hidden;
+	background: #000;
+}
+
+/* Landscape fills the screen. Portrait pieces are poster-shaped, so they
+   stay contained on black rather than being cropped to a thin slice. */
+.reel__video {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.reel__item.is-portrait {
+	background: #000;
+}
+
+.reel__item.is-portrait .reel__video {
+	object-fit: contain;
+	padding: calc(var(--pad) * 2) var(--pad) 22vh;
+}
+
+/* One quiet bar pinned to the bottom, updated as you scroll, rather than
+   a rule and title stamped across every frame. */
+.reel__bar {
+	position: fixed;
+	left: var(--pad);
+	right: var(--pad);
+	bottom: var(--pad);
+	z-index: 5;
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 1.5rem;
+	mix-blend-mode: difference;
+	color: var(--ink);
+	pointer-events: none;
+	font-family: var(--font-display);
+	font-weight: 400;
+	font-size: clamp(0.56rem, 0.72vw, 0.7rem);
+	letter-spacing: var(--track-small);
+	text-transform: uppercase;
+}
+
+.reel__bar__left {
+	display: flex;
+	align-items: baseline;
+	gap: 0.9rem;
+	min-width: 0;
+}
+
+.reel__title {
+	font-size: clamp(0.72rem, 0.95vw, 0.92rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track);
+	white-space: nowrap;
+}
+
+.reel__label,
+.reel__dur,
+.reel__index {
+	opacity: 0.75;
+	white-space: nowrap;
+}
+
+.reel__dur,
+.reel__index {
+	font-variant-numeric: tabular-nums;
+}
+
+/* Values cross-fade when the bar switches clip. */
+.reel__bar span {
+	transition: opacity 0.2s linear;
+}
+
+.reel__bar.is-changing span {
+	opacity: 0;
+}
+
+@media (max-width: 720px) {
+	.reel__bar {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.2rem;
+	}
+
+	.reel__bar__left {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.1rem;
+	}
+
+	.reel__label {
+		white-space: normal;
+	}
+}
+
+/* ------------------------------------------------------------------ */
+/* Placeholder                                                         */
+/* ------------------------------------------------------------------ */
+
+.empty {
+	min-height: 100vh;
+	display: grid;
+	place-content: center;
+	text-align: center;
+	gap: 0.75rem;
+	padding: var(--pad);
+	font-family: var(--font-display);
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+}
+
+.empty__title {
+	font-family: var(--font-display);
+	font-weight: 400;
+	font-size: clamp(1.6rem, 4vw, 3rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track);
+}
+
+.empty__note {
+	opacity: 0.6;
+}
+
+/* ================================================================== */
+/* Navigation                                                          */
+/* ================================================================== */
+
+.page-bar__group:last-of-type {
+	justify-content: flex-end;
+}
+
+.page-bar__group {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+}
+
 /* Work, About, Home, Index — true circles, the word centred. */
 .btn--round {
 	display: inline-grid;
@@ -162,6 +621,38 @@ a {
 		width: 3.5rem;
 		height: 3.5rem;
 	}
+}
+
+/* Contact marks. Sized to the cap height of the label beside them. */
+.ico {
+	width: 1em;
+	height: 1em;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.7;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	flex-shrink: 0;
+	display: block;
+}
+
+.ico__dot {
+	fill: currentColor;
+	stroke: none;
+}
+
+.btn--with-icon {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45em;
+}
+
+.menu a .ico {
+	width: 0.8em;
+	height: 0.8em;
+	display: inline-block;
+	vertical-align: -0.04em;
+	margin-right: 0.45em;
 }
 
 .btn--icon {
