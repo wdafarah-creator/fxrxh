@@ -1,0 +1,111 @@
+---
+// FXRXH / FARAH — the domain spells the name with its vowels knocked out.
+// The two vowel slots cycle X → A → X → A, scrambling through glyphs on the
+// way so the swap reads as a decode rather than a hard cut.
+interface Props {
+	href?: string;
+}
+const { href = '/' } = Astro.props;
+---
+
+<a class="wordmark" href={href} aria-label="FARAH — home">
+	<span aria-hidden="true">F</span><span class="wordmark__v" aria-hidden="true">X</span><span
+		aria-hidden="true">R</span
+	><span class="wordmark__v" aria-hidden="true">X</span><span aria-hidden="true">H</span>
+</a>
+
+<script>
+	const slots = [...document.querySelectorAll('.wordmark__v')];
+
+	// The slot width has to be measured in the mark's real face, so wait for
+	// JetBrains Mono to land. Measuring against the fallback would pin the
+	// slot to the wrong width and the letters would jump when the webfont
+	// swapped in. `fonts.ready` settles immediately if it is already cached.
+	const start = () => {
+		if (!slots.length) return;
+		// Capitals only, and similar in width, so the mark does not jitter
+		// while it cycles.
+		const GLYPHS = 'AXKWMNVYZH8#%&'.split('');
+		const HOLD = 2200;
+		const SCRAMBLE = 380;
+		const TICK = 55;
+
+		// Lock the slot width to the widest glyph the slot can ever hold,
+		// measured in the actual rendered font — otherwise the letters shift
+		// as they cycle.
+		//
+		// The probe copies the font properties one by one. The `font`
+		// shorthand is NOT usable here: getComputedStyle().font serialises to
+		// an empty string whenever the shorthand cannot represent the computed
+		// style — which is the case for this multi-family stack — so setting
+		// it silently does nothing and the probe measures in the browser's
+		// default face. That reads ~1.5px narrow, and every glyph then
+		// overflows its slot and collides with its neighbours.
+		const probe = document.createElement('span');
+		const cs = getComputedStyle(slots[0]);
+		probe.style.position = 'absolute';
+		probe.style.visibility = 'hidden';
+		probe.style.whiteSpace = 'pre';
+		probe.style.fontFamily = cs.fontFamily;
+		probe.style.fontSize = cs.fontSize;
+		probe.style.fontWeight = cs.fontWeight;
+		probe.style.fontStyle = cs.fontStyle;
+		probe.style.letterSpacing = cs.letterSpacing;
+		probe.style.textTransform = cs.textTransform;
+		document.body.appendChild(probe);
+		const widthOf = (ch) => {
+			probe.textContent = ch;
+			return probe.getBoundingClientRect().width;
+		};
+		// The box is sized to the two real letters and nothing else, so the
+		// mark stays tight. The scramble set is then filtered down to the
+		// glyphs that actually fit that box — anything wider would overflow
+		// and clash with its neighbour on the way past.
+		const slotWidth = Math.max(widthOf('A'), widthOf('X'));
+		const FITS = GLYPHS.filter((g) => widthOf(g) <= slotWidth + 0.5);
+		probe.remove();
+		slots.forEach((s) => {
+			s.style.display = 'inline-block';
+			s.style.width = `${slotWidth.toFixed(2)}px`;
+			s.style.textAlign = 'center';
+		});
+
+		const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+		let target = 'A';
+
+		const setAll = (ch) => slots.forEach((s) => (s.textContent = ch));
+
+		function scrambleTo(next, done) {
+			const started = performance.now();
+			const tick = () => {
+				const elapsed = performance.now() - started;
+				if (elapsed >= SCRAMBLE) {
+					setAll(next);
+					return done();
+				}
+				slots.forEach((s) => {
+					s.textContent = FITS[(Math.random() * FITS.length) | 0];
+				});
+				setTimeout(tick, TICK);
+			};
+			tick();
+		}
+
+		function loop() {
+			setTimeout(() => {
+				scrambleTo(target, () => {
+					target = target === 'A' ? 'X' : 'A';
+					loop();
+				});
+			}, HOLD);
+		}
+
+		if (!still.matches) loop();
+	};
+
+	if (document.fonts && document.fonts.ready) {
+		document.fonts.ready.then(start);
+	} else {
+		start();
+	}
+</script>

@@ -1,0 +1,434 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import { graphicProjects } from '../../../data/graphic.js';
+
+export function getStaticPaths() {
+	// The list reads alphabetically, so "next" follows that same order and
+	// wraps at the end — nobody reaches a dead stop.
+	const ordered = [...graphicProjects].sort((a, b) => a.title.localeCompare(b.title));
+	return ordered.map((project, i) => ({
+		params: { slug: project.slug },
+		props: { project, next: ordered[(i + 1) % ordered.length] },
+	}));
+}
+
+const { project, next } = Astro.props;
+const cover = project.cover ?? project.images.find((i) => i.file)?.file;
+---
+
+<Base
+	title={`${project.title} — ${project.subtitle} | Farah Awada`}
+	description={project.blurb}
+	image={cover ? `/img/work/${project.slug}/${cover}` : undefined}
+>
+	{/* A project may hold its own colour; otherwise the site default. */}
+	<div
+		class={`tint${project.bg ? ' is-tinted' : ''}`}
+		style={[
+			project.bg && `--page-bg:${project.bg}; --page-ink:${project.ink}`,
+			project.noteInk && `--note-ink:${project.noteInk}`,
+		]
+			.filter(Boolean)
+			.join('; ') || undefined}
+	>
+	<Nav back="/work/graphic-design" />
+
+	<article class="project">
+		<header class="project__head">
+			<h1 class="project__title">{project.title}</h1>
+			<p class="project__sub">{project.subtitle}</p>
+			{project.blurb && <p class="project__blurb">{project.blurb}</p>}
+			<p class="project__meta">{project.scope}</p>
+			{project.disclaimer && <p class="project__disclaimer">{project.disclaimer}</p>}
+		</header>
+
+		{
+			project.phone && (
+				<figure class="project__figure">
+					<div class="phone">
+						<div class="phone__body">
+							<span class="phone__notch" />
+							<div class="phone__screen">
+								<img
+										src={`/img/work/${project.slug}/${project.phone.file}`}
+										alt={project.phone.caption ?? `${project.title} — specimen`}
+										loading="lazy"
+									/>
+							</div>
+						</div>
+					</div>
+					{project.phone.caption && <figcaption>{project.phone.caption}</figcaption>}
+				</figure>
+			)
+		}
+
+		{
+			project.laptop &&
+				project.laptop.map((screen) => (
+					<figure class="project__figure">
+						<div class="laptop">
+							<div class="laptop__lid">
+								<div class={`laptop__screen${screen.scroll ? ' is-scrolling' : ''}`}>
+									<img src={`/img/work/${project.slug}/${screen.file}`} alt={screen.caption} loading="lazy" />
+								</div>
+							</div>
+							<div class="laptop__base" />
+						</div>
+						{screen.caption && <figcaption>{screen.caption}</figcaption>}
+					</figure>
+				))
+		}
+
+		{
+			project.logo && (
+				<figure class="project__figure">
+					<div class="logo-plate">
+						<img
+							src={`/img/work/${project.slug}/${project.logo.file}`}
+							alt={project.logo.caption ?? `${project.title} — logotype`}
+							loading="lazy"
+						/>
+					</div>
+					{project.logo.caption && <figcaption>{project.logo.caption}</figcaption>}
+				</figure>
+			)
+		}
+
+		{
+			project.box && (
+				<figure class="project__figure">
+					{/* Proportions come straight off the dieline: 150 × 150 × 50 mm. */}
+					<div class="boxwrap">
+						<div class="box3d">
+							<div class="box3d__face box3d__top">
+								<img src={`/img/work/${project.slug}/logo.png`} alt={`${project.title} — logo`} loading="lazy" />
+							</div>
+							<div class="box3d__face box3d__front">
+								<span>Warning: dangerously delicious!!!</span>
+							</div>
+							<div class="box3d__face box3d__back" />
+							<div class="box3d__face box3d__left" />
+							<div class="box3d__face box3d__right" />
+						</div>
+					</div>
+					{project.box.caption && <figcaption>{project.box.caption}</figcaption>}
+				</figure>
+			)
+		}
+
+		{
+			project.grid && (
+				<figure class="project__figure">
+					<div class="tilegrid">
+						{project.grid.files.map((f, i) => (
+							<span class="tilegrid__cell">
+								<img
+									src={`/img/work/${project.slug}/${f}`}
+									alt={`${project.title} — ${project.grid.caption ?? 'artwork'} ${i + 1}`}
+									loading="lazy"
+								/>
+							</span>
+						))}
+					</div>
+					{project.grid.caption && <figcaption>{project.grid.caption}</figcaption>}
+				</figure>
+			)
+		}
+
+		{
+			project.video && (
+				<figure class="project__figure">
+					<video
+						class={`project__video${project.video.portrait ? ' is-portrait' : ''}`}
+						src={`/video/work/${project.video.file}.mp4`}
+						poster={`/video/work/posters/${project.video.file}.jpg`}
+						muted
+						loop
+						playsinline
+						preload="none"
+						autoplay
+					/>
+					{project.video.caption && <figcaption>{project.video.caption}</figcaption>}
+				</figure>
+			)
+		}
+
+		{
+			project.stickers && (
+				<figure class="project__figure">
+					<div class="mockup stickers">
+						{project.stickers.files.map((f, i) => (
+							<img
+								src={`/img/work/${project.slug}/${f}`}
+								alt={`${project.title} — sticker ${i + 1}`}
+								loading="lazy"
+								style={`--tilt:${[-4, 3, -2, 5][i % 4]}deg`}
+							/>
+						))}
+					</div>
+					{project.stickers.caption && <figcaption>{project.stickers.caption}</figcaption>}
+				</figure>
+			)
+		}
+
+		{
+			project.storefront && (
+				<figure class="project__figure">
+					<div class="storefront">
+						<div class="storefront__fascia" />
+						<div class="storefront__arm" />
+						<div class="storefront__glass" />
+						<div class="storefront__sign">
+							<img
+								src={`/img/work/${project.slug}/${project.storefront.image}`}
+								alt={project.storefront.caption ?? `${project.title} — shop sign`}
+								loading="lazy"
+							/>
+						</div>
+					</div>
+					{project.storefront.caption && <figcaption>{project.storefront.caption}</figcaption>}
+				</figure>
+			)
+		}
+
+		{
+			project.instagram && (
+				<section class="feed">
+					<header class="feed__head">
+						<span class="feed__avatar" aria-hidden="true">NH</span>
+						<span class="feed__handle">@{project.instagram.handle}</span>
+						<span class="feed__count">{project.instagram.posts.length} posts</span>
+					</header>
+					<div class="feed__grid">
+						{project.instagram.posts.map((file, i) => (
+							<img
+								src={`/img/work/${project.slug}/${file}`}
+								alt={`${project.title} — Instagram post ${i + 1}`}
+								loading="lazy"
+							/>
+						))}
+					</div>
+				</section>
+			)
+		}
+
+		{
+			project.images.map((img) =>
+				img.section ? (
+					<header class="project__section">
+						<h2>{img.section}</h2>
+						{img.note && <p>{img.note}</p>}
+						{/* a longer explanation reads as prose, not as a label */}
+						{img.body && <p class="project__section-body">{img.body}</p>}
+					</header>
+				) : img.slides ? (
+					/* One row, one piece at a time. The controls live under the
+					   stage, never over the artwork. */
+					<figure
+						class={`project__figure slideshow${img.compact ? ' is-compact' : ''}`}
+						data-slideshow
+					>
+						<div class="slideshow__stage">
+							{img.slides.map((sl, i) => (
+								<div class={`slideshow__slide${i === 0 ? ' is-current' : ''}`}>
+									{img.mockup ? (
+										<div class="mockup is-poster">
+											<img
+												src={`/img/work/${project.slug}/${sl.file}`}
+												alt={sl.caption ?? `${project.title} ${i + 1}`}
+												loading={i === 0 ? 'eager' : 'lazy'}
+											/>
+										</div>
+									) : (
+										<img
+											src={`/img/work/${project.slug}/${sl.file}`}
+											alt={sl.caption ?? `${project.title} ${i + 1}`}
+											loading={i === 0 ? 'eager' : 'lazy'}
+										/>
+									)}
+								</div>
+							))}
+						</div>
+
+						<div class="slideshow__foot">
+							<figcaption data-slideshow-caption>{img.slides[0].caption}</figcaption>
+
+							<div class="slideshow__controls">
+								<button class="slideshow__arrow" type="button" data-prev aria-label="Previous">
+									<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 2 L4 8 L10 14" /></svg>
+								</button>
+								<div class="slideshow__dots" role="tablist" aria-label="Choose a piece">
+									{img.slides.map((sl, i) => (
+										<button
+											class={`slideshow__dot${i === 0 ? ' is-current' : ''}`}
+											type="button"
+											role="tab"
+											aria-selected={i === 0 ? 'true' : 'false'}
+											aria-label={sl.caption ?? `Item ${i + 1}`}
+										/>
+									))}
+								</div>
+								<button class="slideshow__arrow" type="button" data-next aria-label="Next">
+									<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 2 L12 8 L6 14" /></svg>
+								</button>
+							</div>
+						</div>
+					</figure>
+				) : img.feed ? (
+					/* a feed belonging to the section above it */
+					<section class="feed">
+						<header class="feed__head">
+							<span class="feed__avatar" aria-hidden="true">
+								{img.feed.handle.slice(0, 2).toUpperCase()}
+							</span>
+							<span class="feed__handle">@{img.feed.handle}</span>
+							<span class="feed__count">{img.feed.posts.length} posts</span>
+						</header>
+						<div class="feed__grid">
+							{img.feed.posts.map((file, i) => (
+								<img
+									src={`/img/work/${project.slug}/${file}`}
+									alt={`${img.feed.handle} — Instagram post ${i + 1}`}
+									loading="lazy"
+								/>
+							))}
+						</div>
+					</section>
+				) : img.grid ? (
+					/* a tile grid that belongs to the section above it, rather
+					   than to the project as a whole */
+					<figure class="project__figure">
+						<div
+							class={`tilegrid${img.tight ? ' is-tight' : ''}`}
+							style={img.cols ? `--cols:${img.cols}` : undefined}
+						>
+							{img.grid.map((f, i) => (
+								<span class="tilegrid__cell">
+									<img
+										src={`/img/work/${project.slug}/${f}`}
+										alt={`${img.caption ?? project.title} ${i + 1}`}
+										loading="lazy"
+									/>
+								</span>
+							))}
+						</div>
+						{img.caption && <figcaption>{img.caption}</figcaption>}
+					</figure>
+				) : img.video ? (
+					<figure class="project__figure">
+						<video
+							class={`project__video${img.portrait ? ' is-portrait' : ''}`}
+							src={`/video/work/${img.video}.mp4`}
+							poster={`/video/work/posters/${img.video}.jpg`}
+							muted
+							loop
+							playsinline
+							preload="none"
+							autoplay
+						/>
+						{img.caption && <figcaption>{img.caption}</figcaption>}
+					</figure>
+				) : (
+				<figure class={`project__figure${img.size ? ` is-${img.size}` : ''}`}>
+					{img.mockup || project.posterWall ? (
+						<div class={`mockup${project.posterWall ? ' is-poster' : ''}`}>
+							{img.frameless ? (
+								<div class="frameless">
+									<img src={`/img/work/${project.slug}/${img.file}`} alt={img.caption} loading="lazy" />
+								</div>
+							) : (
+								<img src={`/img/work/${project.slug}/${img.file}`} alt={img.caption} loading="lazy" />
+							)}
+						</div>
+					) : (
+						<img src={`/img/work/${project.slug}/${img.file}`} alt={img.caption} loading="lazy" />
+					)}
+					{img.caption && <figcaption>{img.caption}</figcaption>}
+				</figure>
+				)
+			)
+		}
+		<Footer next={next} />
+	</article>
+	</div>
+</Base>
+
+<script>
+	// Each slideshow runs itself: arrows, dots, keyboard, and an auto-advance
+	// that stops for good the moment someone takes control.
+	document.querySelectorAll('[data-slideshow]').forEach((box) => {
+		const slides = [...box.querySelectorAll('.slideshow__slide')];
+		const dots = [...box.querySelectorAll('.slideshow__dot')];
+		// the caption for each slide comes off its dot's label
+		const CAPTIONS = dots.map((d) => d.getAttribute('aria-label') ?? '');
+		const caption = box.querySelector('[data-slideshow-caption]');
+		if (slides.length < 2) return;
+
+		let at = 0;
+		let timer = null;
+
+		const show = (next) => {
+			at = (next + slides.length) % slides.length;
+			slides.forEach((s, i) => s.classList.toggle('is-current', i === at));
+			dots.forEach((d, i) => {
+				d.classList.toggle('is-current', i === at);
+				d.setAttribute('aria-selected', String(i === at));
+			});
+			if (caption) caption.textContent = CAPTIONS[at] ?? '';
+		};
+
+		const stop = () => {
+			if (timer) clearInterval(timer);
+			timer = null;
+		};
+
+		const start = () => {
+			stop();
+			timer = setInterval(() => show(at + 1), 4200);
+		};
+
+		const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+		let onScreen = false;
+
+		// Driving it by hand does not switch the slideshow off — it just moves
+		// to that slide and restarts the clock, so a full interval passes
+		// before it carries on by itself.
+		const drive = (next) => {
+			show(next);
+			// Restart the clock unconditionally: a full interval should pass
+			// after a manual move. If the row has since left the screen the
+			// observer stops it again anyway.
+			if (!still.matches) start();
+		};
+
+		box.querySelector('[data-prev]').addEventListener('click', () => drive(at - 1));
+		box.querySelector('[data-next]').addEventListener('click', () => drive(at + 1));
+		dots.forEach((d, i) => d.addEventListener('click', () => drive(i)));
+		box.addEventListener('keydown', (e) => {
+			if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+			drive(e.key === 'ArrowLeft' ? at - 1 : at + 1);
+		});
+
+		// Runs on its own whenever it is on screen, and never for a reader who
+		// asked for stillness. It holds while the cursor is over it so a slide
+		// cannot change out from under a click, and picks up again on leaving.
+		if (!still.matches) {
+			new IntersectionObserver(
+				(entries) =>
+					entries.forEach((e) => {
+						onScreen = e.isIntersecting;
+						if (onScreen) start();
+						else stop();
+					}),
+				{ threshold: 0.3 }
+			).observe(box);
+
+			box.addEventListener('mouseenter', stop);
+			box.addEventListener('mouseleave', () => {
+				if (onScreen) start();
+			});
+		}
+	});
+</script>

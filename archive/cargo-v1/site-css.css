@@ -1,0 +1,137 @@
+/* ==================================================================
+   FXRXH — site-wide CSS for Cargo
+   Paste into: Site Settings → CSS/HTML → CSS tab, then press Update.
+
+   NOTE: the global reset from the Astro build (*{margin:0;padding:0})
+   is deliberately NOT included. Cargo lays out its own elements and a
+   blanket reset fights the editor. Style Cargo's elements in the
+   design panel; use this file for tokens and the custom layers.
+   ================================================================== */
+
+/* ---------------------------------------------------------------- */
+/* Tokens                                                            */
+/* ---------------------------------------------------------------- */
+
+:root {
+	--white: #f5f5f5;
+	--black: #0a0a0a;
+	--grey-dark: #2a2a2a;
+	--grey-mid: #6a6a6a;
+	--grey-light: #b4b4b4;
+	--red: #ff2d5e;
+	--pink: #ff6bb1;
+
+	/* Upload the real faces in Cargo's font manager and swap the first
+	   name in each stack. Until then these fall back to system stacks —
+	   which is what the Astro site is actually rendering today. */
+	--font-mono: 'Cofo Sans Pixel', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+	--font-sans: 'Acumin Variable Concept', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+
+	--ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+
+	/* ASCII field defaults. Override per page by adding
+	   data-ascii-density="0.4" to any element in that page's Code View. */
+	--ascii-density: 0.45;
+
+	color-scheme: light;
+}
+
+/* ---------------------------------------------------------------- */
+/* Background layer                                                  */
+/* The canvas sits at z-index -1, so the page colour has to live on   */
+/* <html> and <body> has to be transparent for the field to show.     */
+/* ---------------------------------------------------------------- */
+
+html {
+	background: var(--white);
+}
+
+body {
+	background: transparent;
+	color: var(--black);
+}
+
+#ascii-field {
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	user-select: none;
+}
+
+::selection {
+	background: var(--red);
+	color: var(--white);
+}
+
+/* ---------------------------------------------------------------- */
+/* Type utilities — add these as classes in Cargo's Code View        */
+/* ---------------------------------------------------------------- */
+
+.mono {
+	font-family: var(--font-mono);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.wordmark {
+	font-family: var(--font-mono);
+	font-weight: 500;
+	font-size: clamp(4.5rem, 16vw, 13rem);
+	letter-spacing: -0.01em;
+	line-height: 0.9;
+	white-space: nowrap;
+	color: var(--black);
+}
+
+.kicker {
+	font-family: var(--font-mono);
+	text-transform: uppercase;
+	font-size: 0.75rem;
+	letter-spacing: 0.1em;
+	color: var(--grey-mid);
+}
+
+.lead {
+	font-family: var(--font-sans);
+	font-size: clamp(1.5rem, 3vw, 2.4rem);
+	line-height: 1.3;
+	color: var(--black);
+	max-width: 42rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Scramble-on-hover                                                 */
+/* Add class="scramble" (or data-scramble) to any link or text.      */
+/* ---------------------------------------------------------------- */
+
+.scramble,
+[data-scramble] {
+	font-family: var(--font-mono);
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	font-size: clamp(0.8rem, 1.4vw, 1rem);
+	color: var(--black);
+	/* The Astro build got this from its global reset, which is omitted
+	   here on purpose — so links need it explicitly. */
+	text-decoration: none;
+	transition: color 0.2s var(--ease-smooth);
+}
+
+.scramble.is-scrambling,
+[data-scramble].is-scrambling {
+	color: var(--hover-color, var(--red));
+}
+
+/* Keeps the text from reflowing while glyphs cycle. */
+.scramble,
+[data-scramble] {
+	font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.scramble,
+	[data-scramble] {
+		transition: none;
+	}
+}

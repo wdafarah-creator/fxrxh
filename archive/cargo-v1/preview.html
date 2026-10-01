@@ -1,0 +1,593 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Cargo port preview</title><style>
+/* ==================================================================
+   FXRXH — site-wide CSS for Cargo
+   Paste into: Site Settings → CSS/HTML → CSS tab, then press Update.
+
+   NOTE: the global reset from the Astro build (*{margin:0;padding:0})
+   is deliberately NOT included. Cargo lays out its own elements and a
+   blanket reset fights the editor. Style Cargo's elements in the
+   design panel; use this file for tokens and the custom layers.
+   ================================================================== */
+
+/* ---------------------------------------------------------------- */
+/* Tokens                                                            */
+/* ---------------------------------------------------------------- */
+
+:root {
+	--white: #f5f5f5;
+	--black: #0a0a0a;
+	--grey-dark: #2a2a2a;
+	--grey-mid: #6a6a6a;
+	--grey-light: #b4b4b4;
+	--red: #ff2d5e;
+	--pink: #ff6bb1;
+
+	/* Upload the real faces in Cargo's font manager and swap the first
+	   name in each stack. Until then these fall back to system stacks —
+	   which is what the Astro site is actually rendering today. */
+	--font-mono: 'Cofo Sans Pixel', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+	--font-sans: 'Acumin Variable Concept', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+
+	--ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+
+	/* ASCII field defaults. Override per page by adding
+	   data-ascii-density="0.4" to any element in that page's Code View. */
+	--ascii-density: 0.45;
+
+	color-scheme: light;
+}
+
+/* ---------------------------------------------------------------- */
+/* Background layer                                                  */
+/* The canvas sits at z-index -1, so the page colour has to live on   */
+/* <html> and <body> has to be transparent for the field to show.     */
+/* ---------------------------------------------------------------- */
+
+html {
+	background: var(--white);
+}
+
+body {
+	background: transparent;
+	color: var(--black);
+}
+
+#ascii-field {
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	user-select: none;
+}
+
+::selection {
+	background: var(--red);
+	color: var(--white);
+}
+
+/* ---------------------------------------------------------------- */
+/* Type utilities — add these as classes in Cargo's Code View        */
+/* ---------------------------------------------------------------- */
+
+.mono {
+	font-family: var(--font-mono);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.wordmark {
+	font-family: var(--font-mono);
+	font-weight: 500;
+	font-size: clamp(4.5rem, 16vw, 13rem);
+	letter-spacing: -0.01em;
+	line-height: 0.9;
+	white-space: nowrap;
+	color: var(--black);
+}
+
+.kicker {
+	font-family: var(--font-mono);
+	text-transform: uppercase;
+	font-size: 0.75rem;
+	letter-spacing: 0.1em;
+	color: var(--grey-mid);
+}
+
+.lead {
+	font-family: var(--font-sans);
+	font-size: clamp(1.5rem, 3vw, 2.4rem);
+	line-height: 1.3;
+	color: var(--black);
+	max-width: 42rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Scramble-on-hover                                                 */
+/* Add class="scramble" (or data-scramble) to any link or text.      */
+/* ---------------------------------------------------------------- */
+
+.scramble,
+[data-scramble] {
+	font-family: var(--font-mono);
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	font-size: clamp(0.8rem, 1.4vw, 1rem);
+	color: var(--black);
+	/* The Astro build got this from its global reset, which is omitted
+	   here on purpose — so links need it explicitly. */
+	text-decoration: none;
+	transition: color 0.2s var(--ease-smooth);
+}
+
+.scramble.is-scrambling,
+[data-scramble].is-scrambling {
+	color: var(--hover-color, var(--red));
+}
+
+/* Keeps the text from reflowing while glyphs cycle. */
+.scramble,
+[data-scramble] {
+	font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.scramble,
+	[data-scramble] {
+		transition: none;
+	}
+}
+</style></head><body>
+<div data-ascii-density="0.45" style="min-height:100vh;position:relative">
+<h1 class="wordmark" data-quiet-zone="90" style="position:absolute;top:42%;left:50%;transform:translate(-50%,-50%)">FARAH</h1>
+<a href="#" class="scramble" style="position:absolute;top:16%;left:9%">ABOUT</a>
+<a href="#" class="scramble" style="position:absolute;top:24%;right:10%">GRAPHIC DESIGN</a>
+<a href="#" class="scramble" style="position:absolute;bottom:24%;left:7%">CONTENT &amp; PHOTOGRAPHY</a>
+<a href="#" class="scramble" style="position:absolute;bottom:18%;right:12%">ART DIRECTION</a>
+</div>
+<!-- ==================================================================
+     FXRXH — custom code for Cargo
+     Paste into: Site Settings → CSS/HTML → HTML tab, then press Update.
+
+     Ported from the Astro build:
+       src/scripts/ascii-field.js
+       src/scripts/ascii-field-controller.js
+       src/scripts/text-scramble.js
+
+     Adapted for Cargo:
+       - no ES modules (Cargo injects plain <script>, there is no bundler)
+       - the canvas is created in JS and prepended to <body>, so it works
+         no matter where Cargo injects this block
+       - quiet zones recompute on scroll (Cargo pages scroll; the Astro
+         homepage did not)
+       - scramble uses event delegation, so it survives Cargo's AJAX
+         page swaps without re-binding
+     ================================================================== -->
+
+<script>
+(function () {
+	'use strict';
+
+	/* ---------------------------------------------------------------- */
+	/* Config — the only part you should normally need to edit.          */
+	/* ---------------------------------------------------------------- */
+
+	var CONFIG = {
+		// Elements that get the hover scramble.
+		scrambleSelector: '[data-scramble], .scramble',
+		// Elements the ASCII field thins out around, so type stays legible.
+		quietSelector: '[data-quiet-zone], .wordmark, .lead, .kicker',
+		// Default padding (px) of the clearing around a quiet element.
+		quietPadding: 56
+	};
+
+	var FIELD_GLYPHS = '01·:;+=*#%$&/\\<>[]{}()!?^~•∙°'.split('');
+	var SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?#%&*+=/\\<>'.split('');
+
+	function readVar(name, fallback) {
+		var v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+		return v || fallback;
+	}
+
+	function hexToRgb(hex) {
+		var n = parseInt(hex.replace('#', ''), 16);
+		return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+	}
+
+	function reducedMotion() {
+		return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	}
+
+	/* ---------------------------------------------------------------- */
+	/* ASCII texture field                                               */
+	/* A grid of monospace glyphs that quietly flicker between           */
+	/* characters. Low-contrast and slow on purpose: texture, not noise. */
+	/* ---------------------------------------------------------------- */
+
+	function AsciiField(canvas, opts) {
+		opts = opts || {};
+		this.canvas = canvas;
+		this.ctx = canvas.getContext('2d');
+		this.cellSize = opts.cellSize || 20;
+		this.density = opts.density || 1;
+
+		this.quietZones = [];
+		this.pulses = [];
+		this.cols = 0;
+		this.rows = 0;
+		this.cells = [];
+		this.lastFrame = 0;
+		this.frameInterval = 1000 / 24;
+		this.running = false;
+		this._raf = null;
+
+		this.colorRgb = [
+			hexToRgb(readVar('--grey-light', '#b4b4b4')),
+			hexToRgb(readVar('--grey-mid', '#6a6a6a'))
+		];
+		this.fontFamily = readVar('--font-mono', "ui-monospace, 'SF Mono', monospace");
+
+		this._tick = this._tick.bind(this);
+		this.resize();
+	}
+
+	AsciiField.prototype.resize = function () {
+		var w = window.innerWidth;
+		var h = window.innerHeight;
+		var dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+		this.canvas.width = Math.floor(w * dpr);
+		this.canvas.height = Math.floor(h * dpr);
+		this.canvas.style.width = w + 'px';
+		this.canvas.style.height = h + 'px';
+		this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+		this.width = w;
+		this.height = h;
+		this.cellSize = w < 720 ? 16 : 20;
+		this.cols = Math.ceil(w / this.cellSize) + 1;
+		this.rows = Math.ceil(h / this.cellSize) + 1;
+
+		this._buildCells();
+		this._render(true);
+	};
+
+	AsciiField.prototype._buildCells = function () {
+		var cells = new Array(this.cols * this.rows);
+		var now = performance.now();
+		for (var row = 0; row < this.rows; row++) {
+			for (var col = 0; col < this.cols; col++) {
+				var hole = this._holeMask(col * this.cellSize, row * this.cellSize);
+				cells[row * this.cols + col] = {
+					char: FIELD_GLYPHS[(Math.random() * FIELD_GLYPHS.length) | 0],
+					colorIdx: Math.random() > 0.35 ? 0 : 1,
+					baseAlpha: hole,
+					alpha: hole,
+					nextChange: now + Math.random() * 4000
+				};
+			}
+		}
+		this.cells = cells;
+	};
+
+	// Organic, static "clearings" from layered sine noise, so the field
+	// thins out in regions instead of covering the viewport evenly.
+	AsciiField.prototype._holeMask = function (x, y) {
+		var nx = x / (this.width || 1);
+		var ny = y / (this.height || 1);
+		var n =
+			Math.sin(nx * 6.1 + 1.7) * Math.cos(ny * 5.3) +
+			Math.sin((nx + ny) * 4.2 + 0.4) * 0.6 +
+			Math.cos(nx * 9.4 - ny * 3.1) * 0.3;
+		var clamped = Math.min(1, Math.max(0, (n + 2) / 4));
+		// Push toward the extremes so clearings read as clearings, not haze.
+		return Math.pow(clamped, 1.6);
+	};
+
+	AsciiField.prototype.setQuietZones = function (zones) {
+		this.quietZones = zones;
+	};
+
+	AsciiField.prototype.setDensity = function (d) {
+		this.density = d;
+	};
+
+	AsciiField.prototype.pulse = function (x, y, radius, strength, duration) {
+		this.pulses.push({
+			x: x,
+			y: y,
+			radius: radius || 220,
+			strength: strength || 0.9,
+			start: performance.now(),
+			duration: duration || 900
+		});
+	};
+
+	AsciiField.prototype._quietFactor = function (x, y) {
+		var factor = 1;
+		for (var i = 0; i < this.quietZones.length; i++) {
+			var z = this.quietZones[i];
+			var pad = z.padding;
+			if (x < z.x - pad || x > z.x + z.w + pad) continue;
+			if (y < z.y - pad || y > z.y + z.h + pad) continue;
+			var dx = Math.max(z.x - x, 0, x - (z.x + z.w));
+			var dy = Math.max(z.y - y, 0, y - (z.y + z.h));
+			factor = Math.min(factor, Math.min(1, Math.sqrt(dx * dx + dy * dy) / pad));
+		}
+		return factor;
+	};
+
+	AsciiField.prototype._pulseBoost = function (x, y, now) {
+		var boost = 0;
+		for (var i = 0; i < this.pulses.length; i++) {
+			var p = this.pulses[i];
+			var dx = x - p.x;
+			var dy = y - p.y;
+			var dist = Math.sqrt(dx * dx + dy * dy);
+			if (dist > p.radius) continue;
+			boost += (1 - dist / p.radius) * (1 - (now - p.start) / p.duration) * p.strength;
+		}
+		return boost;
+	};
+
+	AsciiField.prototype.start = function () {
+		if (this.running) return;
+		this.running = true;
+		this._raf = requestAnimationFrame(this._tick);
+	};
+
+	AsciiField.prototype.stop = function () {
+		this.running = false;
+		if (this._raf) cancelAnimationFrame(this._raf);
+	};
+
+	AsciiField.prototype._tick = function (now) {
+		if (!this.running) return;
+		this._raf = requestAnimationFrame(this._tick);
+		if (now - this.lastFrame < this.frameInterval) return;
+		this.lastFrame = now;
+		this._update(now);
+		this._render();
+	};
+
+	AsciiField.prototype._update = function (now) {
+		this.pulses = this.pulses.filter(function (p) {
+			return now - p.start < p.duration;
+		});
+
+		for (var row = 0; row < this.rows; row++) {
+			for (var col = 0; col < this.cols; col++) {
+				var cell = this.cells[row * this.cols + col];
+				var x = col * this.cellSize;
+				var y = row * this.cellSize;
+
+				if (now >= cell.nextChange) {
+					cell.char = FIELD_GLYPHS[(Math.random() * FIELD_GLYPHS.length) | 0];
+					if (Math.random() > 0.85) cell.colorIdx = cell.colorIdx === 0 ? 1 : 0;
+					cell.nextChange = now + (900 + Math.random() * 3200) / Math.max(this.density, 0.15);
+				}
+
+				var target = Math.min(
+					1,
+					cell.baseAlpha * this.density * this._quietFactor(x, y) + this._pulseBoost(x, y, now)
+				);
+				cell.alpha += (target - cell.alpha) * 0.08;
+			}
+		}
+	};
+
+	AsciiField.prototype._render = function (force) {
+		var ctx = this.ctx;
+		ctx.clearRect(0, 0, this.width, this.height);
+		ctx.font = Math.floor(this.cellSize * 0.62) + 'px ' + this.fontFamily;
+		ctx.textBaseline = 'middle';
+		ctx.textAlign = 'center';
+
+		for (var row = 0; row < this.rows; row++) {
+			for (var col = 0; col < this.cols; col++) {
+				var cell = this.cells[row * this.cols + col];
+				var alpha = force ? cell.baseAlpha * this.density : cell.alpha;
+				if (alpha < 0.03) continue;
+				var c = this.colorRgb[cell.colorIdx];
+				ctx.fillStyle = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + alpha.toFixed(3) + ')';
+				ctx.fillText(
+					cell.char,
+					col * this.cellSize + this.cellSize / 2,
+					row * this.cellSize + this.cellSize / 2
+				);
+			}
+		}
+	};
+
+	/* ---------------------------------------------------------------- */
+	/* Field wiring                                                      */
+	/* ---------------------------------------------------------------- */
+
+	var field = null;
+	var canvas = null;
+
+	function currentDensity() {
+		var el = document.querySelector('[data-ascii-density]');
+		if (el) {
+			var v = parseFloat(el.getAttribute('data-ascii-density'));
+			if (isFinite(v)) return v;
+		}
+		var fromCss = parseFloat(readVar('--ascii-density', '0.45'));
+		return isFinite(fromCss) ? fromCss : 0.45;
+	}
+
+	// Zones are measured in viewport coordinates because the canvas is
+	// fixed — so they must be re-measured whenever the page scrolls.
+	function registerQuietZones() {
+		if (!field) return;
+		var nodes = document.querySelectorAll(CONFIG.quietSelector);
+		var zones = [];
+		for (var i = 0; i < nodes.length; i++) {
+			var el = nodes[i];
+			var rect = el.getBoundingClientRect();
+			if (!rect.width || !rect.height) continue;
+			if (rect.bottom < -200 || rect.top > window.innerHeight + 200) continue;
+			var pad = parseFloat(el.getAttribute('data-quiet-zone')) || CONFIG.quietPadding;
+			zones.push({ x: rect.left, y: rect.top, w: rect.width, h: rect.height, padding: pad });
+		}
+		field.setQuietZones(zones);
+	}
+
+	var zonesQueued = false;
+	function queueZones() {
+		if (zonesQueued) return;
+		zonesQueued = true;
+		requestAnimationFrame(function () {
+			zonesQueued = false;
+			field && field.setDensity(currentDensity());
+			registerQuietZones();
+		});
+	}
+
+	function initField() {
+		if (!canvas) {
+			canvas = document.createElement('canvas');
+			canvas.id = 'ascii-field';
+			canvas.setAttribute('aria-hidden', 'true');
+			document.body.insertBefore(canvas, document.body.firstChild);
+		}
+
+		if (!field) {
+			field = new AsciiField(canvas, { density: currentDensity() });
+
+			window.addEventListener('resize', function () {
+				clearTimeout(initField._t);
+				initField._t = setTimeout(function () {
+					field.resize();
+					queueZones();
+				}, 120);
+			});
+
+			window.addEventListener('scroll', queueZones, { passive: true });
+
+			var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+			mq.addEventListener('change', function (e) {
+				if (e.matches) {
+					field.stop();
+					field._render(true);
+				} else {
+					field.start();
+				}
+			});
+
+			// Cargo swaps page content without a full reload; re-measure.
+			new MutationObserver(queueZones).observe(document.body, {
+				childList: true,
+				subtree: true
+			});
+
+			if (!reducedMotion()) field.start();
+		}
+
+		queueZones();
+	}
+
+	/* ---------------------------------------------------------------- */
+	/* Text scramble                                                     */
+	/* Each letter cycles through random glyphs before resolving back    */
+	/* to the original character.                                        */
+	/* ---------------------------------------------------------------- */
+
+	function scramble(el, duration, stagger) {
+		duration = duration || 480;
+		stagger = stagger || 28;
+
+		if (el._scrambleRaf) cancelAnimationFrame(el._scrambleRaf);
+
+		var original = el.getAttribute('data-text');
+		if (original === null) {
+			original = el.textContent;
+			el.setAttribute('data-text', original);
+		}
+
+		var totalFrames = Math.ceil(duration / 16);
+		var queue = original.split('').map(function (char, i) {
+			var start = Math.floor((i * stagger) / 16);
+			return {
+				char: char,
+				start: start,
+				end: start + Math.max(4, Math.floor(totalFrames * 0.5)),
+				current: '',
+				lockFrame: 0
+			};
+		});
+
+		var frame = 0;
+		el.classList.add('is-scrambling');
+
+		(function update() {
+			var output = '';
+			var complete = 0;
+
+			for (var i = 0; i < queue.length; i++) {
+				var item = queue[i];
+				if (item.char === ' ') {
+					output += ' ';
+					complete++;
+				} else if (frame >= item.end) {
+					output += item.char;
+					complete++;
+				} else {
+					if (frame >= item.lockFrame) {
+						item.current = SCRAMBLE_CHARS[(Math.random() * SCRAMBLE_CHARS.length) | 0];
+						item.lockFrame = frame + 2;
+					}
+					output += item.current;
+				}
+			}
+
+			el.textContent = output;
+
+			if (complete === queue.length) {
+				el.textContent = original;
+				el.classList.remove('is-scrambling');
+				el._scrambleRaf = null;
+				return;
+			}
+
+			frame++;
+			el._scrambleRaf = requestAnimationFrame(update);
+		})();
+	}
+
+	// Delegated so it keeps working across Cargo's page swaps.
+	function initScramble() {
+		document.addEventListener(
+			'mouseover',
+			function (e) {
+				if (reducedMotion()) return;
+				var el = e.target.closest && e.target.closest(CONFIG.scrambleSelector);
+				if (!el || el._scrambleRaf) return;
+				if (el.contains(e.relatedTarget)) return;
+
+				scramble(el);
+
+				// Nudge the field where the cursor is, like the Astro build.
+				if (field) {
+					var r = el.getBoundingClientRect();
+					field.pulse(r.left + r.width / 2, r.top + r.height / 2, 220, 0.9, 900);
+				}
+			},
+			true
+		);
+	}
+
+	/* ---------------------------------------------------------------- */
+
+	function boot() {
+		initField();
+		initScramble();
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', boot);
+	} else {
+		boot();
+	}
+})();
+</script>
+</body></html>

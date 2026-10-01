@@ -1,0 +1,29 @@
+<div id="live-clock" class="live-clock mono" transition:persist>
+	<span id="clock-time">--:--:--</span>
+</div>
+
+<style>
+	.live-clock {
+		position: fixed;
+		bottom: 1.5rem;
+		right: 1.75rem;
+		z-index: 40;
+		font-size: 0.72rem;
+		color: var(--grey-mid);
+		letter-spacing: 0.08em;
+		pointer-events: none;
+	}
+
+	@media (max-width: 640px) {
+		.live-clock {
+			bottom: 1rem;
+			right: 1rem;
+			font-size: 0.65rem;
+		}
+	}
+</style>
+
+<script>
+	import { initClock } from '../scripts/clock.js';
+	initClock();
+</script>

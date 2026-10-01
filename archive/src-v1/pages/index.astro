@@ -1,0 +1,135 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { workSections } from '../data/nav.js';
+---
+
+<Layout title="Farah" density={1}>
+	<section class="hero">
+		<h1 class="wordmark mono" data-quiet-zone="90">FARAH</h1>
+
+		<a href="/about" class="scatter-word scatter-word--about mono" data-scramble data-quiet-zone="36">
+			ABOUT
+		</a>
+
+		{
+			workSections.map((section, i) => (
+				<a
+					href={section.href}
+					class={`scatter-word scatter-word--work-${i} mono`}
+					data-scramble
+					data-quiet-zone="36"
+				>
+					{section.label}
+				</a>
+			))
+		}
+	</section>
+
+	<footer class="home-footer mono">
+		<span>MADRID ↔ BARCELONA</span>
+		<span aria-hidden="true">·</span>
+		<span>MULTIDISCIPLINARY DESIGNER</span>
+		<span aria-hidden="true">·</span>
+		<span>FXRXH.COM</span>
+	</footer>
+</Layout>
+
+<style>
+	.hero {
+		position: relative;
+		z-index: 1;
+		min-height: 100vh;
+		width: 100%;
+	}
+
+	.wordmark {
+		position: absolute;
+		top: 42%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-size: clamp(4.5rem, 16vw, 13rem);
+		font-weight: 500;
+		color: var(--black);
+		letter-spacing: -0.01em;
+		line-height: 0.9;
+		white-space: nowrap;
+	}
+
+	.scatter-word {
+		position: absolute;
+		font-size: clamp(0.8rem, 1.4vw, 1rem);
+		letter-spacing: 0.08em;
+		color: var(--black);
+	}
+
+	.scatter-word.is-scrambling {
+		color: var(--hover-color, var(--red));
+	}
+
+	.scatter-word--about {
+		top: 16%;
+		left: 9%;
+	}
+
+	.scatter-word--work-0 {
+		top: 24%;
+		right: 10%;
+	}
+
+	.scatter-word--work-1 {
+		bottom: 24%;
+		left: 7%;
+	}
+
+	.scatter-word--work-2 {
+		bottom: 18%;
+		right: 12%;
+	}
+
+	.home-footer {
+		position: fixed;
+		bottom: 1.5rem;
+		left: 0;
+		right: 0;
+		z-index: 40;
+		display: flex;
+		justify-content: center;
+		gap: 0.85rem;
+		flex-wrap: wrap;
+		padding: 0 1.5rem;
+		font-size: 0.68rem;
+		letter-spacing: 0.08em;
+		color: var(--grey-dark);
+		pointer-events: none;
+	}
+
+	.home-footer span[aria-hidden] {
+		color: var(--grey-light);
+	}
+
+	@media (max-width: 780px) {
+		.wordmark {
+			top: 30%;
+			font-size: clamp(3.4rem, 20vw, 6rem);
+		}
+
+		.scatter-word--about {
+			top: 12%;
+		}
+
+		.scatter-word--work-0 {
+			top: 44%;
+			right: 8%;
+		}
+
+		.scatter-word--work-1 {
+			bottom: 32%;
+			left: 8%;
+		}
+
+		.scatter-word--work-2 {
+			bottom: 14%;
+			right: 9%;
+		}
+	}
+</style>

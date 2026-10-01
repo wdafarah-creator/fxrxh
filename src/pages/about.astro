@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base
+	title="About — Farah Awada, Multidisciplinary Designer"
+	description="Farah Awada is a multidisciplinary designer working across graphic design, art direction, photography, videography, illustration and CGI. Based in Spain, available for commissions and collaborations."
+	image="/img/og-about.jpg"
+	bodyClass="home"
+>
+	<video class="bg" autoplay muted loop playsinline preload="metadata" poster="/video/about-poster.jpg">
+		<source src="/video/about.webm" type="video/webm" />
+		<source src="/video/about.mp4" type="video/mp4" />
+	</video>
+
+	<div class="film" aria-hidden="true">
+		<div class="film__grain"></div>
+		<div class="film__lines"></div>
+	</div>
+
+	{/* Nav stays in the difference-blended layer; the copy does not. */}
+	<div class="overlay">
+		<div class="top">
+			<a class="btn btn--round" href="/">Index</a>
+			<nav class="top__nav">
+				<a class="btn btn--round" href="/work">Work</a>
+				<Nav bare />
+			</nav>
+		</div>
+		<div></div>
+		<div></div>
+	</div>
+
+	<div class="about">
+		<h1 class="about__lead">
+			Farah Awada — multidisciplinary designer working across graphic design, art direction,
+			photography, videography, illustration and CGI.
+		</h1>
+		<p>
+			Directing and editing AI-generated content and CGI video alongside work shot on camera.
+		</p>
+		<p>Based in Spain &amp; wherever the work takes me.</p>
+		<p class="about__reach">Tell me what you're making —</p>
+		<div class="about__links">
+			<a class="btn btn--with-icon" href="https://instagram.com/02fwa" target="_blank" rel="noopener noreferrer">
+				<Icon name="instagram" />@02fwa
+			</a>
+			<a class="btn btn--with-icon" href="mailto:wdafarah@gmail.com">
+				<Icon name="email" />wdafarah@gmail.com
+			</a>
+		</div>
+	</div>
+</Base>

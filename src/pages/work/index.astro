@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import { sections } from '../../data/work.js';
+
+---
+
+<Base
+	title="Work — Graphic Design & Art Direction | Farah Awada"
+	description="Selected work by Farah Awada: brand identity, packaging, type design and poster work, alongside art direction, videography and AI-generated content."
+	bodyClass="home"
+>
+	<video class="bg" autoplay muted loop playsinline preload="metadata" poster="/video/home-poster.jpg">
+		<source src="/video/home.webm" type="video/webm" />
+		<source src="/video/home.mp4" type="video/mp4" />
+	</video>
+
+	<h1 class="sr-only">Work — graphic design, art direction and content</h1>
+	<div class="film" aria-hidden="true">
+		<div class="film__grain"></div>
+		<div class="film__lines"></div>
+	</div>
+
+	<div class="overlay">
+		<div class="top">
+			<a class="btn" href="/">Index</a>
+			<nav class="top__nav">
+				<a class="btn" href="/about">About</a>
+				<Nav bare />
+			</nav>
+		</div>
+
+		<div class="sections">
+			{
+				sections.map((s) => (
+					<a class="door" href={`/work/${s.slug}`}>
+						<span class="door__glass" aria-hidden="true" />
+						<span class="door__body">
+							<span class="door__title">{s.title}</span>
+							<span class="door__meta">
+								{s.count} {s.unit}
+							</span>
+						</span>
+					</a>
+				))
+			}
+		</div>
+
+		<div></div>
+	</div>
+</Base>

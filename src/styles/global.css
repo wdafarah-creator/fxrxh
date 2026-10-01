@@ -1,0 +1,2684 @@
+/* ------------------------------------------------------------------ */
+/* JetBrains Mono — the wordmark only.                                 */
+/* SIL Open Font License 1.1, self-hosted (latin subset, 21 KB) so the  */
+/* mark renders identically everywhere and pulls nothing from a CDN.    */
+/* A true monospace also means every glyph shares one advance width, so  */
+/* the vowel slots can never shift as they cycle.                       */
+/* ------------------------------------------------------------------ */
+
+@font-face {
+	font-family: 'JetBrains Mono';
+	src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* ------------------------------------------------------------------ */
+/* Argent Pixel CF — drop the licensed webfont files into public/fonts  */
+/* with these names and the home page picks them up automatically.      */
+/* ------------------------------------------------------------------ */
+
+@font-face {
+	font-family: 'Argent Pixel CF';
+	src:
+		url('/fonts/ArgentPixelCF-Italic.woff2') format('woff2'),
+		url('/fonts/ArgentPixelCF-Italic.woff') format('woff'),
+		url('/fonts/ArgentPixelCF-Italic.otf') format('opentype');
+	font-weight: 400;
+	font-style: italic;
+	font-display: swap;
+}
+
+/* ------------------------------------------------------------------ */
+/* Tokens                                                              */
+/* ------------------------------------------------------------------ */
+
+:root {
+	--ink: #ffffff; /* base colour of every overlay element. Because the
+	                   overlay is difference-blended, this reads white over
+	                   the dark footage and inverts over the hot reds. */
+	/* ONE face for the whole site. Change this line and everything follows.
+	   Forma DJR is licensed — add the webfont (or an Adobe Fonts kit) and it
+	   takes over from the Helvetica Neue stand-in with no other edits. */
+	--font: 'Forma DJR Micro', 'Forma DJR Text', 'Forma DJR Display',
+		'Helvetica Neue', Helvetica, Arial, sans-serif;
+	/* Tracking. Tight enough that the letters close up, backed off at the
+	   smallest sizes where uppercase stops being readable. */
+	--track: -0.03em;
+	--track-small: -0.005em;
+	--font-mono: ui-monospace, 'SF Mono', 'Menlo', 'Consolas', monospace;
+	/* The wordmark alone. Everything else stays on --font. */
+	--font-mark: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+	--font-display: var(--font);
+	--font-home: var(--font);
+	--hot: #ff66ff;
+	--ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+	--pad: clamp(1rem, 2.5vw, 2rem);
+	--fs-small: clamp(0.62rem, 0.78vw, 0.78rem);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	background: #000;
+	font-family: var(--font);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	overflow: hidden; /* home is a single fixed screen */
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Background video                                                    */
+/* ------------------------------------------------------------------ */
+
+.bg {
+	position: fixed;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	z-index: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Overlay                                                             */
+/* Everything readable sits in here. `difference` inverts it against    */
+/* whatever the video is doing underneath, so it stays legible as the   */
+/* footage changes instead of needing a scrim.                          */
+/* ------------------------------------------------------------------ */
+
+.overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 1;
+	mix-blend-mode: difference;
+	color: var(--ink);
+	padding: var(--pad);
+	display: grid;
+	grid-template-rows: auto 1fr auto;
+	font-family: var(--font-display);
+	font-size: var(--fs-small);
+	letter-spacing: var(--track-small);
+	text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------------ */
+/* Buttons — bordered so they read as buttons, not as text             */
+/* ------------------------------------------------------------------ */
+
+.btn {
+	display: inline-block;
+	padding: 0.55em 0.95em;
+	border: 1px solid currentColor;
+	border-radius: 9px;
+	font-family: var(--font-display);
+	font-weight: 400;
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	line-height: 1;
+	white-space: nowrap;
+	pointer-events: auto;
+	transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.btn:hover,
+.btn:focus-visible {
+	background: var(--ink);
+	color: #000;
+}
+
+.btn:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Top bar — disciplines left, nav right. The centre of the frame is   */
+/* deliberately left empty so the footage is never covered.            */
+/* ------------------------------------------------------------------ */
+
+.top {
+	/* Three tracks so the mark sits on the true centre of the frame, the
+	   same place it holds in the bar on every other page. */
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: center;
+	gap: 2rem;
+}
+
+.top .wordmark {
+	grid-column: 2;
+}
+
+.top__nav {
+	grid-column: 3;
+	justify-self: end;
+	display: flex;
+	gap: 0.5rem;
+	flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Disciplines — the drifting block                                    */
+/* ------------------------------------------------------------------ */
+
+/* The block is now a full-frame stage; each line places itself. */
+.disciplines {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.disciplines span {
+	position: absolute;
+	top: var(--top);
+	left: var(--left);
+	display: block;
+	font-family: var(--font);
+	font-size: clamp(0.8rem, 1vw, 1rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track);
+	line-height: 1;
+	white-space: nowrap;
+	will-change: transform;
+	/* Position and bounce are driven by src/scripts/drift.js — a bounce has
+	   to measure against the viewport, which keyframes cannot do. */
+	transition: none;
+}
+
+
+@keyframes drift {
+	from {
+		transform: translateY(0.22rem);
+	}
+	to {
+		transform: translateY(-0.22rem);
+	}
+}
+
+/* ------------------------------------------------------------------ */
+/* Bottom bar                                                          */
+/* ------------------------------------------------------------------ */
+
+.bottom {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.4rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Responsive                                                          */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 640px) {
+	.disciplines {
+		font-size: 0.58rem;
+	}
+
+	.top {
+		gap: 1rem;
+	}
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion                                                              */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+	.disciplines span {
+		animation: none;
+	}
+}
+
+/* ================================================================== */
+/* Interior pages                                                      */
+/* ================================================================== */
+
+/* Only the home page is a locked single screen. */
+body.home {
+	overflow: hidden;
+}
+
+body.page {
+	overflow-y: auto;
+	background: #000;
+	color: var(--ink);
+}
+
+/* The band behind the fixed bar. Tinted pages mix their own background so
+   it reads as the page fading out under the nav; everywhere else it is the
+   site's near-black. Blurred rather than opaque so the work still shows
+   through rather than being cut off by a hard edge. */
+.bar-scrim {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: calc(var(--pad) * 2 + 2.6rem);
+	z-index: 9;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.35s var(--ease-smooth);
+	/* Soft fade: a gradient and nothing else. No blur — words soften as they
+	   pass under the bar rather than being covered by fog. */
+	background: linear-gradient(
+		to bottom,
+		var(--page-bg, #07070a) 0%,
+		color-mix(in srgb, var(--page-bg, #07070a) 55%, transparent) 45%,
+		transparent 100%
+	);
+}
+
+.bar-scrim.is-lit {
+	opacity: 1;
+}
+
+/* fogged pages keep their own dark ground rather than the page default */
+body.has-fog .bar-scrim {
+	z-index: 29;
+	background: linear-gradient(
+		to bottom,
+		rgba(7, 7, 10, 0.95) 0%,
+		rgba(7, 7, 10, 0.5) 45%,
+		transparent 100%
+	);
+}
+
+.page-bar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 10;
+	/* Three tracks, not a flex row: the outer two are equal, so the mark in
+	   the middle sits on the optical centre of the page no matter how wide
+	   the button groups get. */
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: center;
+	gap: 1rem;
+	padding: var(--pad);
+	mix-blend-mode: difference;
+	color: var(--ink);
+	font-family: var(--font-display);
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	pointer-events: none;
+}
+
+.page-bar > * {
+	pointer-events: auto;
+}
+
+.page-bar__nav {
+	display: flex;
+	gap: 0.5rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Work index                                                          */
+/* ------------------------------------------------------------------ */
+
+/* Two doors over the running film. Covers cross-fade behind frosted
+   glass; hovering clears the glass and brings the work forward. Only
+   opacity and blur animate — the earlier background-clip:text version
+   re-rasterised the glyphs every frame, which is what made it stutter. */
+.sections {
+	align-self: stretch;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: clamp(0.5rem, 1.5vw, 1.25rem);
+	width: 100%;
+	min-height: 0;
+	padding: clamp(0.5rem, 2vw, 1.5rem) 0;
+}
+
+.door {
+	position: relative;
+	display: block;
+	min-height: 0;
+	overflow: hidden;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 3px;
+	pointer-events: auto;
+	isolation: isolate;
+	transition: border-color 0.6s var(--ease-smooth);
+}
+
+.door:hover,
+.door:focus-visible {
+	border-color: var(--hot);
+}
+
+/* ---- frosted pane over the top ---- */
+
+.door__glass {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+	background: rgba(10, 10, 12, 0.34);
+	backdrop-filter: blur(16px) saturate(0.9);
+	-webkit-backdrop-filter: blur(16px) saturate(0.9);
+	transition:
+		backdrop-filter 0.6s var(--ease-smooth),
+		background-color 0.6s var(--ease-smooth),
+		opacity 0.6s var(--ease-smooth);
+}
+
+.door:hover .door__glass,
+.door:focus-visible .door__glass {
+	background: rgba(10, 10, 12, 0.12);
+	backdrop-filter: blur(2px) saturate(1.05);
+	-webkit-backdrop-filter: blur(2px) saturate(1.05);
+}
+
+/* ---- type ---- */
+
+.door__body {
+	position: absolute;
+	inset: auto var(--pad) var(--pad);
+	z-index: 2;
+	display: grid;
+	gap: 0.5rem;
+	pointer-events: none;
+}
+
+.door__title {
+	font-family: var(--font);
+	font-weight: 400;
+	font-size: clamp(1.6rem, 5.2vw, 4rem);
+	line-height: 0.92;
+	letter-spacing: -0.035em;
+	text-transform: uppercase;
+	color: #fff;
+	text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+	transition: color 0.45s var(--ease-smooth);
+}
+
+.door:hover .door__title,
+.door:focus-visible .door__title {
+	color: var(--hot);
+}
+
+.door__meta {
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	color: #fff;
+	opacity: 0.75;
+}
+
+@media (max-width: 720px) {
+	.sections {
+		grid-template-columns: 1fr;
+		gap: 0.6rem;
+	}
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Reel — one video per screen, snapped                                */
+/* ------------------------------------------------------------------ */
+
+.reel {
+	height: 100vh;
+	overflow-y: auto;
+	scroll-snap-type: y mandatory;
+	scroll-behavior: smooth;
+}
+
+.reel__item {
+	position: relative;
+	height: 100vh;
+	scroll-snap-align: start;
+	overflow: hidden;
+	background: #000;
+}
+
+/* Landscape fills the screen. Portrait pieces are poster-shaped, so they
+   stay contained on black rather than being cropped to a thin slice. */
+.reel__video {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.reel__item.is-portrait {
+	background: #000;
+}
+
+.reel__item.is-portrait .reel__video {
+	object-fit: contain;
+	padding: calc(var(--pad) * 2) var(--pad) 22vh;
+}
+
+/* One quiet bar pinned to the bottom, updated as you scroll, rather than
+   a rule and title stamped across every frame. */
+.reel__bar {
+	position: fixed;
+	left: var(--pad);
+	right: var(--pad);
+	bottom: var(--pad);
+	z-index: 5;
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 1.5rem;
+	mix-blend-mode: difference;
+	color: var(--ink);
+	pointer-events: none;
+	font-family: var(--font-display);
+	font-weight: 400;
+	font-size: clamp(0.56rem, 0.72vw, 0.7rem);
+	letter-spacing: var(--track-small);
+	text-transform: uppercase;
+}
+
+.reel__bar__left {
+	display: flex;
+	align-items: baseline;
+	gap: 0.9rem;
+	min-width: 0;
+}
+
+.reel__title {
+	font-size: clamp(0.72rem, 0.95vw, 0.92rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track);
+	white-space: nowrap;
+}
+
+.reel__label,
+.reel__dur,
+.reel__index {
+	opacity: 0.75;
+	white-space: nowrap;
+}
+
+.reel__dur,
+.reel__index {
+	font-variant-numeric: tabular-nums;
+}
+
+/* Values cross-fade when the bar switches clip. */
+.reel__bar span {
+	transition: opacity 0.2s linear;
+}
+
+.reel__bar.is-changing span {
+	opacity: 0;
+}
+
+@media (max-width: 720px) {
+	.reel__bar {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.2rem;
+	}
+
+	.reel__bar__left {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.1rem;
+	}
+
+	.reel__label {
+		white-space: normal;
+	}
+}
+
+/* ------------------------------------------------------------------ */
+/* Placeholder                                                         */
+/* ------------------------------------------------------------------ */
+
+.empty {
+	min-height: 100vh;
+	display: grid;
+	place-content: center;
+	text-align: center;
+	gap: 0.75rem;
+	padding: var(--pad);
+	font-family: var(--font-display);
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+}
+
+.empty__title {
+	font-family: var(--font-display);
+	font-weight: 400;
+	font-size: clamp(1.6rem, 4vw, 3rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track);
+}
+
+.empty__note {
+	opacity: 0.6;
+}
+
+/* ================================================================== */
+/* Navigation                                                          */
+/* ================================================================== */
+
+.page-bar__group:last-of-type {
+	justify-content: flex-end;
+}
+
+.page-bar__group {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+}
+
+/* Short nav labels sit centred in a shell the same shape as the menu button,
+   so the whole cluster reads as one family. A circle wide enough for the
+   longest of them, squared off just enough to match the star. */
+.btn--round {
+	display: inline-grid;
+	place-items: center;
+	width: 4.2rem;
+	height: 4.2rem;
+	padding: 0;
+	border-radius: 50%;
+	text-align: center;
+}
+
+@media (max-width: 720px) {
+	.btn--round {
+		width: 3.5rem;
+		height: 3.5rem;
+	}
+}
+
+/* Contact marks. Sized to the cap height of the label beside them. */
+.ico {
+	width: 1em;
+	height: 1em;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.7;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	flex-shrink: 0;
+	display: block;
+}
+
+.ico__dot {
+	fill: currentColor;
+	stroke: none;
+}
+
+.btn--with-icon {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45em;
+}
+
+.menu a .ico {
+	width: 0.8em;
+	height: 0.8em;
+	display: inline-block;
+	vertical-align: -0.04em;
+	margin-right: 0.45em;
+}
+
+.btn--icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.42em 0.6em;
+}
+
+.btn--icon svg {
+	width: 0.85em;
+	height: 0.85em;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2;
+	stroke-linecap: square;
+	display: block;
+}
+
+/* ------------------------------------------------------------------ */
+/* Star menu                                                           */
+/* Three bars — an ordinary burger — splayed 60° apart. Hover spins    */
+/* them back into a stack so it reads as a menu; open crosses them.    */
+/* ------------------------------------------------------------------ */
+
+/* The menu is the one thing on the bar you are meant to press, so it is the
+   one solid shape: a filled disc with the star knocked out of it. The fill
+   is currentColor and the bars are the page ground, so it inverts correctly
+   on a light page and inside the difference-blended bar alike. */
+.star {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.1rem;
+	height: 2.1rem;
+	padding: 0;
+	border: 1px solid currentColor;
+	/* squarish rather than round — a rounded square keeps the squareness of
+	   the bar while losing the hard corners */
+	border-radius: 30%;
+	background: currentColor;
+	color: inherit;
+	cursor: pointer;
+	pointer-events: auto;
+	transition: box-shadow 0.28s var(--ease-smooth);
+}
+
+.star:hover,
+.star:focus-visible {
+	box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 22%, transparent);
+}
+
+.star svg {
+	width: 1.05rem;
+	height: 1.05rem;
+	display: block;
+	overflow: visible;
+}
+
+.star__bar {
+	stroke: var(--page-bg, #07070a);
+	stroke-width: 2;
+	stroke-linecap: square;
+	transform-origin: 12px 12px;
+	transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.star__bar:nth-child(1) {
+	transform: rotate(0deg);
+}
+
+.star__bar:nth-child(2) {
+	transform: rotate(45deg);
+}
+
+.star__bar:nth-child(3) {
+	transform: rotate(90deg);
+}
+
+.star__bar:nth-child(4) {
+	transform: rotate(135deg);
+}
+
+/* Hover: collapse the star into the familiar three stacked bars. The fourth
+   retracts into the middle, so the burger is still literally in there. */
+.star:hover .star__bar:nth-child(1) {
+	transform: translateY(-6px);
+}
+
+.star:hover .star__bar:nth-child(2) {
+	transform: rotate(0deg);
+}
+
+.star:hover .star__bar:nth-child(3) {
+	transform: rotate(0deg) translateY(6px);
+}
+
+.star:hover .star__bar:nth-child(4) {
+	transform: rotate(0deg) scaleX(0);
+}
+
+/* Open: an X. */
+.star.is-open .star__bar:nth-child(1) {
+	transform: rotate(45deg);
+}
+
+.star.is-open .star__bar:nth-child(2) {
+	transform: rotate(45deg) scaleX(0);
+}
+
+.star.is-open .star__bar:nth-child(3) {
+	transform: rotate(-45deg);
+}
+
+.star.is-open .star__bar:nth-child(4) {
+	transform: rotate(-45deg) scaleX(0);
+}
+
+.star:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Menu overlay                                                        */
+/* ------------------------------------------------------------------ */
+
+.menu {
+	position: fixed;
+	inset: 0;
+	z-index: 20;
+	background: #000;
+	color: var(--ink);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 0.15rem;
+	padding: var(--pad);
+}
+
+.menu[hidden] {
+	display: none;
+}
+
+.menu a {
+	font-family: var(--font-display);
+	font-weight: 400;
+	font-size: clamp(1.6rem, 5vw, 3.4rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track);
+	line-height: 1.12;
+	width: fit-content;
+	transition: opacity 0.15s linear;
+}
+
+.menu a:hover {
+	opacity: 0.55;
+}
+
+.menu__rule {
+	display: block;
+	width: min(18rem, 40%);
+	height: 1px;
+	background: currentColor;
+	opacity: 0.35;
+	margin: 1.2rem 0 0.9rem;
+}
+
+.menu a[href^='https'],
+.menu a[href^='mailto'] {
+	font-size: clamp(0.72rem, 1vw, 0.85rem);
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+}
+
+html.menu-open {
+	overflow: hidden;
+}
+
+/* ------------------------------------------------------------------ */
+/* Melt-in                                                             */
+/* The blur is driven by JS (see src/scripts/melt.js). This is the      */
+/* settle that runs alongside it: the line presses down into place.     */
+/* ------------------------------------------------------------------ */
+
+/* Only opacity here — the scattered lines own their transform for the
+   wander, and animating both would fight. */
+[data-melt] {
+	opacity: 0;
+	transition: opacity 0.6s ease-out;
+}
+
+[data-melt].is-settled {
+	opacity: 1;
+}
+
+/* While the goo filter is active the glyphs are liquid, so keep the box
+   from reflowing as they resolve. */
+[data-melt].is-melting {
+	will-change: filter, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	[data-melt] {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+}
+
+/* ------------------------------------------------------------------ */
+/* Film treatment                                                      */
+/* A fine horizontal line screen — halftone ruled in lines rather than  */
+/* dots — plus a drifting grain layer. Both sit above the video and     */
+/* below the content, and neither takes pointer events.                */
+/* ------------------------------------------------------------------ */
+
+.film {
+	position: fixed;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+}
+
+/* The ruling. 3px period: one drawn line, two clear. Multiply lets the
+   darker passages of the footage swallow the lines the way ink does. */
+.film__lines {
+	position: absolute;
+	inset: 0;
+	background-image: repeating-linear-gradient(
+		0deg,
+		rgba(0, 0, 0, 0.32) 0px,
+		rgba(0, 0, 0, 0.32) 0.5px,
+		rgba(0, 0, 0, 0) 0.5px,
+		rgba(0, 0, 0, 0) 3px
+	);
+	mix-blend-mode: multiply;
+	opacity: var(--film-lines, 0.7);
+}
+
+/* Grain. The tile is larger than the viewport and drifts, so the noise
+   never sits still on the same pixels. */
+.film__grain {
+	position: absolute;
+	inset: -150%;
+	width: 400%;
+	height: 400%;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+	background-repeat: repeat;
+	mix-blend-mode: overlay;
+	opacity: var(--film-grain, 0.16);
+	animation: grain 0.9s steps(4) infinite;
+}
+
+@keyframes grain {
+	0% {
+		transform: translate(0, 0);
+	}
+	25% {
+		transform: translate(-3%, 2%);
+	}
+	50% {
+		transform: translate(2%, -3%);
+	}
+	75% {
+		transform: translate(-2%, -2%);
+	}
+	100% {
+		transform: translate(0, 0);
+	}
+}
+
+/* The ruling multiplies light away, so the exposure is pushed back up here.
+   Without this the footage — already shot dark — sinks into the black. */
+.bg {
+	filter: brightness(1.28) contrast(1.06) saturate(1.05);
+}
+
+/* Content sits above both film layers. */
+.overlay {
+	z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.film__grain {
+		animation: none;
+	}
+}
+
+/* ------------------------------------------------------------------ */
+/* Wordmark                                                            */
+/* FXRXH is the name with its vowels knocked out; the mark cycles them  */
+/* back in. Same face as everything else.                              */
+/* ------------------------------------------------------------------ */
+
+.wordmark {
+	display: inline-block;
+	font-family: var(--font-mark);
+	font-weight: 400;
+	font-size: clamp(1.15rem, 2vw, 1.75rem);
+	text-transform: uppercase;
+	/* the mark is the one place that opens up — the swapping slots need
+	   room or A and X crowd their neighbours */
+	letter-spacing: 0.06em;
+	line-height: 1;
+	white-space: nowrap;
+	pointer-events: auto;
+}
+
+.wordmark__v {
+	/* width is pinned in JS to the wider of A and X so the mark never
+	   reflows mid-cycle */
+	font-variant-numeric: tabular-nums;
+	margin: 0 0.02em;
+}
+
+
+
+
+
+/* ================================================================== */
+/* Graphic Design                                                      */
+/* ================================================================== */
+
+/* ------------------------------------------------------------------ */
+/* Graphic Design index                                                */
+/* A list rather than a wall of thumbnails: the work appears only where */
+/* the cursor is, so the page stays quiet until you move through it.    */
+/* ------------------------------------------------------------------ */
+
+.index-list {
+	list-style: none;
+	margin: 0;
+	padding: calc(var(--pad) * 4) var(--pad) calc(var(--pad) * 3);
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.index-list li {
+	border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.index-list li:last-child {
+	border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.row {
+	display: grid;
+	grid-template-columns: clamp(2.4rem, 6.5vw, 5rem) 1fr auto;
+	align-items: end;
+	gap: clamp(0.8rem, 3vw, 2.5rem);
+	padding: clamp(0.7rem, 1.8vw, 1.3rem) 0;
+	color: var(--ink);
+	transition:
+		padding-left 0.45s var(--ease-smooth),
+		opacity 0.35s var(--ease-smooth);
+}
+
+/* Everything else recedes while one row is hovered. */
+.index-list:hover .row {
+	opacity: 0.4;
+}
+
+.index-list .row:hover,
+.index-list .row:focus-visible {
+	opacity: 1;
+	padding-left: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+/* Hovering lifts the row to full white; the vowels then scramble, the
+   same move the FXRXH/FARAH mark makes. */
+.index-list .row:hover .row__title,
+.index-list .row:focus-visible .row__title {
+	color: #fff;
+}
+
+.row__title {
+	color: rgba(255, 255, 255, 0.86);
+	transition: color 0.35s var(--ease-smooth);
+}
+
+
+
+.row__scope {
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	opacity: 0.6;
+	font-variant-numeric: tabular-nums;
+}
+
+/* The numerals are the page's graphic. Drawn outline-only and stretched
+   tall and narrow, they stand as high as the titles and sit on the same
+   baseline, so the left edge reads as a column of type rather than as a
+   list marker. Hovering fills the one you are on. */
+.row__num {
+	display: block;
+	align-self: center;
+	font-size: clamp(1.15rem, 3.6vw, 2.7rem);
+	line-height: 1;
+	font-variant-numeric: tabular-nums;
+	/* the horizontal squeeze already closes the digits up — tracking on top
+	   of it would collide them */
+	letter-spacing: 0.02em;
+	color: transparent;
+	-webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.5);
+	/* squeezed on one axis, pulled on the other, then raked over — the
+	   distortion is the point, so the stroke thickens and thins with it */
+	transform: scale(0.62, 2) skewX(-9deg);
+	transform-origin: left center;
+	transition:
+		-webkit-text-stroke-color 0.45s var(--ease-smooth),
+		color 0.45s var(--ease-smooth),
+		transform 0.6s var(--ease-smooth);
+	will-change: transform;
+}
+
+.index-list .row:hover .row__num,
+.index-list .row:focus-visible .row__num {
+	color: var(--hot);
+	-webkit-text-stroke-color: var(--hot);
+	/* the one you are on stretches further and stands straight up */
+	transform: scale(0.62, 2.35) skewX(0deg);
+}
+
+.row__title {
+	font-family: var(--font);
+	font-weight: 400;
+	font-size: clamp(1.4rem, 4.5vw, 3.4rem);
+	line-height: 1;
+	letter-spacing: var(--track);
+	text-transform: uppercase;
+}
+
+/* ---- cursor preview ---- */
+
+.peek {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 60;
+	isolation: isolate;
+	width: clamp(12rem, 22vw, 20rem);
+	aspect-ratio: 4 / 5;
+	pointer-events: none;
+	opacity: 0;
+	transform: translate3d(0, 0, 0);
+	transition: opacity 0.35s var(--ease-smooth);
+	will-change: transform;
+}
+
+.peek.is-open {
+	opacity: 1;
+}
+
+.peek img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	background: #111;
+	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+}
+
+.peek.is-contained img {
+	object-fit: contain;
+	padding: 18%;
+}
+
+@media (max-width: 720px) {
+	.row {
+		grid-template-columns: 3ch 1fr;
+		row-gap: 0.2rem;
+	}
+
+	.row__scope {
+		grid-column: 2;
+		text-align: left;
+	}
+}
+
+@media (hover: none) {
+	.index-list:hover .row {
+		opacity: 1;
+	}
+}
+
+/* ------------------------------------------------------------------ */
+/* Project page                                                        */
+/* ------------------------------------------------------------------ */
+
+.project {
+	padding: calc(var(--pad) * 4) var(--pad) calc(var(--pad) * 4);
+	max-width: 62rem;
+	margin: 0 auto;
+	color: var(--ink);
+}
+
+.project__head {
+	display: grid;
+	gap: 0.6rem;
+	margin-bottom: clamp(2.5rem, 6vw, 5rem);
+}
+
+.project__title {
+	font-family: var(--font);
+	font-weight: 400;
+	font-size: clamp(1.8rem, 5vw, 3.6rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track);
+	line-height: 1;
+}
+
+.project__sub,
+.project__meta {
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	opacity: 0.7;
+}
+
+.project__blurb {
+	/* The one place the site sets normal case — a paragraph in all caps is
+	   a wall. */
+	text-transform: none;
+	font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+	line-height: 1.5;
+	max-width: 38rem;
+	margin-top: 0.8rem;
+	opacity: 0.85;
+}
+
+/* Speculative work says so, but as a footnote rather than a headline — a
+   small red chip that sits under the meta line and takes no more room than
+   it needs. --note-ink lets a project pick a red that holds up against its
+   own background; the default is dark enough to pass on light pages. */
+.project__disclaimer {
+	display: block;
+	width: fit-content;
+	max-width: 44ch;
+	margin: clamp(0.9rem, 2vw, 1.3rem) 0 0;
+	padding: 0.45rem 0.6rem;
+	border: 1px solid var(--note-ink, #d0021b);
+	color: var(--note-ink, #d0021b);
+	font-size: 0.72rem;
+	line-height: 1.4;
+	text-transform: none;
+	letter-spacing: var(--track-small);
+	opacity: 1;
+}
+
+/* a tinted page sets its own ink for everything else — the note keeps its red */
+.tint.is-tinted .project__disclaimer {
+	color: var(--note-ink, #d0021b);
+}
+
+.project__figure {
+	margin: 0 0 clamp(1.5rem, 4vw, 3rem);
+}
+
+.project__figure img {
+	width: 100%;
+	height: auto;
+	display: block;
+	background: #111;
+}
+
+/* Marks, highlight covers and other small artwork. At full column width a
+   circular logo reads as a poster; capped and centred it reads as the object
+   it is. The caption stays with the column, so it still lines up left. */
+.project__figure.is-small img {
+	width: auto;
+	max-width: min(20rem, 60%);
+	margin-inline: auto;
+}
+
+.project__figure.is-tall img {
+	width: auto;
+	max-width: min(15rem, 45%);
+	margin-inline: auto;
+}
+
+.project__figure figcaption {
+	margin-top: 0.6rem;
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	opacity: 0.55;
+}
+
+/* ------------------------------------------------------------------ */
+/* Instagram feed mockup                                               */
+/* Three columns with hairline gutters — the grid reads as a profile    */
+/* rather than six loose squares.                                      */
+/* ------------------------------------------------------------------ */
+
+.feed {
+	margin: 0 0 clamp(2rem, 5vw, 4rem);
+	border: 1px solid rgba(255, 255, 255, 0.22);
+	max-width: 34rem;
+}
+
+.feed__head {
+	display: flex;
+	align-items: center;
+	gap: 0.7rem;
+	padding: 0.8rem 0.9rem;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+}
+
+.feed__avatar {
+	display: grid;
+	place-items: center;
+	width: 1.8rem;
+	height: 1.8rem;
+	border-radius: 50%;
+	border: 1px solid currentColor;
+	font-size: 0.55rem;
+	letter-spacing: 0;
+	flex-shrink: 0;
+}
+
+.feed__count {
+	margin-left: auto;
+	opacity: 0.55;
+}
+
+.feed__grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 2px;
+	padding: 2px;
+}
+
+.feed__grid img {
+	width: 100%;
+	aspect-ratio: 1;
+	object-fit: cover;
+	display: block;
+	background: #111;
+}
+
+/* ------------------------------------------------------------------ */
+/* Print mockup                                                        */
+/* An A4 sheet laid on a plain field with a soft drop, so it reads as   */
+/* an object rather than flat artwork. The caption stays outside the    */
+/* field, on the page.                                                  */
+/* ------------------------------------------------------------------ */
+
+.mockup {
+	background: #d9d9d9;
+	padding: clamp(1.8rem, 5vw, 4rem);
+	display: grid;
+	place-items: center;
+}
+
+.mockup img {
+	width: auto;
+	max-width: min(28rem, 100%);
+	height: auto;
+	background: transparent;
+	box-shadow:
+		0 1px 2px rgba(0, 0, 0, 0.18),
+		0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+/* ------------------------------------------------------------------ */
+/* Storefront sign mockup                                              */
+/* The circular mark mounted as an illuminated sign on a shopfront,     */
+/* drawn entirely in CSS. The logo is isolated from the brand sheet by  */
+/* an oversized image inside a round window — there is no compositing   */
+/* step, so the crop stays adjustable.                                  */
+/* ------------------------------------------------------------------ */
+
+.storefront {
+	position: relative;
+	aspect-ratio: 4 / 3;
+	overflow: hidden;
+	/* Plaster wall: a warm base with a slow vertical falloff and a soft
+	   pool of light behind the sign. */
+	background:
+		radial-gradient(60% 45% at 50% 38%, rgba(255, 246, 232, 0.5), transparent 70%),
+		linear-gradient(#cfc7bd 0%, #bdb4a9 55%, #a79d92 100%);
+}
+
+/* Fascia board the sign is mounted on */
+.storefront__fascia {
+	position: absolute;
+	inset: 0 0 34% 0;
+	background: linear-gradient(#5f544c, #4a413a);
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* Shopfront glazing below the fascia */
+.storefront__glass {
+	position: absolute;
+	inset: 66% 6% 0 6%;
+	background: linear-gradient(190deg, #2f3a40 0%, #46545c 40%, #33404a 100%);
+	border: 6px solid #3a332e;
+	border-bottom: 0;
+	box-shadow: inset 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* Reflection streak across the glass */
+.storefront__glass::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.16) 45%, transparent 58%);
+}
+
+.storefront__sign {
+	position: absolute;
+	top: 30%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: min(42%, 16rem);
+	aspect-ratio: 1;
+	border-radius: 50%;
+	overflow: hidden;
+	z-index: 2;
+	background: #8ba9f2;
+	box-shadow:
+		0 2px 0 rgba(255, 255, 255, 0.35) inset,
+		0 -6px 14px rgba(0, 0, 0, 0.25) inset,
+		0 18px 30px rgba(0, 0, 0, 0.45),
+		0 0 60px rgba(255, 240, 210, 0.25);
+}
+
+/* The sheet is scaled and offset so only the top-left roundel shows. */
+.storefront__sign img {
+	position: absolute;
+	width: 212%;
+	max-width: none;
+	left: -3.6%;
+	top: -19%;
+	display: block;
+}
+
+/* Mounting arm */
+.storefront__arm {
+	position: absolute;
+	top: 30%;
+	left: 50%;
+	width: 8px;
+	height: 26%;
+	transform: translateX(-50%);
+	background: linear-gradient(90deg, #2e2924, #4a423a, #2e2924);
+	/* sits on the fascia, under the sign — never behind the wall */
+	z-index: 1;
+}
+
+@media (max-width: 640px) {
+	.storefront {
+		aspect-ratio: 3 / 4;
+	}
+
+	.storefront__sign {
+		width: min(58%, 12rem);
+	}
+}
+
+/* Video inside a graphic-design project (brand reel, motion test). */
+.project__video {
+	width: 100%;
+	height: auto;
+	display: block;
+	background: #111;
+}
+
+/* A vertical reel would be absurd at full page width. */
+.project__video.is-portrait {
+	width: auto;
+	max-width: min(24rem, 100%);
+	margin: 0 auto;
+}
+
+
+
+/* ------------------------------------------------------------------ */
+/* Poster wall                                                         */
+/* Sheets on a plain field at print proportions. Caption stays outside  */
+/* the field, like the menu mockups.                                    */
+/* ------------------------------------------------------------------ */
+
+.mockup.is-poster {
+	background: #b9b4ad;
+}
+
+.mockup.is-poster img {
+	max-width: min(26rem, 100%);
+}
+
+/* ------------------------------------------------------------------ */
+/* Frameless poster crop                                               */
+/* The source files are framed mockups on a white plate. Measured by    */
+/* scanning the pixels: the artwork sits at 28.8–70.2% across and       */
+/* 22.2–81.7% down. Cropping here keeps the originals intact.           */
+/* ------------------------------------------------------------------ */
+
+.frameless {
+	position: relative;
+	/* must match the width the un-cropped posters get, or the crop window
+	   sizes to the whole plate and the offsets land on blank plate */
+	width: min(26rem, 100%);
+	margin: 0 auto;
+	aspect-ratio: 838 / 1190;
+	overflow: hidden;
+	box-shadow:
+		0 1px 2px rgba(0, 0, 0, 0.2),
+		0 16px 34px rgba(0, 0, 0, 0.3);
+}
+
+/* Higher specificity than `.mockup.is-poster img`, which otherwise caps
+   max-width and collapses the crop. */
+.mockup .frameless img,
+.frameless img {
+	position: absolute;
+	/* Measured by scanning the served file across three rows and three
+	   columns, counting both the white plate and the dark frame as
+	   background, then inset 1% to absorb variation between the eight. */
+	/* Measured from the served file across three rows and three columns.
+	   Inset 4%: the frame carries a soft grey drop shadow that reads as
+	   artwork to a light/dark threshold, so a 1% inset left a band. */
+	width: 262.5%;
+	max-width: none;
+	height: auto;
+	left: -80.3%;
+	top: -43.4%;
+	display: block;
+	box-shadow: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* About                                                               */
+/* ------------------------------------------------------------------ */
+
+.about {
+	position: fixed;
+	left: var(--pad);
+	right: var(--pad);
+	bottom: var(--pad);
+	z-index: 5;
+	max-width: 36rem;
+	display: grid;
+	gap: 0.7rem;
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	/* Deliberately NOT difference-blended: over footage this bright the
+	   inverted text kept dropping to mid-grey. Plain white instead. */
+	color: #fff;
+}
+
+.about::before {
+	content: '';
+	position: absolute;
+	inset: -2rem -2rem -2rem -2rem;
+	z-index: -1;
+	background: radial-gradient(120% 100% at 0% 100%, rgba(0, 0, 0, 0.72), transparent 70%);
+	pointer-events: none;
+}
+
+.about__lead {
+	font-size: clamp(0.95rem, 1.5vw, 1.3rem);
+	line-height: 1.35;
+	letter-spacing: var(--track);
+}
+
+/* The line that hands the reader over to the two buttons under it. */
+.about__reach {
+	margin-bottom: 0.7rem;
+	opacity: 0.75;
+}
+
+.about__links {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+	margin-top: 0.6rem;
+}
+
+/* A logo used as a card cover sits contained on its brand colour rather
+   than being cropped to fill like a photograph. */
+.project-card__logo {
+	object-fit: contain;
+	padding: 18%;
+}
+
+/* Section heading inside a project — used where one project holds two
+   distinct bodies of work. */
+.project__section {
+	margin: clamp(2.5rem, 6vw, 5rem) 0 clamp(1.2rem, 3vw, 2rem);
+	padding-top: clamp(1.2rem, 3vw, 2rem);
+	border-top: 1px solid rgba(255, 255, 255, 0.22);
+	display: grid;
+	gap: 0.35rem;
+}
+
+.project__section h2 {
+	font-family: var(--font);
+	font-weight: 400;
+	font-size: clamp(1.2rem, 3vw, 2.1rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track);
+	line-height: 1;
+	color: var(--ink);
+}
+
+.project__section p {
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	opacity: 0.6;
+}
+
+.project__section:first-of-type {
+	margin-top: 0;
+	border-top: 0;
+	padding-top: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Card reveal                                                         */
+/* Held back rather than hidden: a soft blur and a little dimming that  */
+/* lift on hover. Driven by `filter` on the image, not backdrop-filter  */
+/* over the top — backdrop-filter does not interpolate smoothly and     */
+/* was stepping through the transition.                                 */
+/* ------------------------------------------------------------------ */
+
+.project-card {
+	position: relative;
+	isolation: isolate;
+}
+
+.project-card img {
+	filter: blur(4px) brightness(0.78) saturate(0.92);
+	/* a hair of scale keeps the blur from showing the image edge */
+	transform: scale(1.02);
+	transition:
+		filter 0.55s var(--ease-smooth),
+		transform 0.55s var(--ease-smooth);
+	will-change: filter, transform;
+}
+
+.project-card:hover img,
+.project-card:focus-visible img {
+	filter: blur(0) brightness(1) saturate(1);
+	transform: scale(1);
+	opacity: 1;
+}
+
+/* A logo cover is a flat mark — blurring it just looks broken. */
+.project-card img.project-card__logo {
+	filter: brightness(0.84);
+	transform: none;
+}
+
+.project-card:hover img.project-card__logo,
+.project-card:focus-visible img.project-card__logo {
+	filter: brightness(1);
+	transform: none;
+}
+
+/* No hover on touch — never leave the work behind permanent blur. */
+@media (hover: none) {
+	.project-card img,
+	.project-card img.project-card__logo {
+		filter: none;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.project-card img {
+		transition-duration: 0.01ms;
+	}
+}
+
+/* ------------------------------------------------------------------ */
+/* Laptop mockup                                                       */
+/* A long page scrolls inside the screen on a loop.                    */
+/* ------------------------------------------------------------------ */
+
+.laptop {
+	max-width: 46rem;
+	margin: 0 auto;
+}
+
+.laptop__lid {
+	background: #1b1b1d;
+	border-radius: 12px 12px 4px 4px;
+	padding: 2.2% 2.2% 2.6%;
+	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+.laptop__screen {
+	position: relative;
+	aspect-ratio: 16 / 10;
+	overflow: hidden;
+	background: #fff;
+	border-radius: 3px;
+}
+
+.laptop__screen img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+.laptop__screen.is-scrolling img {
+	animation: laptop-scroll 22s ease-in-out infinite alternate;
+}
+
+/* Travels to the bottom of the page and back, whatever its height. */
+@keyframes laptop-scroll {
+	0%,
+	8% {
+		transform: translateY(0);
+	}
+	92%,
+	100% {
+		transform: translateY(calc(-100% + 62.5cqw));
+	}
+}
+
+.laptop__screen {
+	container-type: inline-size;
+}
+
+.laptop__base {
+	height: 10px;
+	margin: 0 -3%;
+	border-radius: 0 0 10px 10px;
+	background: linear-gradient(#3a3a3e, #202023);
+	box-shadow: 0 10px 18px rgba(0, 0, 0, 0.4);
+}
+
+.laptop__base::after {
+	content: '';
+	display: block;
+	width: 14%;
+	height: 4px;
+	margin: 0 auto;
+	border-radius: 0 0 4px 4px;
+	background: #4a4a4f;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.laptop__screen img {
+		animation: none;
+	}
+}
+
+
+/* A logo cover sits contained and centred on its brand colour. Needs to
+   outrank `.project-card img`, which sets object-fit: cover. */
+.project-card img.project-card__logo {
+	object-fit: contain;
+	/* the mark is wide and short — it needs a lot of air or it reads as a
+	   crop rather than a logo */
+	padding: 36% 22%;
+}
+
+/* ------------------------------------------------------------------ */
+/* Sticker set                                                         */
+/* Transparent die cuts laid on a light field, each tilted a little and */
+/* lifted off the surface so they read as vinyl rather than artwork.    */
+/* ------------------------------------------------------------------ */
+
+.mockup.stickers {
+	background: #ece8e1;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+	gap: clamp(1rem, 3vw, 2.5rem);
+	align-items: center;
+	justify-items: center;
+}
+
+.mockup.stickers img {
+	width: 100%;
+	max-width: 11rem;
+	height: auto;
+	background: transparent;
+	transform: rotate(var(--tilt, 0deg));
+	filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.22));
+	transition: transform 0.45s var(--ease-smooth);
+}
+
+.mockup.stickers img:hover {
+	transform: rotate(0deg) scale(1.04);
+}
+
+/* ------------------------------------------------------------------ */
+/* Per-project colour                                                  */
+/* A project can hold its own page rather than every one sitting on     */
+/* black. Only the tinted ones opt in; the rest inherit the default.    */
+/* ------------------------------------------------------------------ */
+
+.tint.is-tinted {
+	background: var(--page-bg);
+	color: var(--page-ink);
+	min-height: 100vh;
+	/* cover the fixed black body behind it */
+	position: relative;
+	z-index: 0;
+}
+
+.tint.is-tinted .project,
+.tint.is-tinted .project__title,
+.tint.is-tinted .project__figure figcaption,
+.tint.is-tinted .project__section h2 {
+	color: var(--page-ink);
+}
+
+.tint.is-tinted .project__sub,
+.tint.is-tinted .project__meta,
+.tint.is-tinted .project__blurb,
+.tint.is-tinted .project__section p {
+	color: var(--page-ink);
+	opacity: 0.72;
+}
+
+/* Where a section has to explain something rather than just name it, the
+   note drops the uppercase micro-setting and becomes readable body copy at
+   the same measure as the project blurb. */
+.project__section p.project__section-body {
+	max-width: 46ch;
+	margin-top: 0.5rem;
+	font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+	line-height: 1.5;
+	text-transform: none;
+	letter-spacing: var(--track-small);
+	opacity: 0.85;
+}
+
+.tint.is-tinted .project__section p.project__section-body {
+	opacity: 0.88;
+}
+
+.tint.is-tinted .project__section {
+	border-top-color: color-mix(in srgb, var(--page-ink) 22%, transparent);
+}
+
+.tint.is-tinted .project__figure img,
+.tint.is-tinted .project__video {
+	background: color-mix(in srgb, var(--page-ink) 8%, transparent);
+}
+
+/* The page bar is difference-blended against black by default; on a
+   light page it needs to stop inverting or it disappears. */
+.tint.is-tinted ~ .page-bar,
+body:has(.tint.is-tinted) .page-bar {
+	mix-blend-mode: normal;
+	color: var(--page-ink, #fff);
+}
+
+
+/* Transparent artwork sits straight on the page — no plate behind it.
+   Needs to outrank `.tint.is-tinted .project__figure img`, which sets a
+   faint ink wash that would otherwise show through the alpha. */
+.project__figure img[src$='.png'],
+.tint.is-tinted .project__figure img[src$='.png'],
+.mockup img[src$='.png'] {
+	background: transparent;
+}
+
+/* ------------------------------------------------------------------ */
+/* Track grid                                                          */
+/* Square covers contained in black cells rather than cropped to fill.  */
+/* ------------------------------------------------------------------ */
+
+.tilegrid {
+	display: grid;
+	/* --cols pins the count; without it the grid reflows to fit */
+	grid-template-columns: var(--cols-tpl, repeat(auto-fit, minmax(10rem, 1fr)));
+	gap: 2px;
+	background: #0a0a0a;
+	padding: 2px;
+}
+
+.tilegrid[style*='--cols'] {
+	--cols-tpl: repeat(var(--cols), 1fr);
+}
+
+/* Covers butted straight up against each other, as one strip. */
+.tilegrid.is-tight {
+	gap: 0;
+	padding: 0;
+}
+
+.tilegrid__cell {
+	display: grid;
+	place-items: center;
+	aspect-ratio: 1;
+	background: #0a0a0a;
+	overflow: hidden;
+}
+
+.tilegrid__cell img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	display: block;
+	background: transparent;
+}
+
+/* ------------------------------------------------------------------ */
+/* Logotype plate                                                      */
+/* ------------------------------------------------------------------ */
+
+.logo-plate {
+	display: grid;
+	place-items: center;
+	padding: clamp(2.5rem, 8vw, 6rem) clamp(1.5rem, 6vw, 5rem);
+	background: #0a0a0a;
+}
+
+.logo-plate img {
+	width: auto;
+	max-width: min(26rem, 80%);
+	height: auto;
+	background: transparent;
+}
+
+/* ------------------------------------------------------------------ */
+/* Cookie box                                                          */
+/* Built to the dieline: 150 × 150 × 50 mm, so 3 : 3 : 1. Rotates so    */
+/* the proportions read as a box rather than a flat square.            */
+/* ------------------------------------------------------------------ */
+
+.boxwrap {
+	display: grid;
+	place-items: center;
+	padding: clamp(3.5rem, 11vw, 8rem) 1rem;
+	background: #ece8e1;
+	perspective: 1600px;
+}
+
+/* Dieline: 150 × 150 × 50 mm → 15rem × 15rem × 5rem at 1rem = 10mm.
+   Every face is centred and pushed out half a dimension, which is the
+   only arrangement that actually closes into a solid. */
+.box3d {
+	position: relative;
+	width: 15rem;
+	height: 15rem;
+	transform-style: preserve-3d;
+	animation: box-turn 26s linear infinite;
+}
+
+@keyframes box-turn {
+	from {
+		transform: rotateX(-62deg) rotateZ(0deg);
+	}
+	to {
+		transform: rotateX(-62deg) rotateZ(360deg);
+	}
+}
+
+.box3d__face {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	background: #8ba9f2;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	backface-visibility: visible;
+}
+
+/* lid and base: 150 × 150 */
+.box3d__top,
+.box3d__back {
+	width: 15rem;
+	height: 15rem;
+	margin: -7.5rem 0 0 -7.5rem;
+	display: grid;
+	place-items: center;
+}
+
+.box3d__top {
+	transform: translateZ(2.5rem);
+	box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.07);
+}
+
+.box3d__top img {
+	width: 70%;
+	height: auto;
+	background: transparent;
+}
+
+.box3d__back {
+	transform: translateZ(-2.5rem) rotateX(180deg);
+	background: #6f8ed9;
+}
+
+/* walls: 150 wide × 50 tall */
+.box3d__front,
+.box3d__left,
+.box3d__right {
+	width: 15rem;
+	height: 5rem;
+	margin: -2.5rem 0 0 -7.5rem;
+	display: grid;
+	place-items: center;
+	background: #7f9de8;
+	font-size: 0.58rem;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: #3d140f;
+	text-align: center;
+	padding: 0 0.6rem;
+}
+
+.box3d__front {
+	transform: rotateX(90deg) translateZ(7.5rem);
+}
+
+.box3d__left {
+	transform: rotateX(90deg) rotateY(90deg) translateZ(7.5rem);
+}
+
+.box3d__right {
+	transform: rotateX(90deg) rotateY(-90deg) translateZ(7.5rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.box3d {
+		animation: none;
+	}
+}
+
+/* ================================================================== */
+/* Layout options (explore page)                                       */
+/* ================================================================== */
+
+.ex {
+	padding: calc(var(--pad) * 4) var(--pad) calc(var(--pad) * 4);
+	color: var(--ink);
+}
+
+.ex__intro h1 {
+	font-family: var(--font);
+	font-weight: 400;
+	font-size: clamp(1.4rem, 4vw, 2.6rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track);
+}
+
+.ex__intro p,
+.ex__note {
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	opacity: 0.6;
+	margin-top: 0.4rem;
+}
+
+.ex__opt {
+	margin-top: clamp(3rem, 8vw, 6rem);
+	padding-top: clamp(1.2rem, 3vw, 2rem);
+	border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.ex__label {
+	font-family: var(--font);
+	font-weight: 400;
+	font-size: clamp(0.95rem, 1.6vw, 1.3rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+}
+
+.ex__label span {
+	opacity: 0.5;
+}
+
+.ex__opt > .ex__note {
+	margin-bottom: 1.4rem;
+}
+
+/* ---------- A · index + cursor preview ---------- */
+
+.va__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.va__list li {
+	border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.va__row {
+	display: grid;
+	grid-template-columns: 3ch 1fr auto;
+	gap: 1.5rem;
+	align-items: baseline;
+	padding: 0.7rem 0;
+	color: var(--ink);
+	transition: opacity 0.3s var(--ease-smooth), padding-left 0.4s var(--ease-smooth);
+}
+
+.va__list:hover .va__row { opacity: 0.35; }
+.va__row:hover { opacity: 1; padding-left: 1rem; }
+
+.va__t {
+	font-family: var(--font);
+	font-size: clamp(1.1rem, 2.6vw, 2rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track);
+	line-height: 1;
+}
+
+.va__n, .va__m {
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	opacity: 0.55;
+}
+
+.va__peek {
+	position: fixed;
+	top: 0; left: 0;
+	z-index: 30;
+	width: clamp(10rem, 18vw, 16rem);
+	aspect-ratio: 4 / 5;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.3s var(--ease-smooth);
+}
+
+.va__peek.is-open { opacity: 1; }
+
+.va__peek img {
+	width: 100%; height: 100%;
+	object-fit: cover;
+	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- B · full-bleed takeover ---------- */
+
+.vb {
+	position: relative;
+	overflow: hidden;
+	padding: clamp(1.5rem, 4vw, 3rem);
+	border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.vb__bg {
+	position: absolute;
+	inset: 0;
+	background-size: cover;
+	background-position: center;
+	opacity: 0;
+	transform: scale(1.06);
+	transition: opacity 0.6s var(--ease-smooth), transform 1.2s var(--ease-smooth);
+}
+
+.vb.is-live .vb__bg { opacity: 0.4; transform: scale(1); }
+
+.vb__list {
+	position: relative;
+	z-index: 1;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.vb__row {
+	display: grid;
+	grid-template-columns: 3ch 1fr auto;
+	gap: 1.5rem;
+	align-items: baseline;
+	padding: 0.55rem 0;
+	color: var(--ink);
+	transition: opacity 0.3s var(--ease-smooth), transform 0.4s var(--ease-smooth);
+}
+
+.vb.is-live .vb__row { opacity: 0.35; }
+.vb__row:hover { opacity: 1; transform: translateX(0.8rem); }
+
+.vb__t {
+	font-family: var(--font);
+	font-size: clamp(1.2rem, 3.4vw, 2.6rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track);
+	line-height: 1;
+	text-shadow: 0 2px 16px rgba(0, 0, 0, 0.7);
+}
+
+.vb__n, .vb__y { font-size: var(--fs-small); opacity: 0.6; }
+
+/* ---------- C · accordion panels ---------- */
+
+.vc {
+	display: flex;
+	gap: 2px;
+	height: clamp(18rem, 46vh, 30rem);
+}
+
+.vc__panel {
+	position: relative;
+	flex: 1;
+	min-width: 0;
+	background-size: cover;
+	background-position: center;
+	filter: grayscale(1) brightness(0.4);
+	transition: flex 0.55s var(--ease-smooth), filter 0.55s var(--ease-smooth);
+	overflow: hidden;
+}
+
+.vc:hover .vc__panel { flex: 0.6; }
+.vc__panel:hover { flex: 5; filter: grayscale(0) brightness(0.9); }
+
+.vc__label {
+	position: absolute;
+	left: 50%;
+	bottom: 1rem;
+	transform: translateX(-50%) rotate(180deg);
+	writing-mode: vertical-rl;
+	white-space: nowrap;
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: #fff;
+	text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+}
+
+.vc__panel:hover .vc__label {
+	writing-mode: horizontal-tb;
+	transform: translateX(-50%) rotate(0deg);
+	font-size: clamp(0.8rem, 1.6vw, 1.2rem);
+}
+
+/* ---------- D · tile grid with wipe ---------- */
+
+.vd {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr));
+	gap: 2px;
+}
+
+.vd__tile {
+	position: relative;
+	aspect-ratio: 4 / 3;
+	display: grid;
+	place-items: center;
+	overflow: hidden;
+	background: #111;
+	color: var(--ink);
+	text-align: center;
+	padding: 1rem;
+}
+
+.vd__img {
+	position: absolute;
+	inset: 0;
+	background-size: cover;
+	background-position: center;
+	transform: translateY(101%);
+	transition: transform 0.6s var(--ease-smooth);
+}
+
+.vd__tile:hover .vd__img { transform: translateY(0); }
+
+.vd__t {
+	position: relative;
+	z-index: 1;
+	font-family: var(--font);
+	font-size: clamp(0.85rem, 1.6vw, 1.15rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	line-height: 1.05;
+	text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+}
+
+.vd__n {
+	position: absolute;
+	top: 0.5rem;
+	left: 0.6rem;
+	z-index: 1;
+	font-size: var(--fs-small);
+	opacity: 0.6;
+}
+
+@media (max-width: 720px) {
+	.vc { flex-direction: column; height: auto; }
+	.vc__panel { height: 5rem; filter: grayscale(0) brightness(0.6); }
+	.vc:hover .vc__panel, .vc__panel:hover { flex: 1; }
+	.vc__label { writing-mode: horizontal-tb; transform: translateX(-50%); }
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Fogged mirror                                                       */
+/* The index sits on the film behind heavy frosted glass, so the page   */
+/* is never flat black — it is a surface with something moving in it.   */
+/* Hovering a row thins the fog under that row alone.                   */
+/* ------------------------------------------------------------------ */
+
+body.has-fog {
+	background: #07070a;
+}
+
+.bg--fog {
+	position: fixed;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	z-index: 0;
+	filter: grayscale(0.55) brightness(0.7) contrast(1.05);
+}
+
+.fog {
+	position: fixed;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+	background: rgba(8, 8, 11, 0.74);
+	backdrop-filter: blur(42px) saturate(0.75);
+	-webkit-backdrop-filter: blur(42px) saturate(0.75);
+}
+
+body.has-fog .index-list {
+	position: relative;
+	z-index: 2;
+}
+
+/* The fogged pages raise their content above the blur, but the bar keeps the
+   fixed position it has everywhere else — the mark rides in it, and it has to
+   stay at the top of the frame as the list scrolls under it. */
+body.has-fog .page-bar {
+	z-index: 30;
+}
+
+/* The preview is the point of the page — nothing may filter, tint or clip
+   it. It stays fixed to the cursor and paints above the fog, above each
+   row's frosted pane and above the nav. */
+body.has-fog .peek {
+	position: fixed;
+	z-index: 60;
+}
+
+/* Each row carries its own pane. At rest it is invisible; on hover the
+   fog thins and the film shows through that band only. */
+.index-list li {
+	position: relative;
+}
+
+.row::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	opacity: 0;
+	background: rgba(255, 255, 255, 0.05);
+	backdrop-filter: blur(6px) saturate(1.15) brightness(1.5);
+	-webkit-backdrop-filter: blur(6px) saturate(1.15) brightness(1.5);
+	transition: opacity 0.5s var(--ease-smooth);
+}
+
+.index-list .row:hover::before,
+.index-list .row:focus-visible::before {
+	opacity: 1;
+}
+
+/* A mirrored sheen travelling across the pane as it opens. */
+.row::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	opacity: 0;
+	background: linear-gradient(
+		100deg,
+		transparent 35%,
+		rgba(255, 255, 255, 0.1) 50%,
+		transparent 65%
+	);
+	transform: translateX(-30%);
+	transition:
+		opacity 0.5s var(--ease-smooth),
+		transform 0.9s var(--ease-smooth);
+}
+
+.index-list .row:hover::after,
+.index-list .row:focus-visible::after {
+	opacity: 1;
+	transform: translateX(30%);
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Phone mockup                                                        */
+/* A long specimen scrolling inside a handset.                          */
+/* ------------------------------------------------------------------ */
+
+.phone {
+	display: grid;
+	place-items: center;
+	padding: clamp(2rem, 6vw, 4rem) 1rem;
+	background: #ece8e1;
+}
+
+.phone__body {
+	position: relative;
+	width: min(17rem, 78vw);
+	aspect-ratio: 9 / 19.5;
+	padding: 0.55rem;
+	border-radius: 2.2rem;
+	background: #16161a;
+	box-shadow:
+		0 0 0 2px #2c2c31,
+		0 22px 48px rgba(0, 0, 0, 0.45);
+}
+
+.phone__notch {
+	position: absolute;
+	top: 0.55rem;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 32%;
+	height: 1.15rem;
+	background: #16161a;
+	border-radius: 0 0 0.9rem 0.9rem;
+	z-index: 2;
+}
+
+.phone__screen {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	border-radius: 1.75rem;
+	/* the specimen's own sky, so no seam shows at its edges */
+	background: #29b8e8;
+	container-type: inline-size;
+}
+
+.phone__screen img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: auto;
+	display: block;
+	background: transparent;
+	animation: phone-scroll 30s ease-in-out infinite alternate;
+}
+
+/* travels the full length of the specimen and back */
+@keyframes phone-scroll {
+	0%,
+	6% {
+		transform: translateY(0);
+	}
+	94%,
+	100% {
+		transform: translateY(calc(-100% + 225cqw));
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.phone__screen img {
+		animation: none;
+	}
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Footer                                                              */
+/* A project used to end at its last image. Now it hands the reader on  */
+/* to the next piece, then to a way of reaching Farah.                 */
+/* ------------------------------------------------------------------ */
+
+.foot {
+	margin-top: clamp(3rem, 9vw, 7rem);
+	border-top: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+	padding-top: clamp(1.4rem, 3.5vw, 2.4rem);
+}
+
+.foot__next {
+	display: block;
+	color: inherit;
+	text-decoration: none;
+	padding: clamp(1rem, 3vw, 2rem) 0;
+	transition: padding-left 0.45s var(--ease-smooth);
+}
+
+.foot__next:hover,
+.foot__next:focus-visible {
+	padding-left: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+.foot__kicker {
+	display: block;
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	opacity: 0.6;
+}
+
+.foot__title {
+	display: block;
+	margin-top: 0.35rem;
+	font-size: clamp(1.6rem, 6vw, 3.6rem);
+	line-height: 1;
+	letter-spacing: var(--track);
+	text-transform: uppercase;
+	transition: color 0.35s var(--ease-smooth);
+}
+
+.foot__next:hover .foot__title,
+.foot__next:focus-visible .foot__title {
+	color: var(--hot);
+}
+
+.foot__scope {
+	display: block;
+	margin-top: 0.45rem;
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	opacity: 0.6;
+}
+
+.foot__end {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: clamp(1rem, 3vw, 2rem);
+	border-top: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+	padding: clamp(1.2rem, 3vw, 2rem) 0 clamp(2rem, 5vw, 3.5rem);
+}
+
+.foot__contact {
+	display: grid;
+	gap: 0.55rem;
+}
+
+.foot__links {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+
+@media (max-width: 560px) {
+	.foot__end {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}
+
+
+/* 404 */
+.notfound {
+	min-height: 70vh;
+	display: grid;
+	align-content: center;
+}
+
+.notfound__links {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+	margin-top: clamp(1.2rem, 3vw, 2rem);
+}
+
+
+/* Available to screen readers and search engines, absent on screen. Used for
+   page headings where the layout itself carries no visible title. */
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Slideshow                                                           */
+/* A run that belongs together, shown one at a time in its own row.     */
+/* The controls sit under the stage, never over the work.              */
+/* ------------------------------------------------------------------ */
+
+.slideshow {
+	margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+.slideshow__stage {
+	display: grid;
+	/* every slide stacks in one cell, so the row holds a single height */
+	place-items: center;
+}
+
+.slideshow__slide {
+	grid-area: 1 / 1;
+	width: 100%;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.6s var(--ease-smooth);
+}
+
+.slideshow__slide.is-current {
+	opacity: 1;
+	visibility: visible;
+}
+
+.slideshow__slide > img {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+/* Compact: a row that will not swallow the page. The piece is centred and
+   capped by height rather than stretched to the column. */
+.slideshow.is-compact .slideshow__slide > img,
+.slideshow.is-compact .slideshow__slide .mockup {
+	max-height: 56vh;
+	width: auto;
+	max-width: 100%;
+	margin-inline: auto;
+}
+
+.slideshow.is-compact .slideshow__stage {
+	min-height: 0;
+}
+
+.slideshow__foot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-top: 0.7rem;
+}
+
+.slideshow__foot figcaption {
+	margin-top: 0;
+}
+
+.slideshow__controls {
+	display: flex;
+	align-items: center;
+	gap: 0.55rem;
+	flex-shrink: 0;
+}
+
+/* Quiet by default — a bare chevron, no plate, no border. It is a control,
+   not a feature. */
+.slideshow__arrow {
+	display: grid;
+	place-items: center;
+	width: 1.5rem;
+	height: 1.5rem;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	opacity: 0.4;
+	cursor: pointer;
+	transition: opacity 0.25s var(--ease-smooth), transform 0.25s var(--ease-smooth);
+}
+
+.slideshow__arrow:hover,
+.slideshow__arrow:focus-visible {
+	opacity: 1;
+}
+
+.slideshow__arrow[data-prev]:hover { transform: translateX(-2px); }
+.slideshow__arrow[data-next]:hover { transform: translateX(2px); }
+
+.slideshow__arrow svg {
+	width: 0.6rem;
+	height: 0.6rem;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2.2;
+	stroke-linecap: square;
+	display: block;
+}
+
+.slideshow__dots {
+	display: flex;
+	gap: 0.35rem;
+}
+
+.slideshow__dot {
+	width: 0.42rem;
+	height: 0.42rem;
+	padding: 0;
+	border: 1px solid currentColor;
+	border-radius: 50%;
+	background: none;
+	opacity: 0.35;
+	cursor: pointer;
+	transition: opacity 0.25s ease, background-color 0.25s ease;
+}
+
+.slideshow__dot:hover { opacity: 0.7; }
+
+.slideshow__dot.is-current {
+	background: currentColor;
+	opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.slideshow__slide { transition: none; }
+}
+
+/* Available to screen readers and search engines, absent on screen. Used for
+   page headings where the layout itself carries no visible title. */
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+

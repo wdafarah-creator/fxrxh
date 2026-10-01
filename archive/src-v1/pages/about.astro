@@ -1,0 +1,121 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="About" density={0.4}>
+	<section class="about">
+		<p class="about__kicker mono" data-quiet-zone="30">ABOUT</p>
+
+		<div class="about__grid">
+			<p class="about__lead" data-quiet-zone="40">
+				Farah is a multidisciplinary designer working between Madrid and Barcelona, moving across
+				graphic design, content, photography and art direction — usually all at once.
+			</p>
+
+			<div class="about__body" data-quiet-zone="40">
+				<p>
+					The work sits at the edge of legibility and abstraction: systems built to be read at a
+					glance and looked at twice. Editorial thinking applied to brand, brand thinking applied to
+					image-making.
+				</p>
+				<p>
+					Clients and collaborators span independent publishers, music and culture, and small
+					studios who need a second pair of eyes across a whole visual world, not just one deliverable.
+				</p>
+			</div>
+
+			<dl class="about__facts mono">
+				<div>
+					<dt>Based</dt>
+					<dd>Madrid ↔ Barcelona</dd>
+				</div>
+				<div>
+					<dt>Focus</dt>
+					<dd>Graphic Design, Content &amp; Photography, Art Direction</dd>
+				</div>
+				<div>
+					<dt>Contact</dt>
+					<dd><a href="mailto:hello@fxrxh.com" data-cursor-hover>hello@fxrxh.com</a></dd>
+				</div>
+			</dl>
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.about {
+		position: relative;
+		z-index: 1;
+		min-height: 100vh;
+		padding: calc(var(--bar-height) + 4rem) clamp(1.5rem, 6vw, 6rem) 6rem;
+		max-width: 76rem;
+		margin: 0 auto;
+	}
+
+	.about__kicker {
+		font-size: 0.75rem;
+		letter-spacing: 0.1em;
+		color: var(--grey-mid);
+		margin-bottom: 2.5rem;
+	}
+
+	.about__grid {
+		display: grid;
+		grid-template-columns: 1.1fr 0.9fr;
+		gap: clamp(2rem, 5vw, 5rem);
+	}
+
+	.about__lead {
+		font-family: var(--font-sans);
+		font-size: clamp(1.5rem, 3vw, 2.4rem);
+		line-height: 1.3;
+		color: var(--black);
+		grid-column: 1 / -1;
+		max-width: 42rem;
+	}
+
+	.about__body {
+		font-family: var(--font-sans);
+		font-size: 1.05rem;
+		line-height: 1.65;
+		color: var(--grey-dark);
+		display: flex;
+		flex-direction: column;
+		gap: 1.2rem;
+		margin-top: 2.5rem;
+	}
+
+	.about__facts {
+		margin-top: 2.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		font-size: 0.78rem;
+	}
+
+	.about__facts dt {
+		color: var(--grey-light);
+		letter-spacing: 0.08em;
+		margin-bottom: 0.4rem;
+	}
+
+	.about__facts dd {
+		color: var(--black);
+		letter-spacing: 0.03em;
+	}
+
+	.about__facts a:hover {
+		color: var(--red);
+	}
+
+	@media (max-width: 860px) {
+		.about__grid {
+			grid-template-columns: 1fr;
+		}
+
+		.about__body,
+		.about__facts {
+			margin-top: 0;
+		}
+	}
+</style>

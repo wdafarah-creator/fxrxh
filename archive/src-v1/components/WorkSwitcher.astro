@@ -1,0 +1,72 @@
+---
+import { workSections } from '../data/nav.js';
+
+interface Props {
+	current: string;
+}
+
+const { current } = Astro.props;
+const others = workSections.filter((s) => s.slug !== current);
+---
+
+<div class="work-switcher mono">
+	<span class="work-switcher__label">WORK</span>
+	<div class="work-switcher__links">
+		{
+			others.map((section, i) => (
+				<>
+					<a href={section.href} data-scramble>
+						{section.label}
+					</a>
+					{i < others.length - 1 && <span aria-hidden="true">/</span>}
+				</>
+			))
+		}
+	</div>
+</div>
+
+<style>
+	.work-switcher {
+		position: fixed;
+		top: var(--bar-height);
+		left: 0;
+		right: 0;
+		z-index: 40;
+		display: flex;
+		align-items: center;
+		gap: 0.9rem;
+		padding: 0.85rem clamp(1.25rem, 4vw, 2.5rem);
+		font-size: 0.68rem;
+		letter-spacing: 0.08em;
+		color: var(--grey-mid);
+		border-top: 1px solid rgba(10, 10, 10, 0.08);
+	}
+
+	.work-switcher__label {
+		color: var(--grey-light);
+	}
+
+	.work-switcher__links {
+		display: flex;
+		align-items: center;
+		gap: 0.9rem;
+	}
+
+	.work-switcher__links a {
+		color: var(--grey-dark);
+	}
+
+	.work-switcher__links a.is-scrambling {
+		color: var(--hover-color, var(--red));
+	}
+
+	.work-switcher__links span {
+		color: var(--grey-light);
+	}
+
+	@media (max-width: 640px) {
+		.work-switcher {
+			flex-wrap: wrap;
+		}
+	}
+</style>

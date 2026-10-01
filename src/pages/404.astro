@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+---
+
+<Base
+	title="Page not found — Farah Awada"
+	description="That page does not exist. Back to the work."
+	noindex
+>
+	<Nav back="/work" />
+
+	<article class="project notfound">
+		<h1 class="project__title">404</h1>
+		<p class="project__sub">This page does not exist</p>
+		<p class="project__blurb">
+			It may have moved, or the link may be old. The work is all still here.
+		</p>
+		<div class="notfound__links">
+			<a class="btn" href="/">Home</a>
+			<a class="btn" href="/work/graphic-design">Graphic design</a>
+			<a class="btn" href="/work/art-direction-content">Art direction &amp; content</a>
+		</div>
+	</article>
+</Base>

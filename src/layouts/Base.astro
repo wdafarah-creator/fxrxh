@@ -1,0 +1,90 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description?: string;
+	bodyClass?: string;
+	/** Social preview image, site-root relative (e.g. /img/work/homer/logotype.jpg). */
+	image?: string;
+	/** Search engines skip the throwaway comparison pages. */
+	noindex?: boolean;
+}
+
+const {
+	title,
+	description = 'Farah Awada — multidisciplinary designer working across graphic design, art direction, photography, videography, illustration and CGI. Available for commissions and collaborations.',
+	bodyClass = 'page',
+	image = '/img/og-default.jpg',
+	noindex = false,
+} = Astro.props;
+
+// Absolute URLs throughout: social platforms fetch these from their own
+// servers, so a relative path resolves against nothing and the card renders
+// blank. Astro.site comes from `site` in astro.config.mjs.
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+		{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+		<meta name="author" content="Farah Awada" />
+		<meta name="theme-color" content="#07070a" />
+
+		{/* Open Graph — Instagram, WhatsApp, LinkedIn, Facebook, iMessage */}
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="FXRXH — Farah Awada" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:alt" content={title} />
+		<meta property="og:locale" content="en" />
+
+		{/* Twitter / X */}
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
+
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="icon" href="/favicon.ico" sizes="32x32" />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+
+		{/* Tells search engines who this is and what the site is for. */}
+		<script
+			type="application/ld+json"
+			set:html={JSON.stringify({
+				'@context': 'https://schema.org',
+				'@type': 'Person',
+				name: 'Farah Awada',
+				alternateName: 'FXRXH',
+				url: 'https://fxrxh.com',
+				email: 'mailto:wdafarah@gmail.com',
+				jobTitle: 'Multidisciplinary Designer',
+				sameAs: ['https://instagram.com/02fwa'],
+				knowsAbout: [
+					'Graphic Design',
+					'Art Direction',
+					'Brand Identity',
+					'Type Design',
+					'Photography',
+					'Videography',
+					'Illustration',
+					'CGI',
+				],
+			})}
+		/>
+	</head>
+	<body class={bodyClass}>
+		<slot />
+	</body>
+</html>

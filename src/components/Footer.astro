@@ -1,0 +1,43 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+	/** The project to send the reader to next, if there is one. */
+	next?: { slug: string; title: string; scope?: string };
+	/** Where "all work" points. */
+	indexHref?: string;
+	indexLabel?: string;
+}
+const { next, indexHref = '/work/graphic-design', indexLabel = 'All graphic design' } = Astro.props;
+---
+
+<footer class="foot">
+	{
+		next && (
+			<a class="foot__next" href={`/work/graphic-design/${next.slug}`}>
+				<span class="foot__kicker">Next project</span>
+				<span class="foot__title">{next.title}</span>
+				{next.scope && <span class="foot__scope">{next.scope}</span>}
+			</a>
+		)
+	}
+
+	<div class="foot__end">
+		<a class="btn" href={indexHref}>{indexLabel}</a>
+
+		<div class="foot__contact">
+			<span class="foot__kicker">Get in touch</span>
+			<div class="foot__links">
+				<a
+					class="btn btn--with-icon"
+					href="https://instagram.com/02fwa"
+					target="_blank"
+					rel="noopener noreferrer"><Icon name="instagram" />@02fwa</a
+				>
+				<a class="btn btn--with-icon" href="mailto:wdafarah@gmail.com"
+					><Icon name="email" />wdafarah@gmail.com</a
+				>
+			</div>
+		</div>
+	</div>
+</footer>

@@ -1,0 +1,145 @@
+/* ---------------------------------------------------------------- */
+/* Fonts                                                              */
+/* Expecting files in /public/fonts. Falls back to system stacks     */
+/* until real font files are dropped in.                             */
+/* ---------------------------------------------------------------- */
+
+@font-face {
+	font-family: 'Cofo Sans Pixel';
+	src:
+		url('/fonts/CofoSansPixel-Regular.woff2') format('woff2'),
+		url('/fonts/CofoSansPixel-Regular.woff') format('woff');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Cofo Sans Pixel';
+	src:
+		url('/fonts/CofoSansPixel-Medium.woff2') format('woff2'),
+		url('/fonts/CofoSansPixel-Medium.woff') format('woff');
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Acumin Variable Concept';
+	src:
+		url('/fonts/AcuminVariableConcept.woff2') format('woff2-variations'),
+		url('/fonts/AcuminVariableConcept.woff') format('woff');
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* ---------------------------------------------------------------- */
+/* Tokens                                                             */
+/* ---------------------------------------------------------------- */
+
+:root {
+	--white: #f5f5f5;
+	--black: #0a0a0a;
+	--grey-dark: #2a2a2a;
+	--grey-mid: #6a6a6a;
+	--grey-light: #b4b4b4;
+	--red: #ff2d5e;
+	--pink: #ff6bb1;
+
+	--font-mono: 'Cofo Sans Pixel', ui-monospace, 'SF Mono', 'Menlo', 'Consolas', monospace;
+	--font-sans: 'Acumin Variable Concept', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+
+	--bar-height: 4.5rem;
+	--ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+
+	color-scheme: light;
+}
+
+/* ---------------------------------------------------------------- */
+/* Reset                                                              */
+/* ---------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	background: var(--white);
+	color: var(--black);
+	-webkit-text-size-adjust: 100%;
+}
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	font-family: var(--font-sans);
+	font-size: 1rem;
+	line-height: 1.4;
+	overflow-x: hidden;
+	cursor: none;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+button {
+	font: inherit;
+	color: inherit;
+	background: none;
+	border: 0;
+	cursor: none;
+}
+
+ul {
+	list-style: none;
+}
+
+img,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+::selection {
+	background: var(--red);
+	color: var(--white);
+}
+
+/* Hide the native cursor everywhere we render our own, but restore it
+   for users on touch/coarse pointers where our cursor never mounts. */
+@media (pointer: coarse) {
+	body,
+	a,
+	button {
+		cursor: auto;
+	}
+}
+
+/* ---------------------------------------------------------------- */
+/* Utility                                                            */
+/* ---------------------------------------------------------------- */
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+.mono {
+	font-family: var(--font-mono);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}

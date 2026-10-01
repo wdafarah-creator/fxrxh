@@ -1,0 +1,47 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+import AsciiField from '../components/AsciiField.astro';
+import Cursor from '../components/Cursor.astro';
+import Clock from '../components/Clock.astro';
+import TopNav from '../components/TopNav.astro';
+import WorkSwitcher from '../components/WorkSwitcher.astro';
+import TransitionOverlay from '../components/TransitionOverlay.astro';
+
+interface Props {
+	title: string;
+	description?: string;
+	density?: number;
+	workSwitcher?: string;
+}
+
+const {
+	title,
+	description = 'Farah — multidisciplinary designer working across graphic design, content, photography and art direction. Madrid ↔ Barcelona.',
+	density = 0.45,
+	workSwitcher,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content={description} />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<title>{title} · FXRXH</title>
+		<ClientRouter />
+	</head>
+	<body data-density={density}>
+		<AsciiField />
+		<Cursor />
+		<TopNav />
+		{workSwitcher && <WorkSwitcher current={workSwitcher} />}
+		<main id="page-content">
+			<slot />
+		</main>
+		<Clock />
+		<TransitionOverlay />
+	</body>
+</html>

@@ -1,0 +1,33 @@
+<div id="transition-overlay" class="transition-overlay" transition:persist aria-hidden="true">
+	<div id="transition-glyphs" class="transition-overlay__glyphs"></div>
+</div>
+
+<style is:global>
+	.transition-overlay {
+		position: fixed;
+		inset: 0;
+		z-index: 80;
+		pointer-events: none;
+	}
+
+	.transition-overlay__glyphs {
+		position: absolute;
+		inset: 0;
+	}
+
+	.scatter-glyph {
+		position: absolute;
+		color: var(--grey-mid);
+		will-change: transform, opacity;
+		user-select: none;
+	}
+
+	#page-content {
+		will-change: opacity, filter;
+	}
+</style>
+
+<script>
+	import { initTransitions } from '../scripts/transitions.js';
+	initTransitions();
+</script>

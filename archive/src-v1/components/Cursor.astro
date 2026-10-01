@@ -1,0 +1,77 @@
+---
+// Pixel-grid arrow, hand-drawn as a bitmap so edges stay crisp at any zoom.
+const BITMAP = [
+	'1000000000',
+	'1100000000',
+	'1110000000',
+	'1111000000',
+	'1111100000',
+	'1111110000',
+	'1111111000',
+	'1111111100',
+	'1111100000',
+	'1100110000',
+	'1000011000',
+	'0000011000',
+	'0000001100',
+];
+const PX = 2;
+const cols = BITMAP[0].length;
+const rows = BITMAP.length;
+const pixels = [];
+BITMAP.forEach((row, r) => {
+	row.split('').forEach((bit, c) => {
+		if (bit === '1') pixels.push({ x: c * PX, y: r * PX });
+	});
+});
+---
+
+<div id="pixel-cursor" class="pixel-cursor" aria-hidden="true" transition:persist>
+	<svg
+		viewBox={`0 0 ${cols * PX} ${rows * PX}`}
+		width={cols * PX * 1.6}
+		height={rows * PX * 1.6}
+		shape-rendering="crispEdges"
+	>
+		{pixels.map((p) => <rect x={p.x} y={p.y} width={PX} height={PX} fill="currentColor" />)}
+	</svg>
+</div>
+
+<style>
+	.pixel-cursor {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 9999;
+		pointer-events: none;
+		color: var(--black);
+		transform: translate(-100px, -100px);
+		will-change: transform;
+		image-rendering: pixelated;
+		transition: color 0.12s var(--ease-smooth);
+	}
+
+	.pixel-cursor svg {
+		display: block;
+		shape-rendering: crispEdges;
+	}
+
+	.pixel-cursor.is-hover {
+		color: var(--red);
+	}
+
+	.pixel-cursor.is-click {
+		color: var(--pink);
+	}
+
+	@media (pointer: coarse) {
+		.pixel-cursor {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	import { initCursor } from '../scripts/cursor.js';
+	initCursor();
+</script>

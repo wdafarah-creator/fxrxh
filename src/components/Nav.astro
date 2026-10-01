@@ -1,0 +1,129 @@
+---
+import Wordmark from './Wordmark.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+	/** Where the back arrow goes. Omitted = no back arrow. */
+	back?: string;
+	/** Where the forward arrow goes — the other work tab. */
+	next?: string;
+	nextLabel?: string;
+	/** Home page hides its own Home button. */
+	home?: boolean;
+	/** Render just the star + menu, with no fixed bar. The home page already
+	    has an overlay row for it to sit in. */
+	bare?: boolean;
+}
+
+const { back, next, nextLabel, home = true, bare = false } = Astro.props;
+---
+
+{/* The bar is difference-blended, so it cannot carry its own background —
+    anything painted inside it gets inverted too. The scrim is therefore a
+    separate fixed layer sitting just underneath, which fades in on scroll so
+    the mark and the buttons never tangle with the words passing beneath. */}
+{!bare && <div class="bar-scrim" aria-hidden="true" />}
+
+{
+	!bare && (
+		<header class="page-bar">
+			<div class="page-bar__group">
+				{home && (
+					<a class="btn btn--round" href="/">
+						Home
+					</a>
+				)}
+				{back && (
+					<a class="btn btn--icon" href={back} aria-label="Back to work">
+						<svg viewBox="0 0 16 16" aria-hidden="true">
+							<path d="M10 2 L4 8 L10 14" />
+						</svg>
+					</a>
+				)}
+			</div>
+
+			{/* The mark holds the centre on every page, the way it does at home. */}
+			<Wordmark />
+
+			<div class="page-bar__group">
+				{next && (
+					<a class="btn btn--icon" href={next} aria-label={nextLabel ?? 'Next section'}>
+						<svg viewBox="0 0 16 16" aria-hidden="true">
+							<path d="M6 2 L12 8 L6 14" />
+						</svg>
+					</a>
+				)}
+
+				{/* Four bars — a burger with one spare — splayed 45° apart into an
+				    eight-point star. Hover folds them back into a stack of three
+				    (the fourth retracts) so it still reads as a menu. */}
+				<button class="star" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu">
+					<svg viewBox="0 0 24 24" aria-hidden="true">
+						<line class="star__bar" x1="3" y1="12" x2="21" y2="12" />
+						<line class="star__bar" x1="3" y1="12" x2="21" y2="12" />
+						<line class="star__bar" x1="3" y1="12" x2="21" y2="12" />
+						<line class="star__bar" x1="3" y1="12" x2="21" y2="12" />
+					</svg>
+				</button>
+			</div>
+		</header>
+	)
+}
+
+{
+	bare && (
+		<button class="star" type="button" aria-label="Menu" aria-expanded="false" aria-controls="menu">
+			<svg viewBox="0 0 24 24" aria-hidden="true">
+				<line class="star__bar" x1="3" y1="12" x2="21" y2="12" />
+				<line class="star__bar" x1="3" y1="12" x2="21" y2="12" />
+				<line class="star__bar" x1="3" y1="12" x2="21" y2="12" />
+				<line class="star__bar" x1="3" y1="12" x2="21" y2="12" />
+			</svg>
+		</button>
+	)
+}
+
+<nav class="menu" id="menu" hidden>
+	<a href="/">Home</a>
+	<a href="/work">Work</a>
+	<a href="/work/graphic-design">Graphic Design</a>
+	<a href="/work/art-direction-content">Art Direction &amp; Content</a>
+	<a href="/about">About</a>
+	<span class="menu__rule"></span>
+	<a href="https://instagram.com/02fwa" target="_blank" rel="noopener noreferrer">
+		<Icon name="instagram" />@02fwa
+	</a>
+	<a href="mailto:wdafarah@gmail.com"><Icon name="email" />wdafarah@gmail.com</a>
+</nav>
+
+<script>
+	// Fade the scrim in as soon as the page leaves the top.
+	const scrim = document.querySelector('.bar-scrim');
+	if (scrim) {
+		const sync = () => scrim.classList.toggle('is-lit', window.scrollY > 6);
+		sync();
+		window.addEventListener('scroll', sync, { passive: true });
+	}
+
+	const star = document.querySelector('.star');
+	const menu = document.getElementById('menu');
+
+	if (star && menu) {
+		const setOpen = (open) => {
+			star.setAttribute('aria-expanded', String(open));
+			star.classList.toggle('is-open', open);
+			menu.hidden = !open;
+			document.documentElement.classList.toggle('menu-open', open);
+		};
+
+		star.addEventListener('click', () => setOpen(menu.hidden));
+
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && !menu.hidden) setOpen(false);
+		});
+
+		menu.addEventListener('click', (e) => {
+			if (e.target.tagName === 'A') setOpen(false);
+		});
+	}
+</script>

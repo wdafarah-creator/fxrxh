@@ -1,0 +1,19 @@
+<canvas id="ascii-field" class="ascii-field" transition:persist></canvas>
+
+<style>
+	.ascii-field {
+		position: fixed;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+		user-select: none;
+	}
+</style>
+
+<script>
+	import { initAsciiField } from '../scripts/ascii-field-controller.js';
+
+	initAsciiField();
+	document.addEventListener('astro:page-load', initAsciiField);
+	document.addEventListener('astro:after-swap', initAsciiField);
+</script>

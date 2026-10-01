@@ -1,0 +1,92 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Nav from '../../../components/Nav.astro';
+import { graphicProjects } from '../../../data/graphic.js';
+
+// The list reads alphabetically — the numerals are a graphic device, not a
+// ranking, so they follow the sorted order rather than the data order.
+const projects = [...graphicProjects].sort((a, b) => a.title.localeCompare(b.title));
+---
+
+<Base
+	title="Graphic Design — Brand Identity, Packaging & Type | Farah Awada"
+	description="Graphic design work by Farah Awada: brand identities, packaging, editorial, poster design and original typefaces."
+	bodyClass="page has-fog"
+>
+	<video class="bg bg--fog" autoplay muted loop playsinline preload="metadata" poster="/video/home-poster.jpg">
+		<source src="/video/home.webm" type="video/webm" />
+		<source src="/video/home.mp4" type="video/mp4" />
+	</video>
+	<h1 class="sr-only">Graphic design — brand identity, packaging, editorial and type</h1>
+	<div class="fog" aria-hidden="true"></div>
+
+	<Nav back="/work" next="/work/art-direction-content" nextLabel="Art Direction & Content" />
+
+	{/* One preview panel, moved and re-pointed as the cursor crosses rows. */}
+	<div class="peek" id="peek" aria-hidden="true">
+		<img id="peek-img" src="" alt="" />
+	</div>
+
+	<ol class="index-list">
+		{
+			projects.map((p, i) => (
+				<li>
+					<a
+						class="row"
+						href={`/work/graphic-design/${p.slug}`}
+						data-peek={`/img/work/${p.slug}/${p.cover ?? p.images[0].file}`}
+						data-peek-fit={p.coverContain ? 'contain' : null}
+					>
+						<span class="row__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+						<span class="row__title">{p.title}</span>
+						<span class="row__scope">{p.scope}</span>
+					</a>
+				</li>
+			))
+		}
+	</ol>
+</Base>
+
+<script>
+	const peek = document.getElementById('peek');
+	const peekImg = document.getElementById('peek-img');
+	const rows = [...document.querySelectorAll('.row')];
+	const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+	if (peek && rows.length && fine.matches) {
+		let raf = null;
+		let x = 0;
+		let y = 0;
+
+		const place = () => {
+			raf = null;
+			peek.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+		};
+
+		rows.forEach((row) => {
+			row.addEventListener('mouseenter', () => {
+				const src = row.dataset.peek;
+				if (peekImg.getAttribute('src') !== src) peekImg.setAttribute('src', src);
+				// a logo has to sit whole inside the panel; cropping one reads
+				// as a mistake rather than as a detail
+				peek.classList.toggle('is-contained', row.dataset.peekFit === 'contain');
+				peek.classList.add('is-open');
+			});
+			row.addEventListener('mouseleave', () => peek.classList.remove('is-open'));
+		});
+
+		document.addEventListener(
+			'mousemove',
+			(e) => {
+				// Trail the cursor without ever running off the right edge.
+				x = Math.min(e.clientX + 28, window.innerWidth - peek.offsetWidth - 16);
+				y = Math.min(
+					Math.max(e.clientY - peek.offsetHeight / 2, 16),
+					window.innerHeight - peek.offsetHeight - 16
+				);
+				if (!raf) raf = requestAnimationFrame(place);
+			},
+			{ passive: true }
+		);
+	}
+</script>
