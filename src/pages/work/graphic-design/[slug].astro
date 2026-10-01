@@ -386,7 +386,7 @@ const cover = project.cover ?? project.images.find((i) => i.file)?.file;
 
 		const start = () => {
 			stop();
-			timer = setInterval(() => show(at + 1), 4200);
+			timer = setInterval(() => show(at + 1), 2300);
 		};
 
 		const still = window.matchMedia('(prefers-reduced-motion: reduce)');

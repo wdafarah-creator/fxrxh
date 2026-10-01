@@ -23,9 +23,9 @@ import Icon from '../components/Icon.astro';
 	{/* Nav stays in the difference-blended layer; the copy does not. */}
 	<div class="overlay">
 		<div class="top">
-			<a class="btn btn--round" href="/">Index</a>
+			<a class="btn btn--round" href="/"><span>Index</span></a>
 			<nav class="top__nav">
-				<a class="btn btn--round" href="/work">Work</a>
+				<a class="btn btn--round" href="/work"><span>Work</span></a>
 				<Nav bare />
 			</nav>
 		</div>
@@ -42,7 +42,12 @@ import Icon from '../components/Icon.astro';
 			Directing and editing AI-generated content and CGI video alongside work shot on camera.
 		</p>
 		<p>Based in Spain &amp; wherever the work takes me.</p>
-		<p class="about__reach">Tell me what you're making —</p>
+		<p class="about__reach">
+			Let's create something together
+			<svg class="about__arrow" viewBox="0 0 16 16" aria-hidden="true">
+				<path d="M8 2 L8 13 M3 8.5 L8 14 L13 8.5" />
+			</svg>
+		</p>
 		<div class="about__links">
 			<a class="btn btn--with-icon" href="https://instagram.com/02fwa" target="_blank" rel="noopener noreferrer">
 				<Icon name="instagram" />@02fwa

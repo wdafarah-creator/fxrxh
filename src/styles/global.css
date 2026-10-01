@@ -53,6 +53,10 @@
 	--font-display: var(--font);
 	--font-home: var(--font);
 	--hot: #ff66ff;
+	/* the three the hover cycles through */
+	--cyc-1: #e5ff76;
+	--cyc-2: #ff66ff;
+	--cyc-3: #1d1dff;
 	--ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
 	--pad: clamp(1rem, 2.5vw, 2rem);
 	--fs-small: clamp(0.62rem, 0.78vw, 0.78rem);
@@ -597,14 +601,41 @@ body.has-fog .bar-scrim {
 /* Short nav labels sit centred in a shell the same shape as the menu button,
    so the whole cluster reads as one family. A circle wide enough for the
    longest of them, squared off just enough to match the star. */
+/* Work, About, Home, Index. Solid like the menu star and cut to the same
+   squircle, so the whole cluster reads as one set of marks rather than a
+   star plus some outlined circles. The word is knocked out of the fill;
+   hovering hollows it. */
 .btn--round {
 	display: inline-grid;
 	place-items: center;
-	width: 4.2rem;
-	height: 4.2rem;
-	padding: 0;
-	border-radius: 50%;
+	padding: 0.72em 1.05em;
+	border-radius: 30%;
+	background: currentColor;
 	text-align: center;
+	transition:
+		background-color 0.24s var(--ease-smooth),
+		color 0.24s var(--ease-smooth),
+		box-shadow 0.28s var(--ease-smooth);
+}
+
+.btn--round > * {
+	/* the label is painted in the page ground, so it reads as a hole */
+	color: var(--page-bg, #07070a);
+}
+
+.btn--round {
+	color: var(--ink);
+}
+
+.btn--round:hover,
+.btn--round:focus-visible {
+	background: transparent;
+	box-shadow: inset 0 0 0 1px currentColor;
+}
+
+.btn--round:hover > *,
+.btn--round:focus-visible > * {
+	color: var(--ink);
 }
 
 @media (max-width: 720px) {
@@ -1513,15 +1544,50 @@ html.menu-open {
 }
 
 .about__lead {
+	/* it is an h1 for structure, so the browser's bold has to be undone */
+	font-weight: 400;
+	font-style: italic;
 	font-size: clamp(0.95rem, 1.5vw, 1.3rem);
 	line-height: 1.35;
 	letter-spacing: var(--track);
+	margin: 0;
+}
+
+/* the rest of the bio follows the lead into italic */
+.about p {
+	font-style: italic;
 }
 
 /* The line that hands the reader over to the two buttons under it. */
 .about__reach {
-	margin-bottom: 0.7rem;
-	opacity: 0.75;
+	display: flex;
+	align-items: center;
+	gap: 0.55rem;
+	margin-bottom: 0.2rem;
+	opacity: 0.9;
+	font-style: normal;
+	letter-spacing: 0.02em;
+}
+
+/* points down at the two buttons, and nudges to keep drawing the eye there */
+.about__arrow {
+	width: 0.85em;
+	height: 0.85em;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2;
+	stroke-linecap: square;
+	flex-shrink: 0;
+	animation: reach-nudge 1.9s var(--ease-smooth) infinite;
+}
+
+@keyframes reach-nudge {
+	0%, 100% { transform: translateY(0); }
+	50% { transform: translateY(3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.about__arrow { animation: none; }
 }
 
 .about__links {
@@ -2558,12 +2624,19 @@ body.has-fog .peek {
 	width: 100%;
 	opacity: 0;
 	visibility: hidden;
-	transition: opacity 0.6s var(--ease-smooth);
+	/* visibility has to be held back until the fade finishes, or the outgoing
+	   slide is hidden on the first frame and the cross-fade reads as a cut */
+	transition:
+		opacity 0.3s var(--ease-smooth),
+		visibility 0s linear 0.3s;
 }
 
 .slideshow__slide.is-current {
 	opacity: 1;
 	visibility: visible;
+	transition:
+		opacity 0.3s var(--ease-smooth),
+		visibility 0s linear 0s;
 }
 
 .slideshow__slide > img {
@@ -2682,3 +2755,59 @@ body.has-fog .peek {
 }
 
 
+
+
+/* ------------------------------------------------------------------ */
+/* Hover colour                                                        */
+/* Each row owns one of the three brand colours, repeating down the    */
+/* list, so hovering walks you through them. Home is left alone — it   */
+/* keeps its difference blend.                                         */
+/* ------------------------------------------------------------------ */
+
+body:not(.home) .index-list li:nth-child(3n + 1) .row:hover .row__num,
+body:not(.home) .index-list li:nth-child(3n + 1) .row:focus-visible .row__num {
+	color: var(--cyc-1);
+	-webkit-text-stroke-color: var(--cyc-1);
+}
+body:not(.home) .index-list li:nth-child(3n + 1) .row:hover .row__title,
+body:not(.home) .index-list li:nth-child(3n + 1) .row:focus-visible .row__title {
+	color: var(--cyc-1);
+}
+
+body:not(.home) .index-list li:nth-child(3n + 2) .row:hover .row__num,
+body:not(.home) .index-list li:nth-child(3n + 2) .row:focus-visible .row__num {
+	color: var(--cyc-2);
+	-webkit-text-stroke-color: var(--cyc-2);
+}
+body:not(.home) .index-list li:nth-child(3n + 2) .row:hover .row__title,
+body:not(.home) .index-list li:nth-child(3n + 2) .row:focus-visible .row__title {
+	color: var(--cyc-2);
+}
+
+body:not(.home) .index-list li:nth-child(3n) .row:hover .row__num,
+body:not(.home) .index-list li:nth-child(3n) .row:focus-visible .row__num {
+	color: var(--cyc-3);
+	-webkit-text-stroke-color: var(--cyc-3);
+}
+body:not(.home) .index-list li:nth-child(3n) .row:hover .row__title,
+body:not(.home) .index-list li:nth-child(3n) .row:focus-visible .row__title {
+	color: var(--cyc-3);
+}
+
+/* The two work doors take the first two. */
+body:not(.home) .door:nth-of-type(1):hover .door__title,
+body:not(.home) .door:nth-of-type(1):focus-visible .door__title {
+	color: var(--cyc-1);
+}
+body:not(.home) .door:nth-of-type(1):hover,
+body:not(.home) .door:nth-of-type(1):focus-visible {
+	border-color: var(--cyc-1);
+}
+body:not(.home) .door:nth-of-type(2):hover .door__title,
+body:not(.home) .door:nth-of-type(2):focus-visible .door__title {
+	color: var(--cyc-2);
+}
+body:not(.home) .door:nth-of-type(2):hover,
+body:not(.home) .door:nth-of-type(2):focus-visible {
+	border-color: var(--cyc-2);
+}
