@@ -2812,3 +2812,55 @@ body:not(.home) .index-list .row:focus-visible .row__title {
 		background-position: 45% 0;
 	}
 }
+
+
+/* ------------------------------------------------------------------ */
+/* About                                                               */
+/* The film sits as a centred panel rather than filling the frame, so  */
+/* the copy reads on plain black instead of over footage.              */
+/* ------------------------------------------------------------------ */
+
+body.about-page {
+	background: #000;
+}
+
+.bg--panel {
+	position: fixed;
+	inset: auto;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
+	width: min(36rem, 62vw);
+	height: auto;
+	max-height: 52vh;
+	object-fit: cover;
+	border-radius: 2px;
+}
+
+/* the grain and line screen follow the panel instead of the whole frame */
+body.about-page .film {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
+	width: min(36rem, 62vw);
+	height: 52vh;
+	inset: auto;
+}
+
+/* the copy no longer needs a shadow to survive the footage */
+body.about-page .about {
+	text-shadow: none;
+}
+
+@media (max-width: 720px) {
+	.bg--panel,
+	body.about-page .film {
+		width: 78vw;
+		max-height: 38vh;
+		height: auto;
+	}
+	body.about-page .film {
+		height: 38vh;
+	}
+}
