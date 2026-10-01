@@ -705,9 +705,8 @@ body.has-fog .bar-scrim {
 	height: 2.1rem;
 	padding: 0;
 	border: 1px solid currentColor;
-	/* squarish rather than round — a rounded square keeps the squareness of
-	   the bar while losing the hard corners */
-	border-radius: 30%;
+	/* square — hard corners, to sit with the corner frames on the buttons */
+	border-radius: 0;
 	background: currentColor;
 	color: inherit;
 	cursor: pointer;
