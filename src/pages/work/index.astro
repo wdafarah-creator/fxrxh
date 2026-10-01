@@ -30,22 +30,26 @@ import { sections } from '../../data/work.js';
 			</nav>
 		</div>
 
-		<div class="sections">
-			{
-				sections.map((s) => (
-					<a class="door" href={`/work/${s.slug}`}>
-						<span class="door__glass" aria-hidden="true" />
-						<span class="door__body">
-							<span class="door__title">{s.title}</span>
-							<span class="door__meta">
-								{s.count} {s.unit}
-							</span>
-						</span>
-					</a>
-				))
-			}
-		</div>
-
 		<div></div>
+		<div></div>
+	</div>
+
+	{/* Outside the overlay on purpose: the overlay is difference-blended, and
+	    a child cannot opt out of an ancestor's blend mode. Kept in here the
+	    doors' hover colours would invert against whatever frame is playing. */}
+	<div class="sections">
+		{
+			sections.map((s) => (
+				<a class="door" href={`/work/${s.slug}`}>
+					<span class="door__glass" aria-hidden="true" />
+					<span class="door__body">
+						<span class="door__title">{s.title}</span>
+						<span class="door__meta">
+							{s.count} {s.unit}
+						</span>
+					</span>
+				</a>
+			))
+		}
 	</div>
 </Base>

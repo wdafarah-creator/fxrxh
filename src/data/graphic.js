@@ -238,7 +238,7 @@ export const graphicProjects = [
 
 	{
 		slug: 'cbd-my-skin',
-		bg: '#eaf3ff',
+		bg: '#ffffff',
 		ink: '#14213d',
 		title: 'CBD My Skin',
 		subtitle: 'E\u2011commerce web design',
@@ -342,11 +342,8 @@ export const graphicProjects = [
 		title: 'Dunkin Donuts',
 		subtitle: 'Brand identity \u2014 rebrand',
 		scope: 'Branding \u00b7 Packaging',
-		bg: '#ffe534',
-		ink: '#3a0a12',
-		// the brand red is 1.3:1 against this yellow — unreadable at footnote
-		// size, so the note takes a deeper red that still reads as the brand
-		noteInk: '#b3000f',
+		// the disclaimer sits on black now, so it takes the brand red straight
+		noteInk: '#ff2b2b',
 		cover: 'logo.png',
 		coverContain: true,
 		blurb:
