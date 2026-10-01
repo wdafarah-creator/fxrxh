@@ -127,11 +127,34 @@ a {
 /* Buttons — bordered so they read as buttons, not as text             */
 /* ------------------------------------------------------------------ */
 
+@property --leg {
+	syntax: '<length-percentage>';
+	inherits: false;
+	initial-value: 8px;
+}
+
+/* Corner frames rather than a full box: four L-shaped ticks, the way
+   registration marks sit on a print sheet. Drawn with eight background
+   gradients so no extra elements are needed and it works at any size.
+   --leg is how far each tick runs; on hover they grow until the frame
+   closes into a complete rectangle. */
 .btn {
+	--leg: 8px;
+	--tick: 1px;
 	display: inline-block;
-	padding: 0.55em 0.95em;
-	border: 1px solid currentColor;
-	border-radius: 9px;
+	padding: 0.62em 1em;
+	border: 0;
+	border-radius: 0;
+	background:
+		linear-gradient(currentColor 0 0) 0 0 / var(--leg) var(--tick) no-repeat,
+		linear-gradient(currentColor 0 0) 0 0 / var(--tick) var(--leg) no-repeat,
+		linear-gradient(currentColor 0 0) 100% 0 / var(--leg) var(--tick) no-repeat,
+		linear-gradient(currentColor 0 0) 100% 0 / var(--tick) var(--leg) no-repeat,
+		linear-gradient(currentColor 0 0) 0 100% / var(--leg) var(--tick) no-repeat,
+		linear-gradient(currentColor 0 0) 0 100% / var(--tick) var(--leg) no-repeat,
+		linear-gradient(currentColor 0 0) 100% 100% / var(--leg) var(--tick) no-repeat,
+		linear-gradient(currentColor 0 0) 100% 100% / var(--tick) var(--leg) no-repeat;
+	transition: --leg 0.3s var(--ease-smooth), color 0.2s ease;
 	font-family: var(--font-display);
 	font-weight: 400;
 	font-size: var(--fs-small);
@@ -140,13 +163,12 @@ a {
 	line-height: 1;
 	white-space: nowrap;
 	pointer-events: auto;
-	transition: background-color 0.18s ease, color 0.18s ease;
 }
 
+/* the ticks run out to meet each other, closing the frame */
 .btn:hover,
 .btn:focus-visible {
-	background: var(--ink);
-	color: #000;
+	--leg: 51%;
 }
 
 .btn:focus-visible {
@@ -601,41 +623,12 @@ body.has-fog .bar-scrim {
 /* Short nav labels sit centred in a shell the same shape as the menu button,
    so the whole cluster reads as one family. A circle wide enough for the
    longest of them, squared off just enough to match the star. */
-/* Work, About, Home, Index. Solid like the menu star and cut to the same
-   squircle, so the whole cluster reads as one set of marks rather than a
-   star plus some outlined circles. The word is knocked out of the fill;
-   hovering hollows it. */
+/* Work, About, Home, Index all take the same corner frame as every other
+   button — no fill, no shell, just the four ticks. */
 .btn--round {
 	display: inline-grid;
 	place-items: center;
-	padding: 0.72em 1.05em;
-	border-radius: 30%;
-	background: currentColor;
 	text-align: center;
-	transition:
-		background-color 0.24s var(--ease-smooth),
-		color 0.24s var(--ease-smooth),
-		box-shadow 0.28s var(--ease-smooth);
-}
-
-.btn--round > * {
-	/* the label is painted in the page ground, so it reads as a hole */
-	color: var(--page-bg, #07070a);
-}
-
-.btn--round {
-	color: var(--ink);
-}
-
-.btn--round:hover,
-.btn--round:focus-visible {
-	background: transparent;
-	box-shadow: inset 0 0 0 1px currentColor;
-}
-
-.btn--round:hover > *,
-.btn--round:focus-visible > * {
-	color: var(--ink);
 }
 
 @media (max-width: 720px) {
