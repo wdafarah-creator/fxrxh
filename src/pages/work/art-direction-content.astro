@@ -46,25 +46,36 @@ import { artDirection } from '../../data/work.js';
 			))
 		}
 	</div>
-	{/* One player, reused for whichever tile is opened. */}
-	<dialog class="lightbox" id="lightbox" aria-label="Full screen player">
-		<div class="lightbox__stage">
-			<video class="lightbox__video" controls loop playsinline></video>
-		</div>
+	{/* One player, reused for whichever tile is opened. Controls are drawn
+	    here rather than by the browser, and difference-blended so they read
+	    on any frame without a plate behind them. */}
+	<dialog class="lb" id="lightbox" aria-label="Player">
+		<div class="lb__stage">
+			<video class="lb__video" loop playsinline></video>
 
-		{/* A row of its own beneath the film, so the browser's controls and
-		    the close button can never sit on top of it. */}
-		<footer class="lightbox__info">
-			<span class="lightbox__text">
-				<span class="lightbox__t" data-lb-title></span>
-				<span class="lightbox__l" data-lb-label></span>
-			</span>
-			<span class="lightbox__meta">
-				<span class="lightbox__i" data-lb-index></span>
-				<span class="lightbox__d" data-lb-dur></span>
-			</span>
-			<button class="lightbox__close" type="button">Close</button>
-		</footer>
+			<button class="lb__tap" type="button" data-tap aria-label="Play or pause"></button>
+
+			<button class="lb__step lb__step--prev" type="button" data-prev aria-label="Previous">
+				<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 2 L4 8 L10 14" /></svg>
+			</button>
+			<button class="lb__step lb__step--next" type="button" data-next aria-label="Next">
+				<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 2 L12 8 L6 14" /></svg>
+			</button>
+
+			<button class="lb__close" type="button" data-close aria-label="Close">
+				<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3 L13 13 M13 3 L3 13" /></svg>
+			</button>
+
+			<div class="lb__hud">
+				<span class="lb__t" data-lb-title></span>
+				<span class="lb__l" data-lb-label></span>
+				<span class="lb__i" data-lb-index></span>
+				<span class="lb__time" data-lb-time>0:00</span>
+				<button class="lb__scrub" type="button" data-scrub aria-label="Seek">
+					<span class="lb__prog" data-prog></span>
+				</button>
+			</div>
+		</div>
 	</dialog>
 </Base>
 
@@ -109,14 +120,38 @@ import { artDirection } from '../../data/work.js';
 		release.observe(v);
 	});
 
-	// --- full screen player -------------------------------------------------
+	// --- player --------------------------------------------------------------
 	const box = document.getElementById('lightbox');
-	const player = box.querySelector('.lightbox__video');
-	const fields = {
+	const player = box.querySelector('.lb__video');
+	const prog = box.querySelector('[data-prog]');
+	const scrub = box.querySelector('[data-scrub]');
+	const clips = [...document.querySelectorAll('[data-open]')].map((b) => b.dataset);
+	const field = {
 		title: box.querySelector('[data-lb-title]'),
 		label: box.querySelector('[data-lb-label]'),
-		dur: box.querySelector('[data-lb-dur]'),
 		index: box.querySelector('[data-lb-index]'),
+		time: box.querySelector('[data-lb-time]'),
+	};
+
+	let at = 0;
+
+	const clock = (s) => {
+		if (!isFinite(s)) return '0:00';
+		const m = Math.floor(s / 60);
+		return `${m}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+	};
+
+	const open = (i) => {
+		at = (i + clips.length) % clips.length;
+		const c = clips[at];
+		player.src = c.open;
+		field.title.textContent = c.caption ?? '';
+		field.label.textContent = c.label ?? '';
+		field.index.textContent = c.index ?? '';
+		field.time.textContent = '0:00';
+		prog.style.transform = 'scaleX(0)';
+		if (!box.open) box.showModal();
+		player.play().catch(() => {});
 	};
 
 	const close = () => {
@@ -126,22 +161,38 @@ import { artDirection } from '../../data/work.js';
 		if (box.open) box.close();
 	};
 
-	document.querySelectorAll('[data-open]').forEach((btn) => {
-		btn.addEventListener('click', () => {
-			player.src = btn.dataset.open;
-			fields.title.textContent = btn.dataset.caption ?? '';
-			fields.label.textContent = btn.dataset.label ?? '';
-			fields.dur.textContent = btn.dataset.dur ?? '';
-			fields.index.textContent = btn.dataset.index ?? '';
-			box.showModal();
-			player.play().catch(() => {});
-		});
+	document.querySelectorAll('[data-open]').forEach((btn, i) =>
+		btn.addEventListener('click', () => open(i))
+	);
+
+	box.querySelector('[data-prev]').addEventListener('click', () => open(at - 1));
+	box.querySelector('[data-next]').addEventListener('click', () => open(at + 1));
+	box.querySelector('[data-close]').addEventListener('click', close);
+	box.addEventListener('close', close);
+
+	box.querySelector('[data-tap]').addEventListener('click', () => {
+		if (player.paused) player.play().catch(() => {});
+		else player.pause();
+		box.classList.toggle('is-paused', player.paused);
 	});
 
-	box.querySelector('.lightbox__close').addEventListener('click', close);
-	box.addEventListener('close', close);
-	// clicking the backdrop, i.e. outside the player itself
-	box.addEventListener('click', (e) => {
-		if (e.target === box) close();
+	player.addEventListener('timeupdate', () => {
+		const d = player.duration;
+		if (!isFinite(d) || !d) return;
+		prog.style.transform = `scaleX(${player.currentTime / d})`;
+		field.time.textContent = `${clock(player.currentTime)} / ${clock(d)}`;
+	});
+
+	scrub.addEventListener('click', (e) => {
+		const r = scrub.getBoundingClientRect();
+		const d = player.duration;
+		if (isFinite(d) && d) player.currentTime = ((e.clientX - r.left) / r.width) * d;
+	});
+
+	addEventListener('keydown', (e) => {
+		if (!box.open) return;
+		if (e.key === 'ArrowRight') { e.preventDefault(); open(at + 1); }
+		if (e.key === 'ArrowLeft') { e.preventDefault(); open(at - 1); }
+		if (e.key === ' ') { e.preventDefault(); box.querySelector('[data-tap]').click(); }
 	});
 </script>
