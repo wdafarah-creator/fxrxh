@@ -4,19 +4,17 @@ import Nav from '../components/Nav.astro';
 import Wordmark from '../components/Wordmark.astro';
 import Icon from '../components/Icon.astro';
 
-// Flush-right edge now comes from CSS alignment, not typed dashes — so it
-// holds in any typeface.
-// Scattered across the frame, several running off the edges. top/left are
-// percentages of the viewport; negative and >100 values are the bleed.
-// Starting positions only — every line stays inside the frame and bounces
-// off the edges from here. See src/scripts/drift.js.
+// The lead is fixed; the disciplines cycle one at a time beneath it, in the
+// bottom-right corner. They used to drift across the whole frame.
+const lead = 'Multidisciplinary designer';
+
 const disciplines = [
-	{ text: 'MULTIDISCIPLINARY DESIGNER', top: 14, left: 6 },
-	{ text: 'GRAPHIC DESIGN', top: 29, left: 64 },
-	{ text: 'ART DIRECTION', top: 46, left: 13 },
-	{ text: 'PHOTOGRAPHY', top: 61, left: 68 },
-	{ text: 'VIDEOGRAPHY', top: 75, left: 9 },
-	{ text: 'ILLUSTRATION', top: 87, left: 50 },
+	'Graphic design',
+	'Art direction',
+	'Photography',
+	'Videography',
+	'Illustration',
+	'CGI',
 ];
 ---
 
@@ -45,18 +43,6 @@ const disciplines = [
 	</div>
 
 	<div class="overlay">
-		{/* Absolutely positioned stage over the whole frame — the lines are
-		    placed and bounced by src/scripts/drift.js. */}
-		<div class="disciplines">
-			{
-				disciplines.map((d) => (
-					<span data-melt style={`--top:${d.top}%; --left:${d.left}%`}>
-						{d.text}
-					</span>
-				))
-			}
-		</div>
-
 		<div class="top">
 			<Wordmark />
 
@@ -68,6 +54,12 @@ const disciplines = [
 		</div>
 
 		<div></div>
+
+		{/* Balances the contact buttons in the opposite corner. */}
+		<div class="disciplines" data-list={disciplines.join('|')}>
+			<p class="disciplines__lead">{lead}</p>
+			<p class="disciplines__word" data-cycle>{disciplines[0]}</p>
+		</div>
 
 		<div class="bottom">
 			<a
@@ -85,5 +77,19 @@ const disciplines = [
 
 <script>
 	import '../scripts/melt.js';
-	import '../scripts/drift.js';
+
+	// One discipline at a time, cross-faded. The word is swapped while it is
+	// invisible, so the change is never seen mid-fade.
+	const word = document.querySelector('[data-cycle]');
+	const list = [...word.closest('.disciplines').dataset.list.split('|')];
+	let at = 0;
+
+	setInterval(() => {
+		word.classList.add('is-out');
+		setTimeout(() => {
+			at = (at + 1) % list.length;
+			word.textContent = list[at];
+			word.classList.remove('is-out');
+		}, 450);
+	}, 2400);
 </script>
