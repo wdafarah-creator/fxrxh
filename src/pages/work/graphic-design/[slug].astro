@@ -20,7 +20,7 @@ const cover = project.cover ?? project.images.find((i) => i.file)?.file;
 
 <Base
 	title={`${project.title} — ${project.subtitle} | Farah Awada`}
-	description={project.blurb}
+	description={project.blurb ?? `${project.title} — ${project.subtitle} by Farah Awada.`}
 	image={cover ? `/img/work/${project.slug}/${cover}` : undefined}
 >
 	{/* A project may hold its own colour; otherwise the site default. */}
@@ -214,6 +214,9 @@ const cover = project.cover ?? project.images.find((i) => i.file)?.file;
 			)
 		}
 
+		{/* A gallery project hangs its images in a grid; every other project
+		    keeps the single column, which `display: contents` preserves. */}
+		<div class={project.gallery ? 'gallery' : 'passthrough'}>
 		{
 			project.images.map((img) =>
 				img.section ? (
@@ -334,13 +337,7 @@ const cover = project.cover ?? project.images.find((i) => i.file)?.file;
 				<figure class={`project__figure${img.size ? ` is-${img.size}` : ''}`}>
 					{img.mockup || project.posterWall ? (
 						<div class={`mockup${project.posterWall ? ' is-poster' : ''}`}>
-							{img.frameless ? (
-								<div class="frameless">
-									<img src={`/img/work/${project.slug}/${img.file}`} alt={img.caption} loading="lazy" />
-								</div>
-							) : (
-								<img src={`/img/work/${project.slug}/${img.file}`} alt={img.caption} loading="lazy" />
-							)}
+							<img src={`/img/work/${project.slug}/${img.file}`} alt={img.caption} loading="lazy" />
 						</div>
 					) : (
 						<img src={`/img/work/${project.slug}/${img.file}`} alt={img.caption} loading="lazy" />
@@ -350,6 +347,7 @@ const cover = project.cover ?? project.images.find((i) => i.file)?.file;
 				)
 			)
 		}
+		</div>
 		<Footer next={next} />
 	</article>
 	</div>

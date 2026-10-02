@@ -189,26 +189,24 @@ export const graphicProjects = [
 		year: '2024\u20132025',
 		scope: 'Poster design \u00b7 Illustrator \u00b7 CGI',
 		cover: 'psych.jpg',
-		blurb:
-			'Posters made for their own sake rather than for an event \u2014 vector work built in ' +
-			'Illustrator alongside rendered three\u2011dimensional scenes, chasing optical pressure ' +
-			'and colour that will not sit still.',
-		posterWall: true,
+		// Hung as a gallery: the posters are the page, so they run in a grid
+		// with no wall behind them and nothing written above them. The art-0x
+		// files used to be framed mockups on a white plate, cropped back to the
+		// artwork in CSS from one shared set of percentages — which is what was
+		// stretching them, since the crop could only ever be right for one
+		// aspect. They are cropped in the file itself now.
+		gallery: true,
 		images: [
 			{ file: 'psych.jpg', caption: 'Psych' },
 			{ file: 'glitch.jpg', caption: 'Untitled' },
 			{ file: 'desert.jpg', caption: 'Sandstone — CGI' },
-			// Framed mockups on a white plate. The frame is cropped away in CSS
-			// rather than cut from the file, so nothing is lost and the crop
-			// stays adjustable.
-			{ file: 'art-01.jpg', caption: 'Art poster', frameless: true },
-			{ file: 'art-02.jpg', caption: 'Art poster', frameless: true },
-			{ file: 'art-03.jpg', caption: 'Art poster', frameless: true },
-			{ file: 'art-04.jpg', caption: 'Art poster', frameless: true },
-			{ file: 'art-05.jpg', caption: 'Art poster', frameless: true },
-			{ file: 'art-06.jpg', caption: 'Art poster', frameless: true },
-			{ file: 'art-07.jpg', caption: 'Art poster', frameless: true },
-			{ file: 'art-08.jpg', caption: 'Art poster', frameless: true },
+			{ file: 'art-01.jpg', caption: 'Art poster' },
+			{ file: 'art-02.jpg', caption: 'Art poster' },
+			{ file: 'art-03.jpg', caption: 'Art poster' },
+			{ file: 'art-04.jpg', caption: 'Art poster' },
+			{ file: 'art-05.jpg', caption: 'Art poster' },
+			{ file: 'art-06.jpg', caption: 'Art poster' },
+			{ file: 'art-08.jpg', caption: 'Art poster' },
 		],
 	},
 

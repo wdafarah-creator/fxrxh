@@ -1466,43 +1466,33 @@ html.menu-open {
 }
 
 /* ------------------------------------------------------------------ */
-/* Frameless poster crop                                               */
-/* The source files are framed mockups on a white plate. Measured by    */
-/* scanning the pixels: the artwork sits at 28.8–70.2% across and       */
-/* 22.2–81.7% down. Cropping here keeps the originals intact.           */
+/* Gallery                                                             */
+/* Posters hung in a grid. Each one keeps its own proportions — width  */
+/* is set, height follows, so nothing can be stretched to fit a cell.  */
 /* ------------------------------------------------------------------ */
 
-.frameless {
-	position: relative;
-	/* must match the width the un-cropped posters get, or the crop window
-	   sizes to the whole plate and the offsets land on blank plate */
-	width: min(26rem, 100%);
-	margin: 0 auto;
-	aspect-ratio: 838 / 1190;
-	overflow: hidden;
-	box-shadow:
-		0 1px 2px rgba(0, 0, 0, 0.2),
-		0 16px 34px rgba(0, 0, 0, 0.3);
+.gallery {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
+	gap: clamp(1rem, 2.4vw, 2.2rem);
+	align-items: start;
+	margin: 0 0 clamp(2rem, 5vw, 4rem);
 }
 
-/* Higher specificity than `.mockup.is-poster img`, which otherwise caps
-   max-width and collapses the crop. */
-.mockup .frameless img,
-.frameless img {
-	position: absolute;
-	/* Measured by scanning the served file across three rows and three
-	   columns, counting both the white plate and the dark frame as
-	   background, then inset 1% to absorb variation between the eight. */
-	/* Measured from the served file across three rows and three columns.
-	   Inset 4%: the frame carries a soft grey drop shadow that reads as
-	   artwork to a light/dark threshold, so a 1% inset left a band. */
-	width: 262.5%;
+.gallery .project__figure {
+	margin: 0;
 	max-width: none;
+}
+
+.gallery .project__figure img {
+	width: 100%;
 	height: auto;
-	left: -80.3%;
-	top: -43.4%;
 	display: block;
-	box-shadow: none;
+}
+
+/* Wrapping the list costs nothing anywhere else. */
+.passthrough {
+	display: contents;
 }
 
 /* ------------------------------------------------------------------ */
