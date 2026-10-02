@@ -341,28 +341,21 @@ const options = [
 
 	.cycle__lead {
 		margin: 0;
-		font-size: clamp(0.72rem, 0.95vw, 0.9rem);
-		letter-spacing: var(--track);
-		text-transform: uppercase;
-	}
-
-	.cycle__lead::after {
-		content: '';
-		display: block;
-		margin-top: 0.5rem;
-		margin-left: auto;
-		width: 1.6rem;
-		height: 1px;
-		background: currentColor;
-		opacity: 0.6;
-	}
-
-	.cycle__word {
-		margin: 0.55rem 0 0;
-		font-size: clamp(0.62rem, 0.8vw, 0.78rem);
+		font-size: clamp(0.66rem, 0.86vw, 0.8rem);
+		font-style: italic;
 		letter-spacing: var(--track-small);
 		text-transform: uppercase;
-		opacity: 0.7;
+		opacity: 0.8;
+	}
+
+	/* The changing word carries the size now — the lead is the quiet label
+	   above it, the discipline is the headline. */
+	.cycle__word {
+		margin: 0.5rem 0 0;
+		font-size: clamp(1.15rem, 2.8vw, 2.1rem);
+		letter-spacing: var(--track);
+		line-height: 1.05;
+		text-transform: uppercase;
 		transition: opacity 0.45s var(--ease-smooth);
 	}
 
@@ -458,6 +451,14 @@ const options = [
 	.picker button[aria-current='true'] {
 		background: #fff;
 		color: #000;
+	}
+
+	/* On a phone the corner is not wide enough to hold the big word beside
+	   the contact buttons, so it sits above them instead. */
+	@media (max-width: 640px) {
+		.v--cycle {
+			bottom: calc(var(--pad) + 3.4rem + 5.4rem);
+		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
