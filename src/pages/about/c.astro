@@ -1,0 +1,71 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Base title="About C — portrait strip" noindex bodyClass="page ab-c">
+	<header class="ab__top">
+		<a class="btn btn--round" href="/"><span>Index</span></a>
+		<nav class="top__nav">
+			<a class="btn btn--round" href="/work"><span>Work</span></a>
+			<Nav bare />
+		</nav>
+	</header>
+
+	<main class="ab">
+		<figure class="ab__film">
+			<video autoplay muted loop playsinline preload="metadata" poster="/video/about-poster.jpg">
+				<source src="/video/about.webm" type="video/webm" />
+				<source src="/video/about.mp4" type="video/mp4" />
+			</video>
+		</figure>
+
+		<div class="ab__copy">
+			<h1 class="ab__lead">
+				Farah Awada — multidisciplinary designer working across graphic design, art
+				direction, photography, videography, illustration and CGI.
+			</h1>
+			<p>Directing and editing AI-generated content and CGI video alongside work shot on camera.</p>
+			<p>Based in Spain &amp; wherever the work takes me.</p>
+			<p class="ab__reach">
+				Let's create something together
+				<svg class="ab__arrow" viewBox="0 0 16 16" aria-hidden="true">
+					<path d="M8 2 L8 13 M3 8.5 L8 14 L13 8.5" />
+				</svg>
+			</p>
+			<div class="ab__links">
+				<a class="btn btn--with-icon" href="https://instagram.com/02fwa" target="_blank" rel="noopener noreferrer"><Icon name="instagram" />@02fwa</a>
+				<a class="btn btn--with-icon" href="mailto:wdafarah@gmail.com"><Icon name="email" />wdafarah@gmail.com</a>
+			</div>
+		</div>
+	</main>
+</Base>
+
+<style is:global>
+
+	body.page { background: #000; }
+	.ab__top {
+		position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+		display: flex; justify-content: space-between; align-items: center;
+		padding: var(--pad); pointer-events: none;
+	}
+	.ab__top a, .ab__top button { pointer-events: auto; }
+	.ab__film video { width: 100%; height: 100%; object-fit: cover; display: block; }
+	.ab__film { margin: 0; overflow: hidden; background: #0a0a0a; }
+	.ab__lead { font-weight: 400; font-style: italic; letter-spacing: var(--track); margin: 0; }
+	.ab__copy p { font-style: italic; margin: 0; }
+	.ab__copy { display: grid; gap: .7rem; text-transform: uppercase; letter-spacing: var(--track-small); font-size: var(--fs-small); color: var(--ink); }
+	.ab__reach { display: flex; align-items: center; gap: .55rem; font-style: normal !important; opacity: .9; margin-top: .4rem !important; }
+	.ab__arrow { width: .85em; height: .85em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: square; }
+	.ab__links { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .3rem; }
+
+	.ab { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 22rem) 1fr;
+	      gap: clamp(1.5rem, 5vw, 4rem); padding: 0 var(--pad) var(--pad) 0; }
+	.ab__film { height: 100vh; border-radius: 0; }
+	.ab__copy { align-self: center; max-width: 40ch; padding-top: calc(var(--pad) * 3); }
+	.ab__lead { font-size: clamp(1.1rem, 2.4vw, 1.9rem); line-height: 1.28; }
+	@media (max-width: 760px) { .ab { grid-template-columns: 1fr; padding: 0 var(--pad) var(--pad); }
+	  .ab__film { height: 44vh; } .ab__copy { padding-top: 1rem; } }
+
+</style>

@@ -1,0 +1,42 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Wordmark from '../../components/Wordmark.astro';
+import { graphicProjects } from '../../data/graphic.js';
+
+const latest = graphicProjects[graphicProjects.length - 1];
+---
+
+<Base title="Home L — latest" noindex bodyClass="home">
+	<video class="bg" autoplay muted loop playsinline preload="metadata" poster="/video/home-poster.jpg">
+		<source src="/video/home.webm" type="video/webm" /><source src="/video/home.mp4" type="video/mp4" />
+	</video>
+	<div class="film" aria-hidden="true"><div class="film__grain"></div><div class="film__lines"></div></div>
+
+	<div class="overlay hl">
+		<div class="top"><Wordmark /><nav class="top__nav"><Nav bare /></nav></div>
+		<div class="hl__mid">
+			<span class="hl__kicker">Latest</span>
+			<a class="hl__title" href={`/work/graphic-design/${latest.slug}`}>{latest.title}</a>
+			<span class="hl__scope">{latest.scope}</span>
+			<a class="hl__all" href="/work">All work →</a>
+		</div>
+		<div class="hl__foot"><a href="/about">About</a><span>Graphic design · Art direction · CGI</span></div>
+	</div>
+</Base>
+
+<style>
+	.hl { grid-template-rows: auto 1fr auto; }
+	.hl__mid { display: grid; align-content: center; justify-items: start; gap: .5rem; }
+	.hl__kicker { font-size: var(--fs-small); letter-spacing: .14em; opacity: .7; }
+	.hl__title {
+		color: var(--ink); text-decoration: none; pointer-events: auto;
+		font-size: clamp(2.2rem, 11vw, 8rem); line-height: .92; letter-spacing: -.045em; text-transform: uppercase;
+		transition: padding-left .5s var(--ease-smooth);
+	}
+	.hl__title:hover { padding-left: clamp(.5rem, 2vw, 1.6rem); }
+	.hl__scope { font-size: var(--fs-small); letter-spacing: .08em; opacity: .65; }
+	.hl__all { margin-top: 1.4rem; color: var(--ink); pointer-events: auto; font-size: var(--fs-small); letter-spacing: .1em; }
+	.hl__foot { display: flex; justify-content: space-between; font-size: var(--fs-small); }
+	.hl__foot a { color: var(--ink); pointer-events: auto; }
+</style>

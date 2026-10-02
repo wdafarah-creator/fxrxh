@@ -1,0 +1,45 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Wordmark from '../../components/Wordmark.astro';
+
+const answers = [
+	{ t: 'A brand', h: '/work/graphic-design' },
+	{ t: 'A film', h: '/work/art-direction-content' },
+	{ t: 'A typeface', h: '/work/graphic-design/homer' },
+];
+---
+
+<Base title="Home M — ask" noindex bodyClass="home">
+	<video class="bg" autoplay muted loop playsinline preload="metadata" poster="/video/home-poster.jpg">
+		<source src="/video/home.webm" type="video/webm" /><source src="/video/home.mp4" type="video/mp4" />
+	</video>
+	<div class="film" aria-hidden="true"><div class="film__grain"></div><div class="film__lines"></div></div>
+
+	<div class="overlay hm">
+		<div class="top"><Wordmark /><nav class="top__nav"><Nav bare /></nav></div>
+		<div class="hm__mid">
+			<p class="hm__q">What do you need?</p>
+			<nav class="hm__a">
+				{answers.map((a) => (<a href={a.h}>{a.t}</a>))}
+			</nav>
+		</div>
+		<div class="hm__foot"><a href="/about">About</a><span>wdafarah@gmail.com</span></div>
+	</div>
+</Base>
+
+<style>
+	.hm { grid-template-rows: auto 1fr auto; }
+	.hm__mid { display: grid; align-content: center; gap: clamp(1rem, 3vh, 2rem); }
+	.hm__q { margin: 0; font-size: clamp(.8rem, 2.2vw, 1.2rem); letter-spacing: .08em; opacity: .75; }
+	.hm__a { display: grid; gap: .1rem; }
+	.hm__a a {
+		color: var(--ink); text-decoration: none; pointer-events: auto;
+		font-size: clamp(1.9rem, 8.5vw, 6rem); line-height: 1; letter-spacing: -.04em; text-transform: uppercase;
+		transition: padding-left .45s var(--ease-smooth), opacity .3s var(--ease-smooth);
+	}
+	.hm__a:hover a { opacity: .38; }
+	.hm__a a:hover { opacity: 1; padding-left: clamp(.5rem, 2vw, 1.6rem); }
+	.hm__foot { display: flex; justify-content: space-between; font-size: var(--fs-small); }
+	.hm__foot a { color: var(--ink); pointer-events: auto; }
+</style>

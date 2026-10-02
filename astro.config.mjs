@@ -10,7 +10,7 @@ export default defineConfig({
 	integrations: [
 		sitemap({
 			// the layout-comparison page is scratch, not part of the site
-			filter: (page) => !page.includes('/home/'),
+			filter: (page) => !page.includes('/home/') && !/\/about\/[a-z]\/?$/.test(page),
 		}),
 	],
 });
