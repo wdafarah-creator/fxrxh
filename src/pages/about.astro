@@ -75,7 +75,7 @@ import Icon from '../components/Icon.astro';
 			{ passive: true }
 		);
 
-		addEventListener('pointerleave', () => {
+		document.documentElement.addEventListener('pointerleave', () => {
 			film.style.setProperty('--mx', '0');
 			film.style.setProperty('--my', '0');
 		});
