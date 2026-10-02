@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import { artDirection, LABELS } from '../../data/work.js';
+
+const groups = [
+	{ t: 'Shot on camera', note: 'Sony A7 III — directed and edited by me', items: artDirection.filter((c) => c.label.includes('Sony')) },
+	{ t: 'Motion design', note: 'Animated posters and brand pieces', items: artDirection.filter((c) => c.label === LABELS.motion) },
+	{ t: 'AI-generated & CGI', note: 'Directed and edited by me', items: artDirection.filter((c) => c.label.includes('AI-generated')) },
+];
+---
+
+<Base title="Content D — grouped column" noindex bodyClass="page">
+	<Nav back="/work" next="/work/graphic-design" nextLabel="Graphic Design" />
+	<h1 class="sr-only">Art direction &amp; content</h1>
+
+	<div class="cd">
+		{groups.map((g) => (
+			<section class="cd__group">
+				<header class="cd__head">
+					<h2>{g.t}</h2>
+					<p>{g.note} · {g.items.length}</p>
+				</header>
+				{g.items.map((c) => (
+					<figure class={`cd__item${c.portrait ? ' is-portrait' : ''}`}>
+						<video src={`/video/work/${c.slug}.mp4`} poster={`/video/work/posters/${c.slug}.jpg`}
+							muted loop playsinline autoplay preload="none" />
+						<figcaption><span>{c.title}</span><em>{c.dur}</em></figcaption>
+					</figure>
+				))}
+			</section>
+		))}
+	</div>
+</Base>
+
+<style>
+	.cd { max-width: 64rem; margin: 0 auto; padding: calc(var(--pad) * 3) var(--pad) 5rem; }
+	.cd__group { margin-bottom: clamp(2.5rem, 7vw, 5rem); }
+	.cd__head { border-top: 1px solid rgba(255,255,255,.18); padding-top: 1rem; margin-bottom: 1.4rem; }
+	.cd__head h2 { margin: 0; font-weight: 400; font-size: clamp(1.2rem, 3.4vw, 2.2rem);
+		text-transform: uppercase; letter-spacing: var(--track); }
+	.cd__head p { margin: .3rem 0 0; font-size: var(--fs-small); text-transform: uppercase;
+		letter-spacing: var(--track-small); opacity: .5; }
+	.cd__item { margin: 0 0 clamp(1rem, 3vw, 2rem); }
+	.cd__item video { width: 100%; max-height: 52vh; object-fit: cover; display: block;
+		background: #0a0a0a; border-radius: 2px; }
+	.cd__item.is-portrait video { max-height: 70vh; width: auto; max-width: 100%; margin-inline: auto; }
+	.cd__item figcaption { display: flex; justify-content: space-between; gap: 1rem; margin-top: .5rem;
+		font-size: var(--fs-small); text-transform: uppercase; letter-spacing: var(--track-small); }
+	.cd__item em { font-style: normal; opacity: .5; }
+</style>

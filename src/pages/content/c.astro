@@ -1,0 +1,80 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import { artDirection } from '../../data/work.js';
+---
+
+<Base title="Content C — list and player" noindex bodyClass="page cc-page">
+	<Nav back="/work" next="/work/graphic-design" nextLabel="Graphic Design" />
+	<h1 class="sr-only">Art direction &amp; content</h1>
+
+	<div class="cc">
+		<div class="cc__stage">
+			{artDirection.map((c, i) => (
+				<video class={`cc__v${i === 0 ? ' is-current' : ''}`} data-v={i}
+					src={`/video/work/${c.slug}.mp4`} poster={`/video/work/posters/${c.slug}.jpg`}
+					muted loop playsinline preload="none" />
+			))}
+			<p class="cc__cap" data-cap>{artDirection[0].label}</p>
+		</div>
+
+		<ol class="cc__list">
+			{artDirection.map((c, i) => (
+				<li>
+					<button type="button" data-row={i} data-label={c.label} class={i === 0 ? 'is-current' : ''}>
+						<span>{String(i + 1).padStart(2, '0')}</span>
+						<span>{c.title}</span>
+						<em>{c.dur}</em>
+					</button>
+				</li>
+			))}
+		</ol>
+	</div>
+</Base>
+
+<script>
+	const vids = [...document.querySelectorAll('[data-v]')];
+	const rows = [...document.querySelectorAll('[data-row]')];
+	const cap = document.querySelector('[data-cap]');
+	const show = (i) => {
+		vids.forEach((v, n) => {
+			const on = n === i;
+			v.classList.toggle('is-current', on);
+			if (on) { v.play().catch(() => {}); } else { v.pause(); }
+		});
+		rows.forEach((r, n) => r.classList.toggle('is-current', n === i));
+		if (cap) cap.textContent = rows[i].dataset.label ?? '';
+	};
+	rows.forEach((r, i) => {
+		r.addEventListener('mouseenter', () => show(i));
+		r.addEventListener('focus', () => show(i));
+		r.addEventListener('click', () => show(i));
+	});
+	vids[0]?.play().catch(() => {});
+</script>
+
+<style>
+	.cc {
+		position: fixed; inset: 0; top: calc(var(--pad) * 2 + 2.6rem);
+		display: grid; grid-template-columns: 1fr minmax(0, 22rem);
+		gap: clamp(1rem, 3vw, 2rem); padding: 0 var(--pad) var(--pad);
+	}
+	.cc__stage { position: relative; display: grid; place-items: center; background: #0a0a0a; border-radius: 2px; overflow: hidden; }
+	.cc__v { grid-area: 1 / 1; width: 100%; height: 100%; object-fit: contain; opacity: 0; visibility: hidden;
+		transition: opacity .35s var(--ease-smooth), visibility 0s linear .35s; }
+	.cc__v.is-current { opacity: 1; visibility: visible; transition: opacity .35s var(--ease-smooth), visibility 0s linear 0s; }
+	.cc__cap { position: absolute; left: 1rem; bottom: .8rem; margin: 0; font-size: var(--fs-small);
+		text-transform: uppercase; letter-spacing: var(--track-small); opacity: .75; text-shadow: 0 2px 10px rgba(0,0,0,.9); }
+	.cc__list { list-style: none; margin: 0; padding: 0; overflow-y: auto; align-self: stretch; }
+	.cc__list button {
+		display: grid; grid-template-columns: 2.4ch 1fr auto; gap: .7rem; align-items: baseline;
+		width: 100%; padding: .42rem 0; background: none; border: 0; cursor: pointer;
+		color: var(--ink); opacity: .45; text-align: left; font: inherit;
+		font-size: var(--fs-small); text-transform: uppercase; letter-spacing: var(--track-small);
+		border-bottom: 1px solid rgba(255,255,255,.1);
+		transition: opacity .25s var(--ease-smooth), padding-left .3s var(--ease-smooth);
+	}
+	.cc__list button.is-current, .cc__list button:hover { opacity: 1; padding-left: .4rem; }
+	.cc__list em { font-style: normal; opacity: .6; }
+	@media (max-width: 760px) { .cc { grid-template-columns: 1fr; grid-template-rows: 46vh 1fr; } }
+</style>

@@ -1,0 +1,57 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import { artDirection } from '../../data/work.js';
+---
+
+<Base title="Content B — filmstrip" noindex bodyClass="page cb-page">
+	<Nav back="/work" next="/work/graphic-design" nextLabel="Graphic Design" />
+	<h1 class="sr-only">Art direction &amp; content</h1>
+
+	<div class="cb__rail">
+		{artDirection.map((c, i) => (
+			<figure class={`cb__frame${c.portrait ? ' is-portrait' : ''}`}>
+				<video src={`/video/work/${c.slug}.mp4`} poster={`/video/work/posters/${c.slug}.jpg`}
+					muted loop playsinline autoplay preload="none" />
+				<figcaption>
+					<b>{String(i + 1).padStart(2, '0')}</b> {c.title}
+					<em>{c.label}</em>
+				</figcaption>
+			</figure>
+		))}
+	</div>
+</Base>
+
+<script>
+	const rail = document.querySelector('.cb__rail');
+	rail?.addEventListener('wheel', (e) => {
+		if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+		e.preventDefault();
+		rail.scrollLeft += e.deltaY;
+	}, { passive: false });
+</script>
+
+<style>
+	body.cb-page { overflow: hidden; }
+	.cb__rail {
+		position: fixed; inset: 0; top: calc(var(--pad) * 2 + 2.6rem);
+		display: flex; align-items: center; gap: clamp(.5rem, 1.4vw, 1rem);
+		padding: 0 var(--pad); overflow-x: auto; overflow-y: hidden;
+		scroll-snap-type: x proximity; scrollbar-width: none;
+	}
+	.cb__rail::-webkit-scrollbar { display: none; }
+	.cb__frame {
+		flex: 0 0 auto; margin: 0; scroll-snap-align: center;
+		display: grid; gap: .5rem;
+	}
+	.cb__frame video {
+		height: 58vh; width: auto; max-width: 78vw; display: block;
+		background: #0a0a0a; border-radius: 2px; object-fit: cover;
+	}
+	.cb__frame figcaption {
+		display: flex; gap: .6rem; align-items: baseline; flex-wrap: wrap;
+		font-size: var(--fs-small); text-transform: uppercase; letter-spacing: var(--track-small);
+	}
+	.cb__frame b { font-weight: 400; opacity: .45; font-variant-numeric: tabular-nums; }
+	.cb__frame em { font-style: normal; opacity: .45; }
+</style>

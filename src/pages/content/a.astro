@@ -1,0 +1,44 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import { artDirection } from '../../data/work.js';
+---
+
+<Base title="Content A — contact sheet" noindex bodyClass="page">
+	<Nav back="/work" next="/work/graphic-design" nextLabel="Graphic Design" />
+	<h1 class="sr-only">Art direction &amp; content</h1>
+
+	<div class="cs">
+		{artDirection.map((c, i) => (
+			<figure class={`cs__cell${c.portrait ? ' is-portrait' : ''}`}>
+				<video src={`/video/work/${c.slug}.mp4`} poster={`/video/work/posters/${c.slug}.jpg`}
+					muted loop playsinline autoplay preload="none" />
+				<figcaption>
+					<span class="cs__n">{String(i + 1).padStart(2, '0')}</span>
+					<span class="cs__t">{c.title}</span>
+					<span class="cs__d">{c.dur}</span>
+				</figcaption>
+			</figure>
+		))}
+	</div>
+</Base>
+
+<style>
+	.cs {
+		display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+		gap: clamp(.5rem, 1.4vw, 1rem);
+		padding: calc(var(--pad) * 3) var(--pad) var(--pad);
+	}
+	.cs__cell { margin: 0; position: relative; overflow: hidden; background: #0a0a0a; border-radius: 2px; }
+	.cs__cell video { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block;
+		filter: grayscale(.5) brightness(.8); transition: filter .4s var(--ease-smooth); }
+	.cs__cell.is-portrait video { aspect-ratio: 9 / 14; }
+	.cs__cell:hover video { filter: none; }
+	.cs__cell figcaption {
+		display: flex; gap: .6rem; align-items: baseline; padding: .5rem .2rem 0;
+		font-size: var(--fs-small); text-transform: uppercase; letter-spacing: var(--track-small);
+	}
+	.cs__n { opacity: .45; font-variant-numeric: tabular-nums; }
+	.cs__t { flex: 1; }
+	.cs__d { opacity: .45; }
+</style>

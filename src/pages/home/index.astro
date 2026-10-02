@@ -1,0 +1,45 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const options = [
+	{ slug: 'p', name: 'Type window', note: 'Your name filling the screen with the film playing inside the letters. Nothing else on the page.' },
+	{ slug: 'q', name: 'Torch', note: 'The film is covered in black and the cursor cuts a hole in it — the thing you asked for at the very start and I never built.' },
+	{ slug: 'r', name: 'Scroll through', note: 'The home page is the work. Scroll from the film straight into the projects; no separate index needed.' },
+	{ slug: 's', name: 'Four films', note: 'Four of your own clips as a 2x2 wall, each one a door, colour arriving on hover.' },
+	{ slug: 't', name: 'Sideways', note: 'The projects on a horizontal rail — the wheel drives it left to right.' },
+];
+---
+
+<Base title="Home — layout options" noindex bodyClass="page">
+	<div class="ho">
+		<p class="ho__h">Home page — five structural ideas</p>
+		<p class="ho__hint">Different in kind, not just in wording. Your current home is at <a href="/">/</a>.</p>
+		<ol class="ho__list">
+			{
+				options.map((o, i) => (
+					<li>
+						<a class="ho__row" href={`/home/${o.slug}`}>
+							<span class="ho__n">{String(i + 1).padStart(2, '0')}</span>
+							<span class="ho__name">{o.name}</span>
+						</a>
+						<p class="ho__note">{o.note}</p>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</Base>
+
+<style>
+	.ho { max-width: 54rem; margin: 0 auto; padding: clamp(1.5rem, 5vw, 4rem); }
+	.ho__h { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.5; margin: 0 0 0.5rem; }
+	.ho__hint { font-size: 0.85rem; opacity: 0.45; margin: 0 0 2.6rem; max-width: 50ch; line-height: 1.5; }
+	.ho__hint a { color: var(--acid); }
+	.ho__list { list-style: none; margin: 0; padding: 0; }
+	.ho__list li { border-top: 1px solid rgba(255,255,255,.14); padding: 1.4rem 0; }
+	.ho__row { display: flex; align-items: baseline; gap: 1.2rem; color: var(--ink); text-decoration: none; }
+	.ho__n { font-size: var(--fs-small); opacity: 0.45; font-variant-numeric: tabular-nums; }
+	.ho__name { font-size: clamp(1.4rem, 4vw, 2.6rem); text-transform: uppercase; letter-spacing: var(--track); line-height: 1; }
+	.ho__row:hover .ho__name { opacity: .6; }
+	.ho__note { margin: 0.7rem 0 0 0; max-width: 56ch; font-size: 0.85rem; line-height: 1.5; opacity: 0.5; }
+</style>

@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Wordmark from '../../components/Wordmark.astro';
+import { artDirection } from '../../data/work.js';
+
+const picks = ['beach-event', 'seawolf', 'ibiza', 'london']
+	.map((s) => artDirection.find((c) => c.slug === s))
+	.filter(Boolean);
+---
+
+<Base title="Home S — four films" noindex bodyClass="page hs-page">
+	<div class="hs">
+		{picks.map((c) => (
+			<a class="hs__cell" href="/work/art-direction-content">
+				<video src={`/video/work/${c.slug}.mp4`} poster={`/video/work/posters/${c.slug}.jpg`}
+					muted loop playsinline autoplay preload="none" />
+				<span class="hs__t">{c.title}</span>
+			</a>
+		))}
+	</div>
+
+	<header class="hs__bar">
+		<Wordmark />
+		<nav class="top__nav">
+			<a class="btn btn--round" href="/work"><span>Work</span></a>
+			<a class="btn btn--round" href="/about"><span>About</span></a>
+			<Nav bare />
+		</nav>
+	</header>
+</Base>
+
+<style>
+	body.hs-page { background: #000; overflow: hidden; }
+	.hs { position: fixed; inset: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; }
+	.hs__cell { position: relative; overflow: hidden; display: block; color: var(--ink); text-decoration: none; background: #0a0a0a; }
+	.hs__cell video { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(.7) brightness(.62); transition: filter .5s var(--ease-smooth); }
+	.hs__cell:hover video { filter: grayscale(0) brightness(1); }
+	.hs__t {
+		position: absolute; left: clamp(.7rem, 2vw, 1.4rem); bottom: clamp(.7rem, 2vw, 1.4rem);
+		font-size: clamp(.85rem, 2.2vw, 1.5rem); text-transform: uppercase; letter-spacing: var(--track);
+		text-shadow: 0 2px 12px rgba(0,0,0,.85);
+	}
+	.hs__bar {
+		position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+		display: flex; justify-content: space-between; align-items: center;
+		padding: var(--pad); pointer-events: none;
+	}
+	.hs__bar a, .hs__bar button { pointer-events: auto; }
+</style>

@@ -1,0 +1,42 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+---
+
+<Base title="Home P — type window" noindex bodyClass="home">
+	<video class="bg" autoplay muted loop playsinline preload="metadata" poster="/video/home-poster.jpg">
+		<source src="/video/home.webm" type="video/webm" /><source src="/video/home.mp4" type="video/mp4" />
+	</video>
+
+	{/* Black plate with the name knocked out of it. Multiply lets white
+	    through to the footage and holds black everywhere else, so the
+	    letters become windows onto the film. */}
+	<div class="hp__plate">
+		<span class="hp__word">Farah</span>
+		<span class="hp__word">Awada</span>
+	</div>
+
+	<div class="overlay hp">
+		<div class="top"><span></span><nav class="top__nav"><Nav bare /></nav></div>
+		<div></div>
+		<div class="hp__foot">
+			<a href="/work">See the work →</a>
+			<a href="/about">About</a>
+		</div>
+	</div>
+</Base>
+
+<style>
+	.hp__plate {
+		position: fixed; inset: 0; z-index: 2;
+		display: grid; align-content: center; justify-items: center;
+		background: #000; mix-blend-mode: multiply; pointer-events: none;
+	}
+	.hp__word {
+		color: #fff; font-size: clamp(3rem, 19vw, 15rem); line-height: .84;
+		letter-spacing: -.055em; text-transform: uppercase;
+	}
+	.hp { z-index: 4; }
+	.hp__foot { align-self: end; display: flex; justify-content: space-between; font-size: var(--fs-small); }
+	.hp__foot a { color: var(--ink); pointer-events: auto; }
+</style>
