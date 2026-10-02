@@ -33,6 +33,8 @@ export const artDirection = [
 	  src: `${DESKTOP}/LNDN/LNDNN/LNDNN.mov` },
 	{ slug: 'ibiza', title: 'Ibiza', label: 'Personal project · Shot on Sony A7 III', w: 3840, h: 2160, dur: '0:25',
 	  src: `${DESKTOP}/LNDN/ibiza-1.mov` },
+	{ slug: 'afternoon-tunes', title: 'Afternoon Tunes', label: 'Personal project', w: 3840, h: 2160, dur: '0:25',
+	  src: `${DESKTOP}/portfolio website/shorthvideo.mov` },
 	{ slug: 'noviciado', title: 'Noviciado Coffeeshop', label: LABELS.shot, w: 2160, h: 3840, dur: '0:07',
 	  src: `${DESKTOP}/noviciado/finalreels/1106(2).mov` },
 

@@ -187,15 +187,17 @@ export const graphicProjects = [
 		title: 'Visual Art',
 		subtitle: 'Poster design',
 		year: '2024\u20132025',
-		scope: 'Poster design \u00b7 Illustrator',
+		scope: 'Poster design \u00b7 Illustrator \u00b7 CGI',
 		cover: 'psych.jpg',
 		blurb:
 			'Posters made for their own sake rather than for an event \u2014 vector work built in ' +
-			'Illustrator, chasing optical pressure and colour that will not sit still.',
+			'Illustrator alongside rendered three\u2011dimensional scenes, chasing optical pressure ' +
+			'and colour that will not sit still.',
 		posterWall: true,
 		images: [
 			{ file: 'psych.jpg', caption: 'Psych' },
 			{ file: 'glitch.jpg', caption: 'Untitled' },
+			{ file: 'desert.jpg', caption: 'Sandstone — CGI' },
 			// Framed mockups on a white plate. The frame is cropped away in CSS
 			// rather than cut from the file, so nothing is lost and the crop
 			// stays adjustable.
