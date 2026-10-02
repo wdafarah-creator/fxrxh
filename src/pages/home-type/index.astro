@@ -23,7 +23,7 @@ const options = [
 	{ id: 'index', name: 'Indexed list', note: 'The same corner, numbered — reads as a contents page' },
 	{ id: 'rail', name: 'Vertical rail', note: 'Turned on its side, running up the right edge' },
 	{ id: 'ticker', name: 'Ticker', note: 'One slow line along the bottom edge' },
-	{ id: 'cycle', name: 'Cycling', note: 'Lead under the mark, one discipline at a time beneath it' },
+	{ id: 'cycle', name: 'Cycling', note: 'Right corner, one discipline at a time under the lead' },
 	{ id: 'caption', name: 'Caption', note: 'Centred under the wordmark, one line, very small' },
 	{ id: 'float', name: 'Floating cluster', note: 'Corner stack, each line breathing on its own slow cycle' },
 	{ id: 'split', name: 'Split corners', note: 'Lead top-left, list bottom-right — the frame held at opposite ends' },
@@ -329,8 +329,14 @@ const options = [
 
 	/* --- 05 cycling ------------------------------------------------------- */
 
+	/* Absolutely placed, so it escapes the centred middle row and sits in
+	   the same corner the other treatments use. */
 	.v--cycle {
-		text-align: center;
+		position: absolute;
+		right: var(--pad);
+		bottom: calc(var(--pad) + 3.4rem);
+		text-align: right;
+		pointer-events: none;
 	}
 
 	.cycle__lead {
@@ -340,8 +346,19 @@ const options = [
 		text-transform: uppercase;
 	}
 
+	.cycle__lead::after {
+		content: '';
+		display: block;
+		margin-top: 0.5rem;
+		margin-left: auto;
+		width: 1.6rem;
+		height: 1px;
+		background: currentColor;
+		opacity: 0.6;
+	}
+
 	.cycle__word {
-		margin: 0.7rem 0 0;
+		margin: 0.55rem 0 0;
 		font-size: clamp(0.62rem, 0.8vw, 0.78rem);
 		letter-spacing: var(--track-small);
 		text-transform: uppercase;
