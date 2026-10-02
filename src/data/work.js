@@ -9,8 +9,8 @@ import { graphicProjects } from './graphic.js';
 // vertical composition survives; landscape clips fill the screen.
 
 export const LABELS = {
-	ai: 'AI-generated · Directed & edited by me',
-	shot: 'Shot on Sony A7 III · Edited by me',
+	ai: 'AI-generated',
+	shot: 'Shot on Sony A7 III',
 	motion: 'Motion design',
 	aiMotion: 'AI-generated \u00b7 Motion design',
 };
@@ -23,15 +23,15 @@ export const artDirection = [
 	  src: `${DESKTOP}/portfolio website/LAASOVIDEO.mov` },
 	{ slug: 'high-grade-club', title: 'High Grade Club', label: 'High Grade Club · Shot on Sony A7 III', w: 3840, h: 2160, dur: '0:25',
 	  src: `${DESKTOP}/HIGHGRADESITE/option1.mp4` },
-	{ slug: 'inkdentidad', title: 'Inkdentidad', label: 'Inkdentidad collaboration · Shot on Sony A7 III · Edited by me', w: 3840, h: 2160, dur: '0:13',
+	{ slug: 'inkdentidad', title: 'Inkdentidad', label: 'Inkdentidad collaboration · Shot on Sony A7 III', w: 3840, h: 2160, dur: '0:13',
 	  src: `${DESKTOP}/SIDEWORK/tattooartist work.mp4` },
-	{ slug: 'fjaka', title: 'Fjaka', label: 'Fjaka event · Shot on Sony A7 III · Edited by me', w: 3840, h: 2160, dur: '0:14',
+	{ slug: 'fjaka', title: 'Fjaka', label: 'Fjaka event · Shot on Sony A7 III', w: 3840, h: 2160, dur: '0:14',
 	  src: `${DESKTOP}/SIDEWORK/FJAKAXNOVI/video/final-edits/finale.mp4` },
-	{ slug: 'seawolf', title: 'Seawolf × High Grade Club', label: 'Seawolf × High Grade Club collaboration · Shot on Sony A7 III · Edited by me', w: 3840, h: 2160, dur: '0:20',
+	{ slug: 'seawolf', title: 'Seawolf × High Grade Club', label: 'Seawolf × High Grade Club collaboration · Shot on Sony A7 III', w: 3840, h: 2160, dur: '0:20',
 	  src: `${DESKTOP}/SIDEWORK/highgradexseawold/SHORT VIDS/finalseawolfedit.mp4` },
-	{ slug: 'london', title: 'London Through My Lens', label: 'Shot on Sony A7 III \u00b7 Edited by me', w: 2160, h: 3840, dur: '0:17',
+	{ slug: 'london', title: 'London Through My Lens', label: 'Shot on Sony A7 III', w: 2160, h: 3840, dur: '0:17',
 	  src: `${DESKTOP}/LNDN/LNDNN/LNDNN.mov` },
-	{ slug: 'ibiza', title: 'Ibiza', label: 'Personal project · Shot on Sony A7 III · Edited by me', w: 3840, h: 2160, dur: '0:25',
+	{ slug: 'ibiza', title: 'Ibiza', label: 'Personal project · Shot on Sony A7 III', w: 3840, h: 2160, dur: '0:25',
 	  src: `${DESKTOP}/LNDN/ibiza-1.mov` },
 	{ slug: 'noviciado', title: 'Noviciado Coffeeshop', label: LABELS.shot, w: 2160, h: 3840, dur: '0:07',
 	  src: `${DESKTOP}/noviciado/finalreels/1106(2).mov` },

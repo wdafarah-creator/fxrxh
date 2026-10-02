@@ -22,7 +22,7 @@ export const graphicProjects = [
 			{ file: '07.jpg', caption: 'Crew lanyard' },
 			{ file: 'ticket.jpg', caption: 'Event ticket \u2014 Fideles, 15.07.22' },
 		],
-		video: { file: 'nonsense-edit', caption: 'Event video \u2014 edited by me' },
+		video: { file: 'nonsense-edit', caption: 'Event video' },
 	},
 
 	{
