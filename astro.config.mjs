@@ -8,9 +8,6 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
 	site: 'https://fxrxh.com',
 	integrations: [
-		sitemap({
-			// the layout-comparison page is scratch, not part of the site
-			filter: (page) => !page.includes('/home/') && !/\/about\/[a-z]\/?$/.test(page),
-		}),
+		sitemap(),
 	],
 });

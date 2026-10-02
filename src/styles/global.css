@@ -1483,61 +1483,86 @@ html.menu-open {
 
 /* ------------------------------------------------------------------ */
 /* About                                                               */
+/* The words are the page, set large, with the film as a round inset   */
+/* above them. Plain black ground — nothing sits over footage.         */
 /* ------------------------------------------------------------------ */
 
-.about {
-	position: fixed;
-	left: var(--pad);
-	right: var(--pad);
-	bottom: var(--pad);
-	z-index: 5;
-	max-width: 36rem;
-	display: grid;
-	gap: 0.7rem;
-	font-size: var(--fs-small);
-	text-transform: uppercase;
-	letter-spacing: var(--track-small);
-	/* Deliberately NOT difference-blended: over footage this bright the
-	   inverted text kept dropping to mid-grey. Plain white instead. */
-	color: #fff;
-}
+body.about-page { background: #000; }
 
-.about::before {
-	content: '';
-	position: absolute;
-	inset: -2rem -2rem -2rem -2rem;
-	z-index: -1;
-	background: radial-gradient(120% 100% at 0% 100%, rgba(0, 0, 0, 0.72), transparent 70%);
+.about__bar {
+	position: fixed;
+	top: 0; left: 0; right: 0;
+	z-index: 10;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: var(--pad);
 	pointer-events: none;
 }
 
-.about__lead {
-	/* it is an h1 for structure, so the browser's bold has to be undone */
-	font-weight: 400;
-	font-style: italic;
-	font-size: clamp(0.95rem, 1.5vw, 1.3rem);
-	line-height: 1.35;
-	letter-spacing: var(--track);
+.about__bar a,
+.about__bar button { pointer-events: auto; }
+
+.about {
+	min-height: 100vh;
+	display: grid;
+	align-content: center;
+	gap: clamp(1.4rem, 4vh, 2.6rem);
+	padding: calc(var(--pad) * 3) var(--pad) var(--pad);
+	color: var(--ink);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	font-size: var(--fs-small);
+}
+
+.about__film {
 	margin: 0;
+	width: clamp(11rem, 26vw, 20rem);
+	aspect-ratio: 1;
+	overflow: hidden;
+	border-radius: 50%;
+	background: #0a0a0a;
 }
 
-/* the rest of the bio follows the lead into italic */
-.about p {
+.about__film video {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.about__copy {
+	display: grid;
+	gap: 0.7rem;
+	max-width: 24ch;
+}
+
+.about__lead {
+	margin: 0;
+	font-weight: 400;
+	font-size: clamp(1.6rem, 5.2vw, 3.6rem);
+	line-height: 1.08;
+	letter-spacing: var(--track);
+}
+
+/* the name sits back from the sentence that follows it */
+.about__name { color: #8f8f8f; }
+
+.about__copy p {
+	margin: 0;
 	font-style: italic;
+	max-width: 44ch;
 }
 
-/* The line that hands the reader over to the two buttons under it. */
 .about__reach {
 	display: flex;
 	align-items: center;
 	gap: 0.55rem;
-	margin-bottom: 0.2rem;
+	margin-top: 0.4rem !important;
+	font-style: normal !important;
 	opacity: 0.9;
-	font-style: normal;
-	letter-spacing: 0.02em;
 }
 
-/* points down at the two buttons, and nudges to keep drawing the eye there */
 .about__arrow {
 	width: 0.85em;
 	height: 0.85em;
@@ -1549,6 +1574,13 @@ html.menu-open {
 	animation: reach-nudge 1.9s var(--ease-smooth) infinite;
 }
 
+.about__links {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+	margin-top: 0.3rem;
+}
+
 @keyframes reach-nudge {
 	0%, 100% { transform: translateY(0); }
 	50% { transform: translateY(3px); }
@@ -1558,12 +1590,6 @@ html.menu-open {
 	.about__arrow { animation: none; }
 }
 
-.about__links {
-	display: flex;
-	gap: 0.5rem;
-	flex-wrap: wrap;
-	margin-top: 0.6rem;
-}
 
 /* A logo used as a card cover sits contained on its brand colour rather
    than being cropped to fill like a photograph. */
@@ -2805,54 +2831,3 @@ body:not(.home) .index-list .row:focus-visible .row__title {
 	}
 }
 
-
-/* ------------------------------------------------------------------ */
-/* About                                                               */
-/* The film sits as a centred panel rather than filling the frame, so  */
-/* the copy reads on plain black instead of over footage.              */
-/* ------------------------------------------------------------------ */
-
-body.about-page {
-	background: #000;
-}
-
-.bg--panel {
-	position: fixed;
-	inset: auto;
-	top: 50%;
-	left: 50%;
-	translate: -50% -50%;
-	width: min(36rem, 62vw);
-	height: auto;
-	max-height: 52vh;
-	object-fit: cover;
-	border-radius: 2px;
-}
-
-/* the grain and line screen follow the panel instead of the whole frame */
-body.about-page .film {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	translate: -50% -50%;
-	width: min(36rem, 62vw);
-	height: 52vh;
-	inset: auto;
-}
-
-/* the copy no longer needs a shadow to survive the footage */
-body.about-page .about {
-	text-shadow: none;
-}
-
-@media (max-width: 720px) {
-	.bg--panel,
-	body.about-page .film {
-		width: 78vw;
-		max-height: 38vh;
-		height: auto;
-	}
-	body.about-page .film {
-		height: 38vh;
-	}
-}

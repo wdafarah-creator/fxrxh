@@ -8,53 +8,50 @@ import Icon from '../components/Icon.astro';
 	title="About — Farah Awada, Multidisciplinary Designer"
 	description="Farah Awada is a multidisciplinary designer working across graphic design, art direction, photography, videography, illustration and CGI. Based in Spain, available for commissions and collaborations."
 	image="/img/og-about.jpg"
-	bodyClass="home about-page"
+	bodyClass="page about-page"
 >
-	<video class="bg bg--panel" autoplay muted loop playsinline preload="metadata" poster="/video/about-poster.jpg">
-		<source src="/video/about.webm" type="video/webm" />
-		<source src="/video/about.mp4" type="video/mp4" />
-	</video>
+	<header class="about__bar">
+		<a class="btn btn--round" href="/"><span>Index</span></a>
+		<nav class="top__nav">
+			<a class="btn btn--round" href="/work"><span>Work</span></a>
+			<Nav bare />
+		</nav>
+	</header>
 
-	<div class="film" aria-hidden="true">
-		<div class="film__grain"></div>
-		<div class="film__lines"></div>
-	</div>
+	<main class="about">
+		<figure class="about__film">
+			<video autoplay muted loop playsinline preload="metadata" poster="/video/about-poster.jpg">
+				<source src="/video/about.webm" type="video/webm" />
+				<source src="/video/about.mp4" type="video/mp4" />
+			</video>
+		</figure>
 
-	{/* Nav stays in the difference-blended layer; the copy does not. */}
-	<div class="overlay">
-		<div class="top">
-			<a class="btn btn--round" href="/"><span>Index</span></a>
-			<nav class="top__nav">
-				<a class="btn btn--round" href="/work"><span>Work</span></a>
-				<Nav bare />
-			</nav>
+		<div class="about__copy">
+			<h1 class="about__lead">
+				<span class="about__name">Farah Awada</span> — multidisciplinary designer working
+				across graphic design, art direction, photography, videography, illustration and CGI.
+			</h1>
+			<p>Directing and editing AI-generated content and CGI video alongside work shot on camera.</p>
+			<p>Based in Spain &amp; wherever the work takes me.</p>
+
+			<p class="about__reach">
+				Let's create something together
+				<svg class="about__arrow" viewBox="0 0 16 16" aria-hidden="true">
+					<path d="M8 2 L8 13 M3 8.5 L8 14 L13 8.5" />
+				</svg>
+			</p>
+
+			<div class="about__links">
+				<a
+					class="btn btn--with-icon"
+					href="https://instagram.com/02fwa"
+					target="_blank"
+					rel="noopener noreferrer"><Icon name="instagram" />@02fwa</a
+				>
+				<a class="btn btn--with-icon" href="mailto:wdafarah@gmail.com"
+					><Icon name="email" />wdafarah@gmail.com</a
+				>
+			</div>
 		</div>
-		<div></div>
-		<div></div>
-	</div>
-
-	<div class="about">
-		<h1 class="about__lead">
-			Farah Awada — multidisciplinary designer working across graphic design, art direction,
-			photography, videography, illustration and CGI.
-		</h1>
-		<p>
-			Directing and editing AI-generated content and CGI video alongside work shot on camera.
-		</p>
-		<p>Based in Spain &amp; wherever the work takes me.</p>
-		<p class="about__reach">
-			Let's create something together
-			<svg class="about__arrow" viewBox="0 0 16 16" aria-hidden="true">
-				<path d="M8 2 L8 13 M3 8.5 L8 14 L13 8.5" />
-			</svg>
-		</p>
-		<div class="about__links">
-			<a class="btn btn--with-icon" href="https://instagram.com/02fwa" target="_blank" rel="noopener noreferrer">
-				<Icon name="instagram" />@02fwa
-			</a>
-			<a class="btn btn--with-icon" href="mailto:wdafarah@gmail.com">
-				<Icon name="email" />wdafarah@gmail.com
-			</a>
-		</div>
-	</div>
+	</main>
 </Base>
