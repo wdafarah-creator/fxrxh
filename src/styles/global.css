@@ -1855,18 +1855,32 @@ body.about-page { background: #000; }
 }
 
 .laptop__screen.is-scrolling img {
-	animation: laptop-scroll 22s ease-in-out infinite alternate;
+	animation: laptop-scroll 20s ease-in-out infinite;
 }
 
-/* Travels to the bottom of the page and back, whatever its height. */
+/* One way, downwards, the way the page would actually be read — it used to
+   run back up, which no one scrolling a site does. Without `alternate` the
+   loop has to jump from the bottom back to the top, so the page is faded
+   out before the jump and faded back in after it, and the cut is never
+   seen. Travels the full height whatever that is. */
 @keyframes laptop-scroll {
-	0%,
-	8% {
+	0% {
 		transform: translateY(0);
+		opacity: 0;
+	}
+	4%,
+	10% {
+		transform: translateY(0);
+		opacity: 1;
 	}
 	92%,
+	96% {
+		transform: translateY(calc(-100% + 62.5cqw));
+		opacity: 1;
+	}
 	100% {
 		transform: translateY(calc(-100% + 62.5cqw));
+		opacity: 0;
 	}
 }
 
