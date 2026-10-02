@@ -4,8 +4,9 @@ import Nav from '../components/Nav.astro';
 import Wordmark from '../components/Wordmark.astro';
 import Icon from '../components/Icon.astro';
 
-// The lead is fixed; the disciplines cycle one at a time beneath it, in the
-// bottom-right corner. They used to drift across the whole frame.
+// One line in the bottom-right corner, cycling. There is no fixed label
+// above it — what Farah is comes first in the rotation and then the
+// disciplines follow, so the corner never carries more than a single line.
 const lead = 'Multidisciplinary designer';
 
 const disciplines = [
@@ -56,9 +57,8 @@ const disciplines = [
 		<div></div>
 
 		{/* Balances the contact buttons in the opposite corner. */}
-		<div class="disciplines" data-list={disciplines.join('|')}>
-			<p class="disciplines__lead">{lead}</p>
-			<p class="disciplines__word" data-cycle>{disciplines[0]}</p>
+		<div class="disciplines" data-list={[lead, ...disciplines].join('|')}>
+			<p class="disciplines__word" data-cycle>{lead}</p>
 		</div>
 
 		<div class="bottom">
@@ -78,11 +78,17 @@ const disciplines = [
 <script>
 	import '../scripts/melt.js';
 
-	// One discipline at a time, cross-faded. The word is swapped while it is
-	// invisible, so the change is never seen mid-fade.
+	// The old line fades off, then the new one is drawn on left to right
+	// behind a bright edge. The text is swapped while nothing is showing, so
+	// the change itself is never seen.
 	const word = document.querySelector('[data-cycle]');
-	const list = [...word.closest('.disciplines').dataset.list.split('|')];
+	const box = word.closest('.disciplines');
+	const list = [...box.dataset.list.split('|')];
 	let at = 0;
+
+	// matched to the transition and the laser-cut keyframes in global.css
+	const FADE = 180;
+	const HOLD = 1500;
 
 	setInterval(() => {
 		word.classList.add('is-out');
@@ -90,6 +96,12 @@ const disciplines = [
 			at = (at + 1) % list.length;
 			word.textContent = list[at];
 			word.classList.remove('is-out');
-		}, 450);
-	}, 2400);
+
+			// the class has to come off and the layout be read back before it
+			// goes on again, or the animation does not restart
+			box.classList.remove('is-in');
+			void box.offsetWidth;
+			box.classList.add('is-in');
+		}, FADE);
+	}, HOLD);
 </script>

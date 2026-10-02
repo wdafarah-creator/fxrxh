@@ -182,7 +182,7 @@ a {
 /* They used to drift across the whole frame, which covered the        */
 /* footage and tangled the lines with each other. They sit in the      */
 /* bottom-right corner now, balancing the contact buttons opposite:    */
-/* a quiet italic label, and one discipline at a time under it.        */
+/* a single line, cycling: the lead first, then the disciplines.       */
 /* ------------------------------------------------------------------ */
 
 .disciplines {
@@ -193,27 +193,80 @@ a {
 	pointer-events: none;
 }
 
-.disciplines__lead {
-	margin: 0;
-	font-size: clamp(0.66rem, 0.86vw, 0.8rem);
-	font-style: italic;
-	letter-spacing: var(--track-small);
-	text-transform: uppercase;
-	opacity: 0.8;
+/* --cut is how much of the line is still hidden, from the right. It has to
+   be registered or it cannot be animated — an unregistered custom property
+   is just a token and would jump rather than sweep. */
+@property --cut {
+	syntax: '<percentage>';
+	inherits: true;
+	initial-value: 0%;
 }
 
-/* The changing word carries the size — the lead is the label above it. */
+/* The only line in the corner, so it carries the size on its own. The
+   timings here are matched to the swap in index.astro — change one, change
+   both. */
 .disciplines__word {
-	margin: 0.5rem 0 0;
+	margin: 0;
 	font-size: clamp(0.95rem, 1.95vw, 1.5rem);
 	letter-spacing: var(--track);
 	line-height: 1.05;
 	text-transform: uppercase;
-	transition: opacity 0.45s var(--ease-smooth);
+	transition: opacity 0.18s var(--ease-smooth);
+	clip-path: inset(0 var(--cut, 0%) 0 0);
 }
 
 .disciplines__word.is-out {
 	opacity: 0;
+}
+
+/* The beam rides the edge of the wipe, so it has to live on the parent:
+   anything inside the word is cut away by the same clip it is marking.
+   The block is absolutely positioned and shrink-wraps, so its box is the
+   width of whichever word is showing and the percentages line up. */
+.disciplines::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: var(--cut, 0%);
+	width: 2px;
+	background: #fff;
+	box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+	opacity: 0;
+	pointer-events: none;
+}
+
+.disciplines.is-in {
+	animation: laser-cut 0.44s var(--ease-smooth) forwards;
+}
+
+.disciplines.is-in::after {
+	animation: laser-beam 0.44s var(--ease-smooth) forwards;
+}
+
+/* right to left would read as erasing; this draws the word on */
+@keyframes laser-cut {
+	from {
+		--cut: 100%;
+	}
+	to {
+		--cut: 0%;
+	}
+}
+
+@keyframes laser-beam {
+	0% {
+		opacity: 0;
+	}
+	12% {
+		opacity: 1;
+	}
+	82% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
 }
 
 /* ------------------------------------------------------------------ */
@@ -250,6 +303,12 @@ a {
 @media (prefers-reduced-motion: reduce) {
 	.disciplines__word {
 		transition: none;
+		clip-path: none;
+	}
+
+	.disciplines.is-in,
+	.disciplines.is-in::after {
+		animation: none;
 	}
 }
 
@@ -1523,8 +1582,10 @@ body.about-page { background: #000; }
 	min-height: 100vh;
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) auto;
-	align-items: center;
-	gap: clamp(2rem, 6vw, 5rem);
+	/* the words start at the top and run down; the circle sits with them
+	   rather than being centred against the whole column */
+	align-items: start;
+	gap: clamp(1.5rem, 4vw, 3rem);
 	padding: calc(var(--pad) * 3) var(--pad) var(--pad);
 	color: var(--ink);
 	text-transform: uppercase;
@@ -1534,12 +1595,16 @@ body.about-page { background: #000; }
 
 .about__film {
 	margin: 0;
-	width: clamp(12rem, 30vw, 26rem);
+	width: clamp(11rem, 26vw, 23rem);
 	aspect-ratio: 1;
 	overflow: hidden;
 	border-radius: 50%;
 	background: #0a0a0a;
+	/* pulled in off the right edge, and dropped so it sits against the
+	   middle of the text rather than level with its first line */
 	justify-self: end;
+	margin-right: clamp(0rem, 6vw, 7rem);
+	margin-top: clamp(3rem, 14vh, 9rem);
 }
 
 .about__film video {
@@ -1551,11 +1616,11 @@ body.about-page { background: #000; }
 
 .about__copy {
 	display: grid;
-	gap: 0.95rem;
+	gap: 0.6rem;
 	justify-items: start;
 	/* Not ch: the container still carries the small font the page sets, so a
 	   ch measure here would size itself against the wrong text. */
-	max-width: 32rem;
+	max-width: 42rem;
 }
 
 /* One size for the whole page — nothing is a caption. What separates the
@@ -1565,8 +1630,8 @@ body.about-page { background: #000; }
 .about__copy p {
 	margin: 0;
 	font-weight: 400;
-	font-size: clamp(1.15rem, 2.5vw, 1.95rem);
-	line-height: 1.16;
+	font-size: clamp(1.55rem, 4.4vw, 3.6rem);
+	line-height: 1.02;
 	letter-spacing: var(--track);
 }
 
@@ -1635,6 +1700,9 @@ body.about-page { background: #000; }
 	.about__film {
 		justify-self: start;
 		width: clamp(10rem, 44vw, 16rem);
+		/* the desktop offsets only make sense beside the words */
+		margin-right: 0;
+		margin-top: 0;
 	}
 }
 
