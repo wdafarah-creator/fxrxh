@@ -1426,9 +1426,13 @@ html.menu-open {
 }
 
 /* Video inside a graphic-design project (brand reel, motion test). */
+/* Same cap as the stills: a clip should sit inside the window rather than
+   needing to be scrolled to see its own bottom edge. */
 .project__video {
 	width: 100%;
 	height: auto;
+	max-height: 76vh;
+	object-fit: contain;
 	display: block;
 	background: #111;
 }
@@ -1437,6 +1441,7 @@ html.menu-open {
 .project__video.is-portrait {
 	width: auto;
 	max-width: min(24rem, 100%);
+	max-height: 72vh;
 	margin: 0 auto;
 }
 
