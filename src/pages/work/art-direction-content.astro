@@ -20,6 +20,9 @@ import { artDirection } from '../../data/work.js';
 						type="button"
 						data-open={`/video/work/${item.slug}.mp4`}
 						data-caption={item.title}
+						data-label={item.label}
+						data-dur={item.dur}
+						data-index={`${String(i + 1).padStart(2, '0')} / ${String(artDirection.length).padStart(2, '0')}`}
 						aria-label={`Play ${item.title} full screen`}
 					/>
 					<video
@@ -45,9 +48,23 @@ import { artDirection } from '../../data/work.js';
 	</div>
 	{/* One player, reused for whichever tile is opened. */}
 	<dialog class="lightbox" id="lightbox" aria-label="Full screen player">
-		<video class="lightbox__video" controls loop playsinline></video>
-		<p class="lightbox__cap" data-lb-cap></p>
-		<button class="lightbox__close" type="button" aria-label="Close">Close</button>
+		<div class="lightbox__stage">
+			<video class="lightbox__video" controls loop playsinline></video>
+		</div>
+
+		{/* A row of its own beneath the film, so the browser's controls and
+		    the close button can never sit on top of it. */}
+		<footer class="lightbox__info">
+			<span class="lightbox__text">
+				<span class="lightbox__t" data-lb-title></span>
+				<span class="lightbox__l" data-lb-label></span>
+			</span>
+			<span class="lightbox__meta">
+				<span class="lightbox__i" data-lb-index></span>
+				<span class="lightbox__d" data-lb-dur></span>
+			</span>
+			<button class="lightbox__close" type="button">Close</button>
+		</footer>
 	</dialog>
 </Base>
 
@@ -95,7 +112,12 @@ import { artDirection } from '../../data/work.js';
 	// --- full screen player -------------------------------------------------
 	const box = document.getElementById('lightbox');
 	const player = box.querySelector('.lightbox__video');
-	const cap = box.querySelector('[data-lb-cap]');
+	const fields = {
+		title: box.querySelector('[data-lb-title]'),
+		label: box.querySelector('[data-lb-label]'),
+		dur: box.querySelector('[data-lb-dur]'),
+		index: box.querySelector('[data-lb-index]'),
+	};
 
 	const close = () => {
 		player.pause();
@@ -107,7 +129,10 @@ import { artDirection } from '../../data/work.js';
 	document.querySelectorAll('[data-open]').forEach((btn) => {
 		btn.addEventListener('click', () => {
 			player.src = btn.dataset.open;
-			cap.textContent = btn.dataset.caption ?? '';
+			fields.title.textContent = btn.dataset.caption ?? '';
+			fields.label.textContent = btn.dataset.label ?? '';
+			fields.dur.textContent = btn.dataset.dur ?? '';
+			fields.index.textContent = btn.dataset.index ?? '';
 			box.showModal();
 			player.play().catch(() => {});
 		});
