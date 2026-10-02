@@ -78,17 +78,16 @@ const disciplines = [
 <script>
 	import '../scripts/melt.js';
 
-	// The old line fades off, then the new one is drawn on left to right
-	// behind a bright edge. The text is swapped while nothing is showing, so
-	// the change itself is never seen.
+	// The old line lifts away into a blur, the new one settles up out of one.
+	// The text is swapped while nothing is showing, so the change is never
+	// seen happening.
 	const word = document.querySelector('[data-cycle]');
-	const box = word.closest('.disciplines');
-	const list = [...box.dataset.list.split('|')];
+	const list = [...word.closest('.disciplines').dataset.list.split('|')];
 	let at = 0;
 
-	// matched to the transition and the laser-cut keyframes in global.css
-	const FADE = 180;
-	const HOLD = 1500;
+	// matched to the transition and the settle keyframes in global.css
+	const OUT = 300;
+	const HOLD = 1700;
 
 	setInterval(() => {
 		word.classList.add('is-out');
@@ -99,9 +98,9 @@ const disciplines = [
 
 			// the class has to come off and the layout be read back before it
 			// goes on again, or the animation does not restart
-			box.classList.remove('is-in');
-			void box.offsetWidth;
-			box.classList.add('is-in');
-		}, FADE);
+			word.classList.remove('is-in');
+			void word.offsetWidth;
+			word.classList.add('is-in');
+		}, OUT);
 	}, HOLD);
 </script>
