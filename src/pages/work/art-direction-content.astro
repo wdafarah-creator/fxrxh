@@ -23,6 +23,7 @@ import { artDirection } from '../../data/work.js';
 						data-label={item.label}
 						data-dur={item.dur}
 						data-index={`${String(i + 1).padStart(2, '0')} / ${String(artDirection.length).padStart(2, '0')}`}
+						data-sound={item.sound ? 'yes' : 'no'}
 						aria-label={`Play ${item.title} full screen`}
 					/>
 					<video
@@ -71,6 +72,14 @@ import { artDirection } from '../../data/work.js';
 				<span class="lb__l" data-lb-label></span>
 				<span class="lb__i" data-lb-index></span>
 				<span class="lb__time" data-lb-time>0:00</span>
+				<button class="lb__sound" type="button" data-sound-toggle aria-label="Sound">
+					<svg viewBox="0 0 16 16" aria-hidden="true">
+						<path class="lb__spk" d="M3 6 L6 6 L9.5 3 L9.5 13 L6 10 L3 10 Z" />
+						<path class="lb__wave" d="M11.6 5.6 A4 4 0 0 1 11.6 10.4" />
+						<path class="lb__cross" d="M11.6 6 L14.6 10 M14.6 6 L11.6 10" />
+					</svg>
+				</button>
+
 				<button class="lb__scrub" type="button" data-scrub aria-label="Seek">
 					<span class="lb__prog" data-prog></span>
 				</button>
@@ -141,6 +150,17 @@ import { artDirection } from '../../data/work.js';
 		return `${m}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 	};
 
+	// Opening a clip is a click, so the browser lets it start with sound.
+	// If a particular browser refuses anyway, fall back to muted rather than
+	// leaving a player that never started.
+	let wantSound = true;
+
+	const showSound = () => {
+		const has = clips[at].sound === 'yes';
+		box.classList.toggle('has-sound', has);
+		box.classList.toggle('is-muted', player.muted || !has);
+	};
+
 	const open = (i) => {
 		at = (i + clips.length) % clips.length;
 		const c = clips[at];
@@ -150,12 +170,19 @@ import { artDirection } from '../../data/work.js';
 		field.index.textContent = c.index ?? '';
 		field.time.textContent = '0:00';
 		prog.style.transform = 'scaleX(0)';
+		player.muted = !(wantSound && c.sound === 'yes');
+		showSound();
 		if (!box.open) box.showModal();
-		player.play().catch(() => {});
+		player.play().catch(() => {
+			player.muted = true;
+			showSound();
+			player.play().catch(() => {});
+		});
 	};
 
 	const close = () => {
 		player.pause();
+		player.muted = true;
 		player.removeAttribute('src');
 		player.load();
 		if (box.open) box.close();
@@ -168,6 +195,14 @@ import { artDirection } from '../../data/work.js';
 	box.querySelector('[data-prev]').addEventListener('click', () => open(at - 1));
 	box.querySelector('[data-next]').addEventListener('click', () => open(at + 1));
 	box.querySelector('[data-close]').addEventListener('click', close);
+
+	// The choice sticks for the rest of the session, so stepping through the
+	// clips does not mean reaching for the button every time.
+	box.querySelector('[data-sound-toggle]').addEventListener('click', () => {
+		player.muted = !player.muted;
+		wantSound = !player.muted;
+		showSound();
+	});
 	box.addEventListener('close', close);
 
 	box.querySelector('[data-tap]').addEventListener('click', () => {
