@@ -3324,4 +3324,73 @@ body:not(.home) .index-list .row:focus-visible .row__title {
 	}
 }
 
+/* ------------------------------------------------------------------ */
+/* Touch targets                                                       */
+/* On a phone every control was under the 44px a fingertip needs — the  */
+/* buttons were 34px tall and the contact pills 24px. The type stays    */
+/* the size it was; it is the target that grows, through padding and a  */
+/* floor on the height.                                                 */
+/* ------------------------------------------------------------------ */
 
+@media (max-width: 820px) {
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 44px;
+		padding: 0.5em 1.25em;
+	}
+
+	.btn--round {
+		display: inline-flex;
+		min-width: 5.2rem;
+	}
+
+	.btn--icon {
+		min-width: 44px;
+		padding: 0.5em 0.9em;
+	}
+
+	.btn--with-icon {
+		padding-inline: 1.05em;
+	}
+
+	.star {
+		width: 44px;
+		height: 44px;
+	}
+
+	.star svg {
+		width: 1.15rem;
+		height: 1.15rem;
+	}
+
+	/* the player's own controls */
+	.lb__sound {
+		width: 44px;
+		height: 44px;
+	}
+
+	.lb__sound svg {
+		width: 1.25rem;
+		height: 1.25rem;
+	}
+
+	.lb__step,
+	.lb__close {
+		width: 44px;
+		height: 44px;
+	}
+
+	/* the hairline keeps its look; only the invisible target grows */
+	.lb__scrub::before {
+		inset: -18px 0;
+	}
+
+	/* the menu is a list of links, so they need the height too */
+	.menu a {
+		min-height: 44px;
+		display: flex;
+		align-items: center;
+	}
+}
