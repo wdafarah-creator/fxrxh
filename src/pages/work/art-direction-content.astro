@@ -11,112 +11,71 @@ import { artDirection } from '../../data/work.js';
 	<h1 class="sr-only">Art direction &amp; content — video, motion and AI-generated work</h1>
 	<Nav back="/work" next="/work/graphic-design" nextLabel="Graphic Design" />
 
-	<div class="reel" id="reel">
+	<div class="sheet">
 		{
 			artDirection.map((item, i) => (
-				<section class={`reel__item${item.portrait ? ' is-portrait' : ''}`}>
+				<figure class={`sheet__cell${item.portrait ? ' is-portrait' : ''}`}>
 					<video
-						class="reel__video"
+						class="sheet__video"
 						data-src={`/video/work/${item.slug}.mp4`}
-						src={i === 0 ? `/video/work/${item.slug}.mp4` : undefined}
-						data-title={item.title}
-						data-label={item.label}
-						data-dur={item.dur}
 						poster={`/video/work/posters/${item.slug}.jpg`}
 						width={item.w}
 						height={item.h}
 						muted
 						loop
 						playsinline
-						preload={i === 0 ? 'auto' : 'none'}
+						preload="none"
 					/>
-				</section>
+					<figcaption>
+						<span class="sheet__n">{String(i + 1).padStart(2, '0')}</span>
+						<span class="sheet__t">{item.title}</span>
+						<span class="sheet__d">{item.dur}</span>
+						<span class="sheet__l">{item.label}</span>
+					</figcaption>
+				</figure>
 			))
 		}
-	</div>
-
-	<div class="reel__bar" id="reel-bar">
-		<span class="reel__bar__left">
-			<span class="reel__title">{artDirection[0].title}</span>
-			<span class="reel__label">{artDirection[0].label}</span>
-			<span class="reel__dur">{artDirection[0].dur}</span>
-		</span>
-		<span class="reel__index">01 / {String(artDirection.length).padStart(2, '0')}</span>
 	</div>
 </Base>
 
 <script>
-	const root = document.getElementById('reel');
-	const videos = [...document.querySelectorAll('.reel__video')];
-	const bar = document.getElementById('reel-bar');
-	const elTitle = bar.querySelector('.reel__title');
-	const elLabel = bar.querySelector('.reel__label');
-	const elDur = bar.querySelector('.reel__dur');
-	const elIndex = bar.querySelector('.reel__index');
-	const total = String(videos.length).padStart(2, '0');
+	const videos = [...document.querySelectorAll('.sheet__video')];
 
-	const load = (video) => {
-		if (!video.src) video.src = video.dataset.src;
+	const load = (v) => {
+		if (!v.src) v.src = v.dataset.src;
 	};
 
-	let current = -1;
-	const show = (video) => {
-		const i = videos.indexOf(video);
-		if (i === current) return;
-		current = i;
-
-		// Brief fade so the values swap rather than snapping.
-		bar.classList.add('is-changing');
-		setTimeout(() => {
-			elTitle.textContent = video.dataset.title;
-			elLabel.textContent = video.dataset.label;
-			elDur.textContent = video.dataset.dur;
-			elIndex.textContent = `${String(i + 1).padStart(2, '0')} / ${total}`;
-			bar.classList.remove('is-changing');
-		}, 200);
-	};
-
-	// Only the clip on screen plays.
-	const io = new IntersectionObserver(
-		(entries) => {
-			entries.forEach((entry) => {
-				const video = entry.target;
-				if (entry.isIntersecting) {
-					load(video);
-					show(video);
-					video.play().catch(() => {});
+	// Only what is on screen loads and plays; everything else is released so
+	// twenty-two clips never sit in memory at once.
+	const play = new IntersectionObserver(
+		(entries) =>
+			entries.forEach((e) => {
+				const v = e.target;
+				if (e.isIntersecting) {
+					load(v);
+					v.play().catch(() => {});
 				} else {
-					video.pause();
+					v.pause();
 				}
-			});
-		},
-		{ root, threshold: 0.35 }
+			}),
+		{ threshold: 0.2 }
 	);
 
-	// Warm only what is coming up, not what is behind.
-	const preload = new IntersectionObserver(
-		(entries) => entries.forEach((e) => e.isIntersecting && load(e.target)),
-		{ root, rootMargin: '0px 0px 60% 0px' }
-	);
-
-	// Release clips left well behind so memory does not climb across the reel.
 	const release = new IntersectionObserver(
-		(entries) => {
-			entries.forEach((entry) => {
-				if (entry.isIntersecting) return;
-				const video = entry.target;
-				if (!video.src) return;
-				video.pause();
-				video.removeAttribute('src');
-				video.load();
-			});
-		},
-		{ root, rootMargin: '200% 0px' }
+		(entries) =>
+			entries.forEach((e) => {
+				if (e.isIntersecting) return;
+				const v = e.target;
+				if (!v.src) return;
+				v.pause();
+				v.removeAttribute('src');
+				v.load();
+			}),
+		{ rootMargin: '150% 0px' }
 	);
 
-	videos.forEach((video) => {
-		io.observe(video);
-		preload.observe(video);
-		release.observe(video);
+	videos.forEach((v) => {
+		play.observe(v);
+		release.observe(v);
 	});
 </script>

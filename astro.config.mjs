@@ -10,7 +10,7 @@ export default defineConfig({
 	integrations: [
 		sitemap({
 			// scratch comparison routes, not part of the site
-			filter: (page) => !page.includes('/home/') && !page.includes('/content/'),
+			filter: (page) => !page.includes('/cursor/'),
 		}),
 	],
 });

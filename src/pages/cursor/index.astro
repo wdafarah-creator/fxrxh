@@ -1,0 +1,47 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const options = [
+	{ slug: 'a', name: 'Torch', note: 'The film is covered in black; the cursor cuts a soft hole in the cover. The one you saw.' },
+	{ slug: 'b', name: 'Lens', note: 'A circle that magnifies — the film runs at normal size everywhere, and larger inside the lens.' },
+	{ slug: 'c', name: 'Colour hole', note: 'The whole frame is black and white; the cursor restores colour where it passes.' },
+	{ slug: 'd', name: 'Negative', note: 'The cursor inverts what is under it, so the hole reads as a photographic negative of the film.' },
+	{ slug: 'e', name: 'Comet', note: 'Several holes trailing the cursor with increasing lag, so the reveal smears behind your hand.' },
+	{ slug: 'f', name: 'Ripple', note: 'The film warps around the cursor — a real displacement, so the image bends rather than being masked.' },
+	{ slug: 'g', name: 'Inverted field', note: 'The whole page runs as a negative and the cursor restores the true image. The reverse of the torch.' },
+	{ slug: 'h', name: 'Inverted ring', note: 'Only a ring inverts, not a disc — a halo of negative travelling with your hand.' },
+	{ slug: 'i', name: 'Inverted band', note: 'A horizontal band across the full width inverts, following the cursor up and down.' },
+	{ slug: 'j', name: 'Split invert', note: 'Everything left of the cursor is a negative, everything right is not. A moving seam.' },
+];
+---
+
+<Base title="Cursor effects" noindex bodyClass="page">
+	<div class="cu">
+		<p class="cu__h">Cursor on film — six effects</p>
+		<p class="cu__hint">Move the cursor over each. All keep your footage full-bleed.</p>
+		<ol class="cu__list">
+			{options.map((o, i) => (
+				<li>
+					<a class="cu__row" href={`/cursor/${o.slug}`}>
+						<span class="cu__n">{String(i + 1).padStart(2, '0')}</span>
+						<span class="cu__name">{o.name}</span>
+					</a>
+					<p class="cu__note">{o.note}</p>
+				</li>
+			))}
+		</ol>
+	</div>
+</Base>
+
+<style>
+	.cu { max-width: 54rem; margin: 0 auto; padding: clamp(1.5rem, 5vw, 4rem); }
+	.cu__h { font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; opacity: .5; margin: 0 0 .5rem; }
+	.cu__hint { font-size: .85rem; opacity: .45; margin: 0 0 2.6rem; }
+	.cu__list { list-style: none; margin: 0; padding: 0; }
+	.cu__list li { border-top: 1px solid rgba(255,255,255,.14); padding: 1.4rem 0; }
+	.cu__row { display: flex; align-items: baseline; gap: 1.2rem; color: var(--ink); text-decoration: none; }
+	.cu__n { font-size: var(--fs-small); opacity: .45; font-variant-numeric: tabular-nums; }
+	.cu__name { font-size: clamp(1.4rem, 4vw, 2.6rem); text-transform: uppercase; letter-spacing: var(--track); line-height: 1; }
+	.cu__row:hover .cu__name { opacity: .6; }
+	.cu__note { margin: .7rem 0 0; max-width: 58ch; font-size: .85rem; line-height: 1.5; opacity: .5; }
+</style>

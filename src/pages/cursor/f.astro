@@ -1,0 +1,54 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Wordmark from '../../components/Wordmark.astro';
+---
+
+<Base title="Cursor F — ripple" noindex bodyClass="home">
+	<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+		<filter id="rip">
+			<feTurbulence type="fractalNoise" baseFrequency="0.006" numOctaves="2" seed="4" result="n" />
+			<feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G" />
+		</filter>
+	</svg>
+	<video class="bg fx--rip" autoplay muted loop playsinline preload="metadata" poster="/video/home-poster.jpg">
+		<source src="/video/home.mp4" type="video/mp4" />
+	</video>
+	<div class="overlay cur">
+		<div class="top"><Wordmark /><nav class="top__nav"><Nav bare /></nav></div>
+		<div class="cur__mid"><a href="/work">See the work</a></div>
+		<div class="cur__foot"><a href="/about">About</a><span>The film bends</span></div>
+	</div>
+</Base>
+
+<script>
+	const fe = document.querySelector('#rip feDisplacementMap');
+	const turb = document.querySelector('#rip feTurbulence');
+	if (fe && matchMedia('(hover: hover)').matches) {
+		let raf = null, scale = 0, target = 0, t = 0;
+		addEventListener('mousemove', () => { target = 38; if (!raf) raf = requestAnimationFrame(step); }, { passive: true });
+		const step = () => {
+			t += 0.012;
+			scale += (target - scale) * 0.08;
+			target *= 0.94;
+			fe.setAttribute('scale', scale.toFixed(1));
+			turb.setAttribute('baseFrequency', (0.006 + Math.sin(t) * 0.002).toFixed(4));
+			raf = scale > 0.4 ? requestAnimationFrame(step) : null;
+			if (!raf) fe.setAttribute('scale', '0');
+		};
+	}
+</script>
+
+<style is:global>
+	.cur { z-index: 6; }
+	.cur__mid { display: grid; place-content: center; }
+	.cur__mid a {
+		color: var(--ink); text-decoration: none; pointer-events: auto;
+		font-size: clamp(1.3rem, 5vw, 3.6rem); letter-spacing: -.03em; text-transform: uppercase;
+	}
+	.cur__foot { align-self: end; display: flex; justify-content: space-between; font-size: var(--fs-small); }
+	.cur__foot a { color: var(--ink); pointer-events: auto; }
+
+	.fx--rip { filter: url(#rip); }
+
+</style>
