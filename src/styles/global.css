@@ -867,20 +867,21 @@ html.menu-open {
 	pointer-events: none;
 }
 
-/* The ruling. 3px period: one drawn line, two clear. Multiply lets the
-   darker passages of the footage swallow the lines the way ink does. */
-.film__lines {
+/* The screen. An even dot grid on a 3px pitch — small enough that the eye
+   reads tone rather than dots, which is the whole trick of newsprint.
+   Multiply lets the darker passages of the footage swallow the dots the way
+   ink does on an unlit part of the page. */
+.film__screen {
 	position: absolute;
 	inset: 0;
-	background-image: repeating-linear-gradient(
-		0deg,
-		rgba(0, 0, 0, 0.32) 0px,
-		rgba(0, 0, 0, 0.32) 0.5px,
-		rgba(0, 0, 0, 0) 0.5px,
-		rgba(0, 0, 0, 0) 3px
+	background-image: radial-gradient(
+		circle at center,
+		rgba(0, 0, 0, 0.55) 0.6px,
+		transparent 0.7px
 	);
+	background-size: 3px 3px;
 	mix-blend-mode: multiply;
-	opacity: var(--film-lines, 0.7);
+	opacity: var(--film-screen, 1);
 }
 
 /* Grain. The tile is larger than the viewport and drifts, so the noise
