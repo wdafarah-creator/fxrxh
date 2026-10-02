@@ -27,6 +27,9 @@ const options = [
 	{ id: 'caption', name: 'Caption', note: 'Centred under the wordmark, one line, very small' },
 	{ id: 'float', name: 'Floating cluster', note: 'Corner stack, each line breathing on its own slow cycle' },
 	{ id: 'split', name: 'Split corners', note: 'Lead top-left, list bottom-right — the frame held at opposite ends' },
+	{ id: 'leadfirst', name: 'Lead first', note: 'The lead carries the size; the changing discipline is the label under it' },
+	{ id: 'undermark', name: 'Under the mark', note: 'Lead centred beneath the wordmark, disciplines cycling in the corner' },
+	{ id: 'oneline', name: 'One line', note: 'No label at all — the lead is simply the first item in the rotation' },
 ];
 ---
 
@@ -58,7 +61,7 @@ const options = [
 		<div class="mid">
 			<div class="v v--cycle">
 				<p class="cycle__lead">{lead}</p>
-				<p class="cycle__word" data-cycle>{list[0]}</p>
+				<p class="cycle__word swap" data-cycle data-list={list.join('|')}>{list[0]}</p>
 			</div>
 
 			<div class="v v--caption">
@@ -110,6 +113,23 @@ const options = [
 
 		<div class="v v--rail">
 			<p>{lead}<span class="rail__sep">·</span>{list.join('  ·  ')}</p>
+		</div>
+
+		{/* 09 — the permanent line is the big one, the moving one is the label */}
+		<div class="v v--leadfirst corner">
+			<p class="lf__lead">{lead}</p>
+			<p class="lf__word swap" data-cycle data-list={list.join('|')}>{list[0]}</p>
+		</div>
+
+		{/* 10 — lead under the mark, disciplines left in the corner */}
+		<p class="v v--undermark">{lead}</p>
+		<div class="v v--undermark-corner corner">
+			<p class="um__word swap" data-cycle data-list={list.join('|')}>{list[0]}</p>
+		</div>
+
+		{/* 11 — one line, the lead first in the rotation */}
+		<div class="v v--oneline corner">
+			<p class="ol__word swap" data-cycle data-list={[lead, ...list].join('|')}>{lead}</p>
 		</div>
 
 		<div class="v v--ticker">
@@ -171,7 +191,11 @@ const options = [
 	.overlay[data-on='caption'] .v--caption,
 	.overlay[data-on='float'] .v--float,
 	.overlay[data-on='split'] .v--split,
-	.overlay[data-on='split'] .v--split-lead {
+	.overlay[data-on='split'] .v--split-lead,
+	.overlay[data-on='leadfirst'] .v--leadfirst,
+	.overlay[data-on='undermark'] .v--undermark,
+	.overlay[data-on='undermark'] .v--undermark-corner,
+	.overlay[data-on='oneline'] .v--oneline {
 		display: block;
 	}
 
@@ -359,10 +383,6 @@ const options = [
 		transition: opacity 0.45s var(--ease-smooth);
 	}
 
-	.cycle__word.is-out {
-		opacity: 0;
-	}
-
 	/* --- 06 caption ------------------------------------------------------- */
 
 	.v--caption {
@@ -381,6 +401,69 @@ const options = [
 		font-size: clamp(0.58rem, 0.72vw, 0.7rem) !important;
 		letter-spacing: var(--track-small) !important;
 		opacity: 0.65;
+	}
+
+	/* --- 09 lead first ----------------------------------------------------- */
+
+	/* The emphasis is the other way round from 05: the line that never
+	   changes is the one set large, and the discipline under it is the
+	   label. */
+	.lf__lead {
+		margin: 0;
+		font-size: clamp(1.05rem, 2.3vw, 1.75rem);
+		letter-spacing: var(--track);
+		line-height: 1.08;
+		text-transform: uppercase;
+	}
+
+	.lf__word {
+		margin: 0.45rem 0 0;
+		font-size: clamp(0.66rem, 0.86vw, 0.8rem);
+		font-style: italic;
+		letter-spacing: var(--track-small);
+		text-transform: uppercase;
+		opacity: 0.8;
+	}
+
+	/* --- 10 under the mark -------------------------------------------------- */
+
+	.v--undermark {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: calc(var(--pad) + 3.1rem);
+		margin: 0;
+		text-align: center;
+		font-size: clamp(0.72rem, 0.95vw, 0.9rem);
+		letter-spacing: var(--track);
+		text-transform: uppercase;
+		pointer-events: none;
+	}
+
+	.um__word {
+		margin: 0;
+		font-size: clamp(0.95rem, 1.95vw, 1.5rem);
+		letter-spacing: var(--track);
+		text-transform: uppercase;
+	}
+
+	/* --- 11 one line --------------------------------------------------------- */
+
+	.ol__word {
+		margin: 0;
+		font-size: clamp(0.95rem, 1.95vw, 1.5rem);
+		letter-spacing: var(--track);
+		line-height: 1.08;
+		text-transform: uppercase;
+	}
+
+	/* every cycling line fades the same way */
+	.swap {
+		transition: opacity 0.45s var(--ease-smooth);
+	}
+
+	.swap.is-out {
+		opacity: 0;
 	}
 
 	/* --- chrome ----------------------------------------------------------- */
@@ -473,7 +556,6 @@ const options = [
 	const stage = document.querySelector('[data-stage]');
 	const opts = window.__opts;
 	const list = window.__list;
-	const word = document.querySelector('[data-cycle]');
 	const field = {
 		n: document.querySelector('[data-n]'),
 		t: document.querySelector('[data-t]'),
@@ -484,15 +566,26 @@ const options = [
 	let at = 0;
 	let timer = 0;
 
-	// 05 only runs while it is the one being shown.
+	// Four of the studies cycle a line. Only the one on screen runs, and each
+	// carries its own list — 11's starts with the lead, the others do not.
 	const cycle = () => {
 		clearInterval(timer);
-		if (mode !== 'cycle') return;
+		at = 0;
+
+		const word = [...document.querySelectorAll('[data-cycle]')].find(
+			(e) => e.offsetParent !== null
+		);
+		if (!word) return;
+
+		const items = word.dataset.list.split('|');
+		word.textContent = items[0];
+		word.classList.remove('is-out');
+
 		timer = setInterval(() => {
 			word.classList.add('is-out');
 			setTimeout(() => {
-				at = (at + 1) % list.length;
-				word.textContent = list[at];
+				at = (at + 1) % items.length;
+				word.textContent = items[at];
 				word.classList.remove('is-out');
 			}, 450);
 		}, 2400);
@@ -508,7 +601,8 @@ const options = [
 		document
 			.querySelectorAll('[data-pick]')
 			.forEach((b) => b.setAttribute('aria-current', String(b.dataset.pick === id)));
-		cycle();
+		// after the display switch, so offsetParent reports the live one
+		requestAnimationFrame(cycle);
 	};
 
 	document
