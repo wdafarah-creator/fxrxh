@@ -1,0 +1,511 @@
+---
+import Base from '../../layouts/Base.astro';
+import Wordmark from '../../components/Wordmark.astro';
+import Icon from '../../components/Icon.astro';
+
+// Scratch page. Eight ways to place the lead line and the disciplines now
+// that they no longer drift across the frame. Everything else — the film,
+// the dot screen, the mark, the buttons — is the real home page, so the
+// comparison is honest. Styles stay local until one is picked.
+const list = [
+	'Graphic design',
+	'Art direction',
+	'Photography',
+	'Videography',
+	'Illustration',
+	'CGI',
+];
+
+const lead = 'Multidisciplinary designer';
+
+const options = [
+	{ id: 'stack', name: 'Corner stack', note: 'Right-aligned in the bottom corner, lead above the list' },
+	{ id: 'index', name: 'Indexed list', note: 'The same corner, numbered — reads as a contents page' },
+	{ id: 'rail', name: 'Vertical rail', note: 'Turned on its side, running up the right edge' },
+	{ id: 'ticker', name: 'Ticker', note: 'One slow line along the bottom edge' },
+	{ id: 'cycle', name: 'Cycling', note: 'Lead under the mark, one discipline at a time beneath it' },
+	{ id: 'caption', name: 'Caption', note: 'Centred under the wordmark, one line, very small' },
+	{ id: 'float', name: 'Floating cluster', note: 'Corner stack, each line breathing on its own slow cycle' },
+	{ id: 'split', name: 'Split corners', note: 'Lead top-left, list bottom-right — the frame held at opposite ends' },
+];
+---
+
+<Base title="Home type studies" bodyClass="home" noindex>
+	<video class="bg" autoplay muted loop playsinline preload="metadata" poster="/video/home-poster.jpg">
+		<source src="/video/home.webm" type="video/webm" />
+		<source src="/video/home.mp4" type="video/mp4" />
+	</video>
+
+	<div class="film" aria-hidden="true">
+		<div class="film__grain"></div>
+		<div class="film__screen"></div>
+	</div>
+
+	<div class="overlay" data-stage>
+		<div class="top">
+			{/* 08 puts the lead in the empty left track of the top row */}
+			<p class="v v--split-lead">{lead}</p>
+
+			<Wordmark />
+
+			<nav class="top__nav">
+				<a class="btn btn--round" href="/work"><span>Work</span></a>
+				<a class="btn btn--round" href="/about"><span>About</span></a>
+			</nav>
+		</div>
+
+		{/* 05 + 06 hang under the mark, so they live in the middle row */}
+		<div class="mid">
+			<div class="v v--cycle">
+				<p class="cycle__lead">{lead}</p>
+				<p class="cycle__word" data-cycle>{list[0]}</p>
+			</div>
+
+			<div class="v v--caption">
+				<p>{lead}</p>
+				<p class="caption__list">{list.join('  ·  ')}</p>
+			</div>
+		</div>
+
+		<div class="bottom">
+			<a class="btn btn--with-icon" href="https://instagram.com/02fwa" target="_blank" rel="noopener noreferrer">
+				<Icon name="instagram" />@02fwa
+			</a>
+			<a class="btn btn--with-icon" href="mailto:wdafarah@gmail.com">
+				<Icon name="email" />wdafarah@gmail.com
+			</a>
+		</div>
+
+		{/* --- corner treatments, placed against the frame --- */}
+
+		<div class="v v--stack corner">
+			<p class="corner__lead">{lead}</p>
+			<ul>{list.map((d) => <li>{d}</li>)}</ul>
+		</div>
+
+		<div class="v v--index corner">
+			<p class="corner__lead">{lead}</p>
+			<ul>
+				{list.map((d, i) => (
+					<li>
+						<span>{String(i + 1).padStart(2, '0')}</span>
+						{d}
+					</li>
+				))}
+			</ul>
+		</div>
+
+		<div class="v v--float corner">
+			<p class="corner__lead">{lead}</p>
+			<ul>
+				{list.map((d, i) => (
+					<li style={`--d:${(i * 0.9).toFixed(2)}s; --a:${(3.8 + i * 0.4).toFixed(1)}s`}>{d}</li>
+				))}
+			</ul>
+		</div>
+
+		<div class="v v--split corner">
+			<ul>{list.map((d) => <li>{d}</li>)}</ul>
+		</div>
+
+		<div class="v v--rail">
+			<p>{lead}<span class="rail__sep">·</span>{list.join('  ·  ')}</p>
+		</div>
+
+		<div class="v v--ticker">
+			<div class="ticker__run">
+				{[0, 1].map(() => (
+					<p>
+						{lead}<span>·</span>{list.map((d) => (<>{d}<span>·</span></>))}
+					</p>
+				))}
+			</div>
+		</div>
+	</div>
+
+	<div class="label">
+		<span data-n>01</span>
+		<span class="label__t" data-t></span>
+		<span class="label__d" data-d></span>
+	</div>
+
+	<nav class="picker">
+		{
+			options.map((o, i) => (
+				<button type="button" data-pick={o.id}>
+					<span>{String(i + 1).padStart(2, '0')}</span>
+					{o.name}
+				</button>
+			))
+		}
+	</nav>
+
+	<script define:vars={{ options, list }}>
+		window.__opts = options;
+		window.__list = list;
+	</script>
+</Base>
+
+<style is:global>
+	/* room for the picker along the bottom */
+	.overlay {
+		padding-bottom: calc(var(--pad) + 3.4rem);
+	}
+
+	.mid {
+		display: grid;
+		place-items: center;
+		align-content: center;
+	}
+
+	/* every variant is off until its name is on the stage */
+	.v {
+		display: none;
+	}
+
+	.overlay[data-on='stack'] .v--stack,
+	.overlay[data-on='index'] .v--index,
+	.overlay[data-on='rail'] .v--rail,
+	.overlay[data-on='ticker'] .v--ticker,
+	.overlay[data-on='cycle'] .v--cycle,
+	.overlay[data-on='caption'] .v--caption,
+	.overlay[data-on='float'] .v--float,
+	.overlay[data-on='split'] .v--split,
+	.overlay[data-on='split'] .v--split-lead {
+		display: block;
+	}
+
+	/* --- the corner block, shared by 01 02 07 08 ------------------------- */
+
+	.corner {
+		position: absolute;
+		right: var(--pad);
+		bottom: calc(var(--pad) + 3.4rem);
+		text-align: right;
+		line-height: 1.5;
+		pointer-events: none;
+	}
+
+	.corner ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.corner li {
+		font-size: clamp(0.62rem, 0.8vw, 0.78rem);
+		letter-spacing: var(--track-small);
+		text-transform: uppercase;
+	}
+
+	/* the lead carries the weight; the list sits under it, quieter */
+	.corner__lead {
+		margin: 0 0 0.55rem;
+		font-size: clamp(0.72rem, 0.95vw, 0.9rem);
+		letter-spacing: var(--track);
+		text-transform: uppercase;
+	}
+
+	.corner__lead::after {
+		content: '';
+		display: block;
+		margin-top: 0.5rem;
+		margin-left: auto;
+		width: 1.6rem;
+		height: 1px;
+		background: currentColor;
+		opacity: 0.6;
+	}
+
+	/* 02 — numbers in their own column, so the words still align right */
+	.v--index li {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 0.6rem;
+		justify-content: end;
+	}
+
+	.v--index li span {
+		opacity: 0.45;
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* 07 — each line on its own slow cycle, so the block never moves as a
+	   slab. A quarter of a line's height, no more. */
+	.v--float li {
+		animation: breathe var(--a) ease-in-out var(--d) infinite alternate;
+	}
+
+	@keyframes breathe {
+		from {
+			transform: translateY(0.18rem);
+			opacity: 0.72;
+		}
+		to {
+			transform: translateY(-0.18rem);
+			opacity: 1;
+		}
+	}
+
+	/* 08 — the lead moves up into the empty left track of the top row */
+	.v--split-lead {
+		grid-column: 1;
+		justify-self: start;
+		margin: 0;
+		max-width: 11ch;
+		font-size: clamp(0.72rem, 0.95vw, 0.9rem);
+		letter-spacing: var(--track);
+		line-height: 1.3;
+		text-transform: uppercase;
+	}
+
+	/* --- 03 the rail ------------------------------------------------------ */
+
+	/* Rotating a block around its corner throws it off the frame, so the
+	   rail is set vertically and turned to read bottom-to-top instead. */
+	.v--rail {
+		position: absolute;
+		right: calc(var(--pad) - 0.3rem);
+		top: 50%;
+		translate: 0 -50%;
+		max-height: 70vh;
+		writing-mode: vertical-rl;
+		rotate: 180deg;
+		white-space: nowrap;
+		pointer-events: none;
+	}
+
+	.v--rail p {
+		margin: 0;
+		font-size: clamp(0.6rem, 0.78vw, 0.74rem);
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+	}
+
+	.rail__sep {
+		padding: 0 0.6em;
+		opacity: 0.45;
+	}
+
+	/* --- 04 the ticker ---------------------------------------------------- */
+
+	.v--ticker {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 3.4rem;
+		overflow: hidden;
+		pointer-events: none;
+		-webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+		mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+	}
+
+	.ticker__run {
+		display: flex;
+		width: max-content;
+		animation: run 38s linear infinite;
+	}
+
+	.ticker__run p {
+		margin: 0;
+		padding-right: 2rem;
+		white-space: nowrap;
+		font-size: clamp(0.62rem, 0.8vw, 0.78rem);
+		letter-spacing: var(--track);
+		text-transform: uppercase;
+	}
+
+	.ticker__run span {
+		padding: 0 0.9em;
+		opacity: 0.45;
+	}
+
+	/* two identical runs, so the loop closes on itself */
+	@keyframes run {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	/* --- 05 cycling ------------------------------------------------------- */
+
+	.v--cycle {
+		text-align: center;
+	}
+
+	.cycle__lead {
+		margin: 0;
+		font-size: clamp(0.72rem, 0.95vw, 0.9rem);
+		letter-spacing: var(--track);
+		text-transform: uppercase;
+	}
+
+	.cycle__word {
+		margin: 0.7rem 0 0;
+		font-size: clamp(0.62rem, 0.8vw, 0.78rem);
+		letter-spacing: var(--track-small);
+		text-transform: uppercase;
+		opacity: 0.7;
+		transition: opacity 0.45s var(--ease-smooth);
+	}
+
+	.cycle__word.is-out {
+		opacity: 0;
+	}
+
+	/* --- 06 caption ------------------------------------------------------- */
+
+	.v--caption {
+		text-align: center;
+	}
+
+	.v--caption p {
+		margin: 0;
+		font-size: clamp(0.72rem, 0.95vw, 0.9rem);
+		letter-spacing: var(--track);
+		text-transform: uppercase;
+	}
+
+	.caption__list {
+		margin-top: 0.6rem !important;
+		font-size: clamp(0.58rem, 0.72vw, 0.7rem) !important;
+		letter-spacing: var(--track-small) !important;
+		opacity: 0.65;
+	}
+
+	/* --- chrome ----------------------------------------------------------- */
+
+	.label {
+		position: fixed;
+		left: 1rem;
+		/* clear of the top row, where option 08 puts its lead */
+		top: 5.5rem;
+		z-index: 9;
+		display: grid;
+		gap: 0.15rem;
+		color: #fff;
+		text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.9);
+		font-size: 0.62rem;
+		text-transform: uppercase;
+		letter-spacing: var(--track-small);
+		pointer-events: none;
+	}
+
+	.label__t {
+		font-size: 0.95rem;
+		letter-spacing: var(--track);
+	}
+
+	.label__d {
+		opacity: 0.7;
+		text-transform: none;
+		letter-spacing: 0;
+		max-width: 32ch;
+	}
+
+	.picker {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 10;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1px;
+		padding: 1px;
+		background: rgba(255, 255, 255, 0.12);
+	}
+
+	.picker button {
+		flex: 1 1 auto;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.62rem 0.9rem;
+		border: 0;
+		background: #000;
+		color: #fff;
+		font: inherit;
+		font-size: 0.65rem;
+		text-transform: uppercase;
+		letter-spacing: var(--track-small);
+		cursor: pointer;
+		white-space: nowrap;
+	}
+
+	.picker button span {
+		opacity: 0.4;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.picker button[aria-current='true'] {
+		background: #fff;
+		color: #000;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.v--float li,
+		.ticker__run {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	const stage = document.querySelector('[data-stage]');
+	const opts = window.__opts;
+	const list = window.__list;
+	const word = document.querySelector('[data-cycle]');
+	const field = {
+		n: document.querySelector('[data-n]'),
+		t: document.querySelector('[data-t]'),
+		d: document.querySelector('[data-d]'),
+	};
+
+	let mode = 'stack';
+	let at = 0;
+	let timer = 0;
+
+	// 05 only runs while it is the one being shown.
+	const cycle = () => {
+		clearInterval(timer);
+		if (mode !== 'cycle') return;
+		timer = setInterval(() => {
+			word.classList.add('is-out');
+			setTimeout(() => {
+				at = (at + 1) % list.length;
+				word.textContent = list[at];
+				word.classList.remove('is-out');
+			}, 450);
+		}, 2400);
+	};
+
+	const set = (id) => {
+		mode = id;
+		const i = opts.findIndex((o) => o.id === id);
+		stage.dataset.on = id;
+		field.n.textContent = String(i + 1).padStart(2, '0');
+		field.t.textContent = opts[i].name;
+		field.d.textContent = opts[i].note;
+		document
+			.querySelectorAll('[data-pick]')
+			.forEach((b) => b.setAttribute('aria-current', String(b.dataset.pick === id)));
+		cycle();
+	};
+
+	document
+		.querySelectorAll('[data-pick]')
+		.forEach((b) => b.addEventListener('click', () => set(b.dataset.pick)));
+
+	addEventListener('keydown', (e) => {
+		const n = Number(e.key);
+		if (n >= 1 && n <= opts.length) set(opts[n - 1].id);
+		if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+			const i = opts.findIndex((o) => o.id === mode);
+			const d = e.key === 'ArrowRight' ? 1 : -1;
+			set(opts[(i + d + opts.length) % opts.length].id);
+		}
+	});
+
+	set('stack');
+</script>
