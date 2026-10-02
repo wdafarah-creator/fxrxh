@@ -19,13 +19,6 @@ import Icon from '../components/Icon.astro';
 	</header>
 
 	<main class="about">
-		<figure class="about__film">
-			<video autoplay muted loop playsinline preload="metadata" poster="/video/about-poster.jpg">
-				<source src="/video/about.webm" type="video/webm" />
-				<source src="/video/about.mp4" type="video/mp4" />
-			</video>
-		</figure>
-
 		<div class="about__copy">
 			<h1 class="about__lead">
 				<span class="about__name">Farah Awada</span> — multidisciplinary designer working
@@ -53,5 +46,12 @@ import Icon from '../components/Icon.astro';
 				>
 			</div>
 		</div>
+
+		<figure class="about__film">
+			<video autoplay muted loop playsinline preload="metadata" poster="/video/about-poster.jpg">
+				<source src="/video/about.webm" type="video/webm" />
+				<source src="/video/about.mp4" type="video/mp4" />
+			</video>
+		</figure>
 	</main>
 </Base>
