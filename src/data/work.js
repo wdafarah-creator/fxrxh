@@ -44,6 +44,13 @@ export const artDirection = [
 	  src: `${WORK}/organix lotions - motion design.mp4` },
 	{ slug: 'visual-illusion-kaleidoscope', title: 'Kaleidoscopic Line Series', label: LABELS.motion, w: 1920, h: 1080, dur: '0:14',
 	  src: `${WORK}/visual illusion kaleidoscope.mp4` },
+	{ slug: 'perspective-is-everything', title: 'Perspective Is Everything', label: LABELS.motion, w: 1080, h: 1140, dur: '0:05',
+	  // A "Made with BRIK" plate sat burned into the frame at 808,1151. It is
+	  // cropped off at the source rather than blurred over, so a re-encode can
+	  // never bring it back; the cost is the bottom 210px of a pattern that
+	  // repeats anyway.
+	  crop: '1080:1140:0:0',
+	  src: '/Users/farah/Downloads/recording-1788202824159.mp4' },
 
 	{ slug: 'apocalypse', title: 'What\u2019s Left of Apocalypse', label: LABELS.ai, w: 1176, h: 1756, dur: '0:05',
 	  src: `${DESKTOP}/SIDEWORK/AI/Whats Left of Apocalypse.mp4` },

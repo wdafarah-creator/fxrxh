@@ -19,18 +19,23 @@ mkdir -p "$OUT"
 command -v ffmpeg >/dev/null || { echo "ffmpeg not installed — run: brew install ffmpeg" >&2; exit 1; }
 
 encode() {
-  local src="$1" slug="$2" dest="$3"
+  local src="$1" slug="$2" dest="$3" crop="${4:-}"
   if [ ! -f "$src" ]; then
     echo "  !! missing master: $src"
     return 1
   fi
   echo "==> $slug"
+  # An optional crop runs before the scale — it is how a clip with a tool's
+  # watermark burned into the corner gets it taken off at the source, rather
+  # than blurred over, so a re-encode never brings it back.
+  local vf="scale='min(1440,iw)':-2"
+  [ -n "$crop" ] && vf="crop=$crop,$vf"
   ffmpeg -nostdin -y -loglevel error -i "$src" \
     -an -c:v libx264 -preset slow -crf 30 -pix_fmt yuv420p \
-    -g 60 -vf "scale='min(1440,iw)':-2" -movflags +faststart "$dest/$slug.mp4" || return 1
+    -g 60 -vf "$vf" -movflags +faststart "$dest/$slug.mp4" || return 1
   ffmpeg -nostdin -y -loglevel error -i "$src" \
     -an -c:v libvpx-vp9 -crf 40 -b:v 0 -row-mt 1 -pix_fmt yuv420p \
-    -g 60 -vf "scale='min(1440,iw)':-2" "$dest/$slug.webm" || return 1
+    -g 60 -vf "$vf" "$dest/$slug.webm" || return 1
 
   # VP9 does not always win. On some material it came out larger than H.264,
   # in which case serving it costs bandwidth instead of saving it.
@@ -57,10 +62,10 @@ fi
 if [ "$MODE" != "--home-only" ]; then
   node -e "
     import('./src/data/work.js').then(m => {
-      m.artDirection.forEach(i => console.log(i.slug + '\t' + i.src));
+      m.artDirection.forEach(i => console.log([i.slug, i.src, i.crop || ''].join('\t')));
     });
-  " | while IFS=$'\t' read -r slug src; do
-      [ -n "$slug" ] && encode "$src" "$slug" "$OUT"
+  " | while IFS=$'\t' read -r slug src crop; do
+      [ -n "$slug" ] && encode "$src" "$slug" "$OUT" "$crop"
     done
 fi
 
