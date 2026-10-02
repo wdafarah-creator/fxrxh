@@ -21,7 +21,8 @@ import Icon from '../components/Icon.astro';
 	<main class="about">
 		<div class="about__copy">
 			<h1 class="about__lead">
-				<span class="about__name">Farah Awada</span> — multidisciplinary designer working
+				<span class="about__name">Farah Awada</span>
+				<span class="about__star" aria-hidden="true">⋆˙⟡</span> multidisciplinary designer working
 				across graphic design, art direction, photography, videography, illustration and CGI.
 			</h1>
 			<p>Directing and editing AI-generated content and CGI video alongside work shot on camera.</p>
@@ -56,28 +57,3 @@ import Icon from '../components/Icon.astro';
 	</main>
 </Base>
 
-<script>
-	// The circle leans toward the pointer — a few pixels, so it reads as the
-	// page noticing you rather than as something moving.
-	const film = document.querySelector('.about__film');
-
-	if (film && matchMedia('(hover: hover)').matches) {
-		const REACH = 14;
-
-		addEventListener(
-			'pointermove',
-			(e) => {
-				const x = (e.clientX / innerWidth - 0.5) * 2;
-				const y = (e.clientY / innerHeight - 0.5) * 2;
-				film.style.setProperty('--mx', (x * REACH).toFixed(1));
-				film.style.setProperty('--my', (y * REACH).toFixed(1));
-			},
-			{ passive: true }
-		);
-
-		document.documentElement.addEventListener('pointerleave', () => {
-			film.style.setProperty('--mx', '0');
-			film.style.setProperty('--my', '0');
-		});
-	}
-</script>
