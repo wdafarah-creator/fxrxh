@@ -15,6 +15,13 @@ import { artDirection } from '../../data/work.js';
 		{
 			artDirection.map((item, i) => (
 				<figure class={`sheet__cell${item.portrait ? ' is-portrait' : ''}`}>
+					<button
+						class="sheet__open"
+						type="button"
+						data-open={`/video/work/${item.slug}.mp4`}
+						data-caption={item.title}
+						aria-label={`Play ${item.title} full screen`}
+					/>
 					<video
 						class="sheet__video"
 						data-src={`/video/work/${item.slug}.mp4`}
@@ -36,6 +43,12 @@ import { artDirection } from '../../data/work.js';
 			))
 		}
 	</div>
+	{/* One player, reused for whichever tile is opened. */}
+	<dialog class="lightbox" id="lightbox" aria-label="Full screen player">
+		<video class="lightbox__video" controls loop playsinline></video>
+		<p class="lightbox__cap" data-lb-cap></p>
+		<button class="lightbox__close" type="button" aria-label="Close">Close</button>
+	</dialog>
 </Base>
 
 <script>
@@ -77,5 +90,33 @@ import { artDirection } from '../../data/work.js';
 	videos.forEach((v) => {
 		play.observe(v);
 		release.observe(v);
+	});
+
+	// --- full screen player -------------------------------------------------
+	const box = document.getElementById('lightbox');
+	const player = box.querySelector('.lightbox__video');
+	const cap = box.querySelector('[data-lb-cap]');
+
+	const close = () => {
+		player.pause();
+		player.removeAttribute('src');
+		player.load();
+		if (box.open) box.close();
+	};
+
+	document.querySelectorAll('[data-open]').forEach((btn) => {
+		btn.addEventListener('click', () => {
+			player.src = btn.dataset.open;
+			cap.textContent = btn.dataset.caption ?? '';
+			box.showModal();
+			player.play().catch(() => {});
+		});
+	});
+
+	box.querySelector('.lightbox__close').addEventListener('click', close);
+	box.addEventListener('close', close);
+	// clicking the backdrop, i.e. outside the player itself
+	box.addEventListener('click', (e) => {
+		if (e.target === box) close();
 	});
 </script>

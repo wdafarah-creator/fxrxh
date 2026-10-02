@@ -1205,11 +1205,26 @@ html.menu-open {
 	margin: 0 0 clamp(1.5rem, 4vw, 3rem);
 }
 
+/* Each piece is capped to sit inside the window with room around it — a
+   tall poster at full column width runs well past the fold, so you end up
+   scrolling through one image instead of reading the project. */
 .project__figure img {
-	width: 100%;
+	width: auto;
+	max-width: 100%;
 	height: auto;
+	max-height: 76vh;
+	margin-inline: auto;
 	display: block;
 	background: #111;
+}
+
+/* mockup plates size to their contents, so the cap belongs on the plate too */
+.project__figure .mockup {
+	max-height: 82vh;
+}
+
+.project__figure .mockup img {
+	max-height: 70vh;
 }
 
 /* Marks, highlight covers and other small artwork. At full column width a
@@ -2849,9 +2864,31 @@ body:not(.home) .index-list .row:focus-visible .row__title {
 }
 
 .sheet__cell {
+	position: relative;
 	margin: 0;
 	display: grid;
+	grid-template-rows: auto 1fr;
 	gap: 0.55rem;
+	align-content: start;
+}
+
+/* Covers the clip so the whole tile is the hit area. */
+.sheet__open {
+	position: absolute;
+	inset: 0;
+	bottom: auto;
+	aspect-ratio: 16 / 9;
+	width: 100%;
+	z-index: 2;
+	padding: 0;
+	border: 0;
+	background: none;
+	cursor: pointer;
+}
+
+.sheet__open:focus-visible {
+	outline: 2px solid var(--ink);
+	outline-offset: 2px;
 }
 
 .sheet__video {
@@ -2869,8 +2906,10 @@ body:not(.home) .index-list .row:focus-visible .row__title {
 	transition: filter 0.45s var(--ease-smooth);
 }
 
+/* Portrait clips keep their whole frame inside the same box, so nothing is
+   cropped and every row still lines up. */
 .sheet__cell.is-portrait .sheet__video {
-	aspect-ratio: 4 / 5;
+	object-fit: contain;
 }
 
 .sheet__cell:hover .sheet__video {
@@ -2916,4 +2955,71 @@ body:not(.home) .index-list .row:focus-visible .row__title {
 	.sheet__l {
 		grid-column: 1 / -1;
 	}
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Full screen player                                                  */
+/* ------------------------------------------------------------------ */
+
+.lightbox {
+	width: 100vw;
+	max-width: 100vw;
+	height: 100vh;
+	max-height: 100vh;
+	margin: 0;
+	padding: clamp(1rem, 4vw, 3rem);
+	border: 0;
+	background: #000;
+	color: var(--ink);
+	display: grid;
+	grid-template-rows: 1fr auto;
+	gap: 0.8rem;
+	place-items: center;
+}
+
+.lightbox::backdrop {
+	background: rgba(0, 0, 0, 0.92);
+}
+
+.lightbox:not([open]) {
+	display: none;
+}
+
+.lightbox__video {
+	width: 100%;
+	height: 100%;
+	max-height: 100%;
+	object-fit: contain;
+	background: #000;
+}
+
+.lightbox__cap {
+	margin: 0;
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	opacity: 0.7;
+}
+
+.lightbox__close {
+	position: absolute;
+	top: clamp(0.8rem, 2.5vw, 1.6rem);
+	right: clamp(0.8rem, 2.5vw, 1.6rem);
+	padding: 0.62em 1.1em;
+	border: 1px solid currentColor;
+	border-radius: 999px;
+	background: none;
+	color: var(--ink);
+	font: inherit;
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	cursor: pointer;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.lightbox__close:hover {
+	background: var(--ink);
+	color: #000;
 }
