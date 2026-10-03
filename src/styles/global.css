@@ -1592,9 +1592,9 @@ body.about-page { background: #000; }
 .about {
 	min-height: 100vh;
 	display: grid;
-	grid-template-columns: minmax(0, 1fr) auto;
-	/* the words start at the top and run down; the circle sits with them
-	   rather than being centred against the whole column */
+	/* One column: the film is in the run of the text now, not a column of
+	   its own beside it. */
+	grid-template-columns: minmax(0, 1fr);
 	align-items: start;
 	gap: clamp(1.5rem, 4vw, 3rem);
 	padding: calc(var(--pad) * 3) var(--pad) var(--pad);
@@ -1606,16 +1606,15 @@ body.about-page { background: #000; }
 
 .about__film {
 	margin: 0;
-	width: clamp(11rem, 26vw, 23rem);
+	width: clamp(9rem, 19vw, 17rem);
 	aspect-ratio: 1;
 	overflow: hidden;
 	border-radius: 50%;
 	background: #0a0a0a;
-	/* pulled in off the right edge, and dropped so it sits against the
-	   middle of the text rather than level with its first line */
-	justify-self: end;
-	margin-right: clamp(0rem, 6vw, 7rem);
-	margin-top: clamp(3rem, 14vh, 9rem);
+	/* a beat between the two paragraphs, set in from the margin so it reads
+	   as an inset rather than as another block of the text */
+	justify-self: start;
+	margin: clamp(0.4rem, 1.4vh, 1rem) 0 clamp(0.4rem, 1.4vh, 1rem) clamp(0rem, 4vw, 4rem);
 }
 
 .about__film video {
@@ -1631,7 +1630,7 @@ body.about-page { background: #000; }
 	justify-items: start;
 	/* Not ch: the container still carries the small font the page sets, so a
 	   ch measure here would size itself against the wrong text. */
-	max-width: 42rem;
+	max-width: 46rem;
 }
 
 /* One size for the whole page — nothing is a caption. What separates the
@@ -1712,9 +1711,7 @@ body.about-page { background: #000; }
 	.about__film {
 		justify-self: start;
 		width: clamp(10rem, 44vw, 16rem);
-		/* the desktop offsets only make sense beside the words */
-		margin-right: 0;
-		margin-top: 0;
+		margin-left: 0;
 	}
 }
 
