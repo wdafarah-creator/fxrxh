@@ -3,18 +3,38 @@ import Icon from './Icon.astro';
 
 interface Props {
 	/** The project to send the reader to next, if there is one. */
-	next?: { slug: string; title: string; scope?: string };
+	next?: { slug?: string; href?: string; title: string; scope?: string };
 	/** Where "all work" points. */
 	indexHref?: string;
 	indexLabel?: string;
+	/** The contact block is the page's only one on most pages. Where the page
+	    already carries its own — About does — it is turned off here. */
+	contact?: boolean;
 }
-const { next, indexHref = '/work/graphic-design', indexLabel = 'All graphic design' } = Astro.props;
+const {
+	next,
+	indexHref = '/work/graphic-design',
+	indexLabel = 'All graphic design',
+	contact = true,
+} = Astro.props;
+
+// Built, not hardcoded: a stale year is the clearest sign of an abandoned site.
+const year = new Date().getFullYear();
 ---
 
 <footer class="foot">
+	{/* First thing at the foot of the page, so it is reached the moment the
+	    content runs out rather than after everything else in here. */}
+	<button class="foot__top" type="button" data-top>
+		Back to top
+		<svg viewBox="0 0 16 16" aria-hidden="true">
+			<path d="M8 14 L8 3 M3 7.5 L8 2 L13 7.5" />
+		</svg>
+	</button>
+
 	{
 		next && (
-			<a class="foot__next" href={`/work/graphic-design/${next.slug}`}>
+			<a class="foot__next" href={next.href ?? `/work/graphic-design/${next.slug}`}>
 				<span class="foot__kicker">Next project</span>
 				<span class="foot__title">{next.title}</span>
 				{next.scope && <span class="foot__scope">{next.scope}</span>}
@@ -25,19 +45,41 @@ const { next, indexHref = '/work/graphic-design', indexLabel = 'All graphic desi
 	<div class="foot__end">
 		<a class="btn" href={indexHref}>{indexLabel}</a>
 
-		<div class="foot__contact">
-			<span class="foot__kicker">Get in touch</span>
-			<div class="foot__links">
-				<a
-					class="btn btn--with-icon"
-					href="https://instagram.com/02fwa"
-					target="_blank"
-					rel="noopener noreferrer"><Icon name="instagram" />@02fwa</a
-				>
-				<a class="btn btn--with-icon" href="mailto:wdafarah@gmail.com"
-					><Icon name="email" />wdafarah@gmail.com</a
-				>
+		{contact && (
+			<div class="foot__contact">
+				<span class="foot__kicker">Get in touch</span>
+				<div class="foot__links">
+					<a
+						class="btn btn--with-icon"
+						href="https://instagram.com/02fwa"
+						target="_blank"
+						rel="noopener noreferrer"><Icon name="instagram" />@02fwa</a
+					>
+					<a class="btn btn--with-icon" href="mailto:wdafarah@gmail.com"
+						><Icon name="email" />wdafarah@gmail.com</a
+					>
+				</div>
 			</div>
-		</div>
+		)}
+	</div>
+
+	<div class="foot__base">
+		<p class="foot__legal">
+			<span>&copy; {year} Farah Awada</span>
+			<span class="foot__dot" aria-hidden="true">&middot;</span>
+			<span>Based in Spain</span>
+			<span class="foot__dot" aria-hidden="true">&middot;</span>
+			<span>Available for commissions</span>
+		</p>
+
 	</div>
 </footer>
+
+<script>
+	// Every footer on the site carries one of these.
+	document.querySelectorAll('[data-top]').forEach((b) =>
+		b.addEventListener('click', () =>
+			window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+		)
+	);
+</script>

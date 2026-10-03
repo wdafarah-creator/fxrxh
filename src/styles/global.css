@@ -2707,7 +2707,71 @@ body.has-fog .peek {
 	justify-content: space-between;
 	gap: clamp(1rem, 3vw, 2rem);
 	border-top: 1px solid color-mix(in srgb, currentColor 16%, transparent);
-	padding: clamp(1.2rem, 3vw, 2rem) 0 clamp(2rem, 5vw, 3.5rem);
+	padding: clamp(1.2rem, 3vw, 2rem) 0 clamp(1.4rem, 3.5vw, 2.4rem);
+}
+
+/* The last line of the site: who owns it, where she is, and whether she is
+   taking work — plus the way back up, which the long pages need. */
+.foot__base {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 0.8rem clamp(1rem, 3vw, 2rem);
+	border-top: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+	padding: clamp(1rem, 2.5vw, 1.5rem) 0 clamp(1.8rem, 4vw, 3rem);
+}
+
+.foot__legal {
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5em;
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	opacity: 0.6;
+}
+
+.foot__dot {
+	opacity: 0.55;
+}
+
+/* Sits at the head of the footer, hard right — the first thing to hand once
+   the scrolling stops. On its own row rather than floated: floated, the
+   next-project title wrapped around it and collided on a narrow screen. */
+.foot__top {
+	display: flex;
+	align-items: center;
+	gap: 0.5em;
+	width: fit-content;
+	margin: 0 0 clamp(0.8rem, 2vw, 1.4rem) auto;
+	padding: 0.4em 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+	font-size: var(--fs-small);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	cursor: pointer;
+	opacity: 0.6;
+	transition: opacity 0.25s var(--ease-smooth);
+}
+
+.foot__top:hover,
+.foot__top:focus-visible {
+	opacity: 1;
+}
+
+.foot__top svg {
+	width: 0.8em;
+	height: 0.8em;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.6;
+	stroke-linecap: square;
 }
 
 .foot__contact {
@@ -2723,6 +2787,11 @@ body.has-fog .peek {
 
 @media (max-width: 560px) {
 	.foot__end {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.foot__base {
 		flex-direction: column;
 		align-items: flex-start;
 	}
@@ -3450,6 +3519,12 @@ body:not(.home) .index-list .row:focus-visible .row__title {
 	/* the hairline keeps its look; only the invisible target grows */
 	.lb__scrub::before {
 		inset: -18px 0;
+	}
+
+	/* the footer's own control, which is text rather than a pill */
+	.foot__top {
+		min-height: 44px;
+		padding-right: 0.2em;
 	}
 
 	/* the menu is a list of links, so they need the height too */
