@@ -1050,7 +1050,10 @@ html.menu-open {
 .index-list {
 	list-style: none;
 	margin: 0;
-	padding: calc(var(--pad) * 4) var(--pad) calc(var(--pad) * 3);
+	/* No bottom padding: the last row's rule should be the end of the list.
+	   The footer brings its own margin, so anything here is dead space under
+	   the final project — and it grew every time a project was added. */
+	padding: calc(var(--pad) * 4) var(--pad) 0;
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
@@ -1838,7 +1841,11 @@ body.about-page { background: #000; }
 	position: relative;
 	aspect-ratio: 16 / 10;
 	overflow: hidden;
-	background: #fff;
+	/* The green of the page's own footer. The loop fades out onto this at
+	   the bottom, so the end of the scroll reads as the end of the page
+	   rather than as the screen going blank — which is what a white plate
+	   under a faded-out page looked like. */
+	background: #bfd9b0;
 	border-radius: 3px;
 }
 
@@ -1849,6 +1856,11 @@ body.about-page { background: #000; }
 	width: 100%;
 	height: auto;
 	display: block;
+	/* The page's 76vh cap does not apply in here. The width is pinned to the
+	   screen, so a cap on the height has nothing to give and simply squashes
+	   the page out of proportion — which is what it was doing. The frame
+	   already crops: that is the whole point of it. */
+	max-height: none;
 }
 
 .laptop__screen.is-scrolling img {
@@ -1861,17 +1873,15 @@ body.about-page { background: #000; }
    out before the jump and faded back in after it, and the cut is never
    seen. Travels the full height whatever that is. */
 @keyframes laptop-scroll {
-	0% {
-		transform: translateY(0);
-		opacity: 0;
-	}
-	4%,
+	/* No fade in. The page is simply there at the top again, which cuts from
+	   the footer green to the header — a reload, not a flash of nothing. */
+	0%,
 	10% {
 		transform: translateY(0);
 		opacity: 1;
 	}
 	92%,
-	96% {
+	97% {
 		transform: translateY(calc(-100% + 62.5cqw));
 		opacity: 1;
 	}
@@ -2587,8 +2597,9 @@ body.has-fog .peek {
 	height: 100%;
 	overflow: hidden;
 	border-radius: 1.75rem;
-	/* the specimen's own sky, so no seam shows at its edges */
-	background: #29b8e8;
+	/* the pale blue the specimen ends on, so the fade at the foot of the
+	   loop lands on the specimen's own colour rather than a bright seam */
+	background: #e4f6fc;
 	container-type: inline-size;
 }
 
@@ -2600,6 +2611,8 @@ body.has-fog .peek {
 	height: auto;
 	display: block;
 	background: transparent;
+	/* same reason as the laptop */
+	max-height: none;
 	animation: phone-scroll 26s ease-in-out infinite;
 }
 
@@ -2608,17 +2621,13 @@ body.has-fog .peek {
    of the specimen back to its head, so it is faded out before the jump and
    back in after, and the cut is never seen. */
 @keyframes phone-scroll {
-	0% {
-		transform: translateY(0);
-		opacity: 0;
-	}
-	4%,
+	0%,
 	10% {
 		transform: translateY(0);
 		opacity: 1;
 	}
 	92%,
-	96% {
+	97% {
 		transform: translateY(calc(-100% + 225cqw));
 		opacity: 1;
 	}
