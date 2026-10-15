@@ -67,8 +67,6 @@ export const graphicProjects = [
 		cover: 'logo.png',
 		coverContain: true,
 		logo: { file: 'logo.png', caption: 'Logotype' },
-		// Built from the dieline: 150 × 150 × 50 mm, white card, 1.2 mm.
-		box: { caption: 'Cookie box \u2014 150 \u00d7 150 \u00d7 50 mm' },
 		coverBg: '#8ba9f2',
 		blurb:
 			'Identity for a cookie shop: a hand-drawn wordmark, a roundel that works as a ' +
@@ -76,6 +74,10 @@ export const graphicProjects = [
 		// master: SIDEWORK/highgradexseawold/SHORT VIDS/crumbcultvideo.mp4
 		video: { file: 'crumb-cult-reel', portrait: true, caption: 'Short reel \u2014 trial edit' },
 		images: [
+			// Photographic mockups: the wordmark printed onto a real box and a
+			// real fascia, rather than the CSS-drawn carton this used to show.
+			{ file: 'storefront.jpg', caption: 'Shopfront' },
+			{ file: 'box-mockup.jpg', caption: 'Cookie box \u2014 150 \u00d7 150 \u00d7 50 mm' },
 			{ file: 'logo-variations.png', caption: 'Logo variations', size: 'tall' },
 			{ file: 'stickers.png', caption: 'Sticker set' },
 			{ file: 'menu.jpg', caption: 'Menu', mockup: true },
