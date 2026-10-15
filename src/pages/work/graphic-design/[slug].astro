@@ -430,3 +430,53 @@ const cover = project.cover ?? project.images.find((i) => i.file)?.file;
 		}
 	});
 </script>
+
+<script>
+	// The laptop and phone pages scroll themselves on a loop. Hovering hands
+	// that over: the wheel scrubs the same animation rather than driving a
+	// second, separate scroll position, so there is nothing to reconcile when
+	// the pointer leaves — it simply plays on from wherever it was left.
+	document.querySelectorAll('.laptop__screen, .phone__screen').forEach((screen) => {
+		const img = screen.querySelector('img');
+		if (!img) return;
+
+		const anim = () => img.getAnimations()[0];
+
+		screen.addEventListener('pointerenter', () => {
+			const a = anim();
+			if (a) {
+				a.pause();
+				screen.classList.add('is-held');
+			}
+		});
+
+		screen.addEventListener('pointerleave', () => {
+			const a = anim();
+			if (a) a.play();
+			screen.classList.remove('is-held');
+		});
+
+		screen.addEventListener(
+			'wheel',
+			(e) => {
+				const a = anim();
+				if (!a || a.playState !== 'paused') return;
+
+				const dur = a.effect.getTiming().duration;
+				// stay inside the travelling part of the loop; the ends of it
+				// are the holds and the fade, which are not page positions
+				const lo = dur * 0.1;
+				const hi = dur * 0.92;
+				const step = e.deltaY * (dur / 2600);
+				const next = Math.min(hi, Math.max(lo, a.currentTime + step));
+
+				// at either end of the page, let the wheel go back to the
+				// document rather than trapping it in here
+				if (next === a.currentTime) return;
+				e.preventDefault();
+				a.currentTime = next;
+			},
+			{ passive: false }
+		);
+	});
+</script>

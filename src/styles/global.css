@@ -1895,6 +1895,24 @@ body.about-page { background: #000; }
 	container-type: inline-size;
 }
 
+/* The pages can be scrolled by hand on hover — say so. */
+.laptop__screen,
+.phone__screen {
+	cursor: ns-resize;
+}
+
+.laptop__screen.is-held,
+.phone__screen.is-held {
+	cursor: grabbing;
+}
+
+@media (hover: none) {
+	.laptop__screen,
+	.phone__screen {
+		cursor: default;
+	}
+}
+
 .laptop__base {
 	height: 10px;
 	margin: 0 -3%;
