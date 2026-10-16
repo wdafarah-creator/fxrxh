@@ -56,6 +56,7 @@ const cover = project.cover ?? project.images.find((i) => i.file)?.file;
 										alt={project.phone.caption ?? `${project.title} — specimen`}
 										loading="lazy"
 									/>
+								<span class="screen-hint">Drag to scroll</span>
 							</div>
 						</div>
 					</div>
@@ -72,6 +73,7 @@ const cover = project.cover ?? project.images.find((i) => i.file)?.file;
 							<div class="laptop__lid">
 								<div class={`laptop__screen${screen.scroll ? ' is-scrolling' : ''}`}>
 									<img src={`/img/work/${project.slug}/${screen.file}`} alt={screen.caption} loading="lazy" />
+									<span class="screen-hint">Drag to scroll</span>
 								</div>
 							</div>
 							<div class="laptop__base" />
@@ -490,7 +492,10 @@ const cover = project.cover ?? project.images.find((i) => i.file)?.file;
 					if (!a || a.playState !== 'paused') return;
 					// at either end let the wheel go back to the document, so
 					// there is no scroll trap
-					if (scrub(a, e.deltaY)) e.preventDefault();
+					if (scrub(a, e.deltaY)) {
+						e.preventDefault();
+						screen.classList.add('is-touched');
+					}
 				},
 				{ passive: false }
 			);
@@ -499,9 +504,12 @@ const cover = project.cover ?? project.images.find((i) => i.file)?.file;
 		// --- drag, for a thumb or a held mouse button -------------------------
 		let from = null;
 
+		const used = () => screen.classList.add('is-touched');
+
 		screen.addEventListener('pointerdown', (e) => {
 			const a = anim();
 			if (!a) return;
+			used();
 			from = e.clientY;
 			hold();
 			screen.setPointerCapture(e.pointerId);

@@ -1900,6 +1900,31 @@ body.about-page { background: #000; }
 	container-type: inline-size;
 }
 
+/* Says the screen can be driven. It goes the moment it is, and never comes
+   back — it is an instruction, not a label. */
+.screen-hint {
+	position: absolute;
+	z-index: 3;
+	left: 50%;
+	bottom: 7%;
+	translate: -50% 0;
+	padding: 0.4em 0.85em;
+	border-radius: 999px;
+	background: rgba(10, 10, 12, 0.72);
+	color: #fff;
+	font-size: clamp(0.5rem, 1.05vw, 0.66rem);
+	text-transform: uppercase;
+	letter-spacing: var(--track-small);
+	white-space: nowrap;
+	pointer-events: none;
+	transition: opacity 0.4s var(--ease-smooth);
+}
+
+.laptop__screen.is-touched .screen-hint,
+.phone__screen.is-touched .screen-hint {
+	opacity: 0;
+}
+
 /* The pages can be scrolled by hand — say so, and take the vertical gesture
    on a touch screen so a thumb drag moves the page rather than the document.
    Both are small enough that there is always somewhere else to scroll. */
@@ -3031,6 +3056,9 @@ body.has-fog .peek {
 	width: 0.42rem;
 	height: 0.42rem;
 	padding: 0;
+	/* A button does not inherit colour — without this the dots fell back to
+	   the browser's own default rather than the ink around them. */
+	color: inherit;
 	border: 1px solid currentColor;
 	border-radius: 50%;
 	background: none;
