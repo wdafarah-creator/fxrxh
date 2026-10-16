@@ -2518,7 +2518,11 @@ body.has-fog {
 	backdrop-filter: blur(42px) saturate(0.75);
 }
 
-body.has-fog .index-list {
+/* The fog is a fixed sheet at z-index 1. Anything that should read through
+   it has to be lifted above it — the list was, the footer was not, so the
+   footer sat under the fog and the page looked like it just stopped. */
+body.has-fog .index-list,
+body.has-fog .foot {
 	position: relative;
 	z-index: 2;
 }
