@@ -21,6 +21,14 @@ export const graphicProjects = [
 			{ file: '06.jpg', caption: 'DJ lanyard' },
 			{ file: '07.jpg', caption: 'Crew lanyard' },
 			{ file: 'ticket.jpg', caption: 'Event ticket \u2014 Fideles, 15.07.22' },
+
+			// A3 event banners. Shown on a wall first — the flats are black to
+			// the edge, so on a black page they have no boundary and read as
+			// floating elements rather than as printed sheets.
+			{ file: 'banners-wall.jpg', caption: 'Event banners \u2014 A3' },
+			{ file: 'banner-01.jpg', caption: 'Put on your smiley face' },
+			{ file: 'banner-02.jpg', caption: 'Keep your bullsh*t at home' },
+			{ file: 'banner-03.jpg', caption: 'Feel it, don\u2019t just hear it' },
 		],
 		video: { file: 'nonsense-edit', caption: 'Event video' },
 	},
@@ -202,6 +210,7 @@ export const graphicProjects = [
 			{ file: 'psych.jpg', caption: 'Psych' },
 			{ file: 'glitch.jpg', caption: 'Untitled' },
 			{ file: 'desert.jpg', caption: 'Sandstone — CGI' },
+			{ file: 'collage-planet.jpg', caption: 'Collage' },
 			{ file: 'art-01.jpg', caption: 'Art poster' },
 			{ file: 'art-02.jpg', caption: 'Art poster' },
 			{ file: 'art-03.jpg', caption: 'Art poster' },
