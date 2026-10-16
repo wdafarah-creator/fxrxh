@@ -1,0 +1,82 @@
+---
+// Desktop only, and only where there is a real pointer. The ring trails the
+// dot slightly, which is what makes it read as attached to the hand rather
+// than painted on the screen.
+---
+
+<div class="cur" aria-hidden="true">
+	<span class="cur__dot" data-cur-dot></span>
+	<span class="cur__ring" data-cur-ring></span>
+</div>
+
+<script>
+	const fine = matchMedia('(hover: hover) and (pointer: fine)');
+	if (fine.matches) {
+		const dot = document.querySelector('[data-cur-dot]');
+		const ring = document.querySelector('[data-cur-ring]');
+		const calm = matchMedia('(prefers-reduced-motion: reduce)');
+
+		document.documentElement.classList.add('has-cursor');
+
+		let x = innerWidth / 2;
+		let y = innerHeight / 2;
+		let rx = x;
+		let ry = y;
+		let raf = 0;
+
+		const draw = () => {
+			raf = 0;
+			// the ring eases toward the pointer; the dot is always exact
+			const k = calm.matches ? 1 : 0.18;
+			rx += (x - rx) * k;
+			ry += (y - ry) * k;
+			dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+			ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
+			if (Math.abs(x - rx) > 0.1 || Math.abs(y - ry) > 0.1) raf = requestAnimationFrame(draw);
+		};
+
+		const tick = () => {
+			if (!raf) raf = requestAnimationFrame(draw);
+		};
+
+		addEventListener(
+			'pointermove',
+			(e) => {
+				if (e.pointerType !== 'mouse') return;
+				x = e.clientX;
+				y = e.clientY;
+				document.documentElement.classList.add('cursor-on');
+				tick();
+			},
+			{ passive: true }
+		);
+
+		// Anything you can act on opens the ring; the two mockups say what the
+		// drag does, because a ring alone does not.
+		const TARGET = 'a, button, .row, .sheet__open, [role="button"]';
+		const DRAG = '.laptop__screen, .phone__screen';
+
+		addEventListener(
+			'pointerover',
+			(e) => {
+				if (!e.target.closest) return;
+				document.documentElement.classList.toggle('cursor-live', !!e.target.closest(TARGET));
+				document.documentElement.classList.toggle('cursor-drag', !!e.target.closest(DRAG));
+			},
+			{ passive: true }
+		);
+
+		addEventListener('pointerdown', () => document.documentElement.classList.add('cursor-down'));
+		addEventListener('pointerup', () => document.documentElement.classList.remove('cursor-down'));
+
+		// Only a real exit from the page hides it. pointerleave on document
+		// also fires as the pointer passes between elements in some engines,
+		// which left the cursor invisible while the dot was still tracking.
+		document.documentElement.addEventListener('mouseleave', () =>
+			document.documentElement.classList.remove('cursor-on')
+		);
+		document.documentElement.addEventListener('mouseenter', () =>
+			document.documentElement.classList.add('cursor-on')
+		);
+	}
+</script>

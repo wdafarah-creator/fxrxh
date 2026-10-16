@@ -3619,3 +3619,89 @@ body:not(.home) .index-list .row:focus-visible .row__title {
 		align-items: center;
 	}
 }
+
+/* ------------------------------------------------------------------ */
+/* Cursor                                                              */
+/* A dot on the pointer and a ring easing after it, both difference-    */
+/* blended so they invert against whatever they cross — the same way    */
+/* every other mark on this site reads over the footage.                */
+/* ------------------------------------------------------------------ */
+
+.cur {
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	pointer-events: none;
+	mix-blend-mode: difference;
+	opacity: 0;
+	transition: opacity 0.25s var(--ease-smooth);
+}
+
+html.cursor-on .cur {
+	opacity: 1;
+}
+
+.cur__dot,
+.cur__ring {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: block;
+	border-radius: 999px;
+	/* drawn from their own centre, so the transform is the pointer itself */
+	margin: -50% 0 0 -50%;
+	will-change: transform;
+}
+
+.cur__dot {
+	width: 6px;
+	height: 6px;
+	margin: -3px 0 0 -3px;
+	background: #fff;
+}
+
+.cur__ring {
+	width: 34px;
+	height: 34px;
+	margin: -17px 0 0 -17px;
+	border: 1px solid rgba(255, 255, 255, 0.85);
+	transition:
+		width 0.3s var(--ease-smooth),
+		height 0.3s var(--ease-smooth),
+		margin 0.3s var(--ease-smooth),
+		opacity 0.3s var(--ease-smooth);
+}
+
+/* over something you can act on, the ring opens out */
+html.cursor-live .cur__ring {
+	width: 56px;
+	height: 56px;
+	margin: -28px 0 0 -28px;
+}
+
+/* over a mockup it closes to a tight grip */
+html.cursor-drag .cur__ring {
+	width: 22px;
+	height: 22px;
+	margin: -11px 0 0 -11px;
+}
+
+/* pressed */
+html.cursor-down .cur__ring {
+	width: 18px;
+	height: 18px;
+	margin: -9px 0 0 -9px;
+}
+
+/* The native arrow goes, but only once ours is actually tracking, so a
+   page that never sees a mouse is never left with no cursor at all. */
+html.has-cursor.cursor-on,
+html.has-cursor.cursor-on * {
+	cursor: none;
+}
+
+@media (hover: none), (pointer: coarse) {
+	.cur {
+		display: none;
+	}
+}
