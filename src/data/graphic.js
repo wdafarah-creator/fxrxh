@@ -130,6 +130,44 @@ export const graphicProjects = [
 				],
 			},
 
+			{
+				section: 'Series 3',
+				note: 'Lebanese diaspora \u2014 leaving, staying, and the distance between',
+			},
+			{
+				mockup: true,
+				slides: [
+					{ file: 'series3-01.jpg', caption: 'Series 3 \u2014 01' },
+					{ file: 'series3-02.jpg', caption: 'Series 3 \u2014 02' },
+					{ file: 'series3-03.jpg', caption: 'Series 3 \u2014 03' },
+					{ file: 'series3-04.jpg', caption: 'Series 3 \u2014 04' },
+					{ file: 'series3-05.jpg', caption: 'Series 3 \u2014 05' },
+					{ file: 'series3-06.jpg', caption: 'Series 3 \u2014 06' },
+					{ file: 'series3-07.jpg', caption: 'Series 3 \u2014 07' },
+					{ file: 'series3-08.jpg', caption: 'Series 3 \u2014 08' },
+					{ file: 'series3-09.jpg', caption: 'Series 3 \u2014 09' },
+					{ file: 'series3-10.jpg', caption: 'Series 3 \u2014 10' },
+					{ file: 'series3-11.jpg', caption: 'Series 3 \u2014 11' },
+					{ file: 'series3-12.jpg', caption: 'Series 3 \u2014 12' },
+					{ file: 'series3-13.jpg', caption: 'Series 3 \u2014 13' },
+					{ file: 'series3-14.jpg', caption: 'Series 3 \u2014 14' },
+					{ file: 'series3-15.jpg', caption: 'Series 3 \u2014 15' },
+				],
+			},
+
+			{
+				section: 'Lehar',
+				note: 'Instagram posts for Nonsense \u2014 three square designs',
+			},
+			{
+				mockup: true,
+				slides: [
+					{ file: 'lehar-01.jpg', caption: 'Lehar \u2014 Afterlife / Dynamic, 20.05.22' },
+					{ file: 'lehar-02.jpg', caption: 'Lehar \u2014 alternate layout' },
+					{ file: 'lehar-03.jpg', caption: 'Lehar \u2014 stacked variant' },
+				],
+			},
+
 			{ section: 'Al\u2011Doulab', note: 'Mental health fundraiser \u2014 personal project' },
 			{
 				mockup: true,
@@ -212,7 +250,7 @@ export const graphicProjects = [
 			{ file: 'desert.jpg', caption: 'Sandstone — CGI' },
 			{ file: 'collage-planet.jpg', caption: 'Collage' },
 			{ file: 'art-01.jpg', caption: 'Art poster' },
-			{ file: 'art-02.jpg', caption: 'Art poster' },
+			{ file: 'art-02.jpg', caption: 'Illustrated by hand' },
 			{ file: 'art-03.jpg', caption: 'Art poster' },
 			{ file: 'art-04.jpg', caption: 'Art poster' },
 			{ file: 'art-05.jpg', caption: 'Art poster' },
