@@ -80,10 +80,10 @@ export const graphicProjects = [
 		// master: SIDEWORK/highgradexseawold/SHORT VIDS/crumbcultvideo.mp4
 		video: { file: 'crumb-cult-reel', portrait: true, caption: 'Short reel \u2014 trial edit' },
 		images: [
-			// Photographic mockups: the wordmark printed onto a real box and a
-			// real fascia, rather than the CSS-drawn carton this used to show.
-			{ file: 'storefront.jpg', caption: 'Shopfront' },
-			{ file: 'box-mockup.jpg', caption: 'Cookie box \u2014 150 \u00d7 150 \u00d7 50 mm' },
+			// The wordmark as signage, shot close. The carton mockup that used
+			// to sit here is gone — a logo laid flat on a generated box reads
+			// as a sticker, not as print.
+			{ file: 'storefront.jpg', caption: 'Shopfront signage' },
 			{ file: 'logo-variations.png', caption: 'Logo variations', size: 'tall' },
 			{ file: 'stickers.png', caption: 'Sticker set' },
 			{ file: 'menu.jpg', caption: 'Menu', mockup: true },
@@ -196,6 +196,23 @@ export const graphicProjects = [
 			{ file: 'poster-02.jpg', caption: 'Workshop schedule \u2014 October, Beirut' },
 			{ file: 'poster-03.jpg', caption: 'Campaign poster \u2014 \u201cfree yourself through play\u201d' },
 			{ file: 'poster-04.jpg', caption: 'Workshop schedule \u2014 January, Bekaa' },
+		],
+	},
+
+	{
+		slug: 'illustrations',
+		title: 'Illustrations',
+		subtitle: 'Character design',
+		scope: 'Illustration \u00b7 Character design',
+		cover: 'scene-01.jpg',
+		blurb:
+			'A character drawn by hand for a client, then put through a set of scenes to ' +
+			'test how it holds up in different rooms, moods and company.',
+		images: [
+			{ file: 'scene-01.jpg', caption: 'Park bench' },
+			{ file: 'scene-02.jpg', caption: 'By the window' },
+			{ file: 'scene-03.jpg', caption: 'On the sofa' },
+			{ file: 'scene-04.jpg', caption: 'Spray and dry' },
 		],
 	},
 
