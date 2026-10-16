@@ -35,8 +35,6 @@ export const graphicProjects = [
 
 	{
 		slug: 'goosebumps-garden',
-		bg: '#d2d2d2',
-		ink: '#141414',
 		title: 'Goosebumps Garden',
 		subtitle: 'Menus & table collateral',
 		year: '2026',
@@ -157,7 +155,7 @@ export const graphicProjects = [
 
 			{
 				section: 'Lehar',
-				note: 'Instagram posts for Nonsense \u2014 three square designs',
+				note: 'Instagram post / poster',
 			},
 			{
 				mockup: true,
@@ -168,14 +166,6 @@ export const graphicProjects = [
 				],
 			},
 
-			{ section: 'Al\u2011Doulab', note: 'Mental health fundraiser \u2014 personal project' },
-			{
-				mockup: true,
-				slides: [
-					{ file: 'aldoulab-01.jpg', caption: 'Al\u2011Doulab \u2014 campaign poster' },
-					{ file: 'aldoulab-02.jpg', caption: 'Al\u2011Doulab \u2014 campaign poster' },
-				],
-			},
 		],
 	},
 
