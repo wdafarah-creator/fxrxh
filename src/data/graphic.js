@@ -79,16 +79,25 @@ export const graphicProjects = [
 			'shop sign, and a set of highlight covers for the feed.',
 		// master: SIDEWORK/highgradexseawold/SHORT VIDS/crumbcultvideo.mp4
 		video: { file: 'crumb-cult-reel', portrait: true, caption: 'Short reel \u2014 trial edit' },
+		// Laid out as boards rather than a column. Each row puts related
+		// pieces beside each other, so the identity reads as one set instead
+		// of as a scroll of separate images.
 		images: [
-			// The wordmark as signage, shot close. The carton mockup that used
-			// to sit here is gone — a logo laid flat on a generated box reads
-			// as a sticker, not as print.
-			{ file: 'storefront.jpg', caption: 'Shopfront signage' },
-			{ file: 'logo-variations.png', caption: 'Logo variations', size: 'tall' },
-			{ file: 'stickers.png', caption: 'Sticker set' },
-			{ file: 'menu.jpg', caption: 'Menu', mockup: true },
-			{ file: 'sticker-cookie.png', caption: 'Instagram highlight cover', size: 'small' },
-			{ file: 'sticker-feedback.png', caption: 'Instagram highlight cover', size: 'small' },
+			{
+				grid: ['storefront.jpg', 'bag.jpg'],
+				cols: 2,
+				caption: 'Signage and packaging',
+			},
+			{
+				grid: ['logo-variations.png', 'stickers.png'],
+				cols: 2,
+				caption: 'Marks and sticker set',
+			},
+			{
+				grid: ['menu.jpg', 'sticker-cookie.png', 'sticker-feedback.png'],
+				cols: 3,
+				caption: 'Menu and highlight covers',
+			},
 		],
 	},
 
@@ -206,14 +215,13 @@ export const graphicProjects = [
 		scope: 'Illustration \u00b7 Character design',
 		cover: 'scene-01.jpg',
 		blurb:
-			'A character drawn by hand for a client, then put through a set of scenes to ' +
-			'test how it holds up in different rooms, moods and company.',
+			'A character drawn by hand, placed in a set of different settings.',
 		images: [
-			// Four across, at the artwork's own 16:9 — they read as a set of
-			// frames rather than as four separate pieces.
+			// Two across, at the artwork's own 16:9 — four in a row left each
+			// scene too small to read the character in.
 			{
 				grid: ['scene-01.jpg', 'scene-02.jpg', 'scene-03.jpg', 'scene-04.jpg'],
-				cols: 4,
+				cols: 2,
 				ratio: '16 / 9',
 				caption: 'Character scenes',
 			},
