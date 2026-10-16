@@ -1900,10 +1900,13 @@ body.about-page { background: #000; }
 	container-type: inline-size;
 }
 
-/* The pages can be scrolled by hand on hover — say so. */
+/* The pages can be scrolled by hand — say so, and take the vertical gesture
+   on a touch screen so a thumb drag moves the page rather than the document.
+   Both are small enough that there is always somewhere else to scroll. */
 .laptop__screen,
 .phone__screen {
 	cursor: ns-resize;
+	touch-action: none;
 }
 
 .laptop__screen.is-held,
@@ -1937,8 +1940,10 @@ body.about-page { background: #000; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+	/* Paused, not removed. Nothing moves on its own, which is the point of
+	   the preference, but there is still a timeline to drag through. */
 	.laptop__screen img {
-		animation: none;
+		animation-play-state: paused;
 	}
 }
 
@@ -2677,7 +2682,7 @@ body.has-fog .peek {
 
 @media (prefers-reduced-motion: reduce) {
 	.phone__screen img {
-		animation: none;
+		animation-play-state: paused;
 	}
 }
 

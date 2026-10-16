@@ -434,51 +434,96 @@ const cover = project.cover ?? project.images.find((i) => i.file)?.file;
 </script>
 
 <script>
-	// The laptop and phone pages scroll themselves on a loop. Hovering hands
-	// that over: the wheel scrubs the same animation rather than driving a
-	// second, separate scroll position, so there is nothing to reconcile when
-	// the pointer leaves — it simply plays on from wherever it was left.
+	// The laptop and phone pages scroll themselves on a loop, and can be taken
+	// over by hand. Both the wheel and a drag scrub the same animation rather
+	// than keeping a scroll position of their own, so handing control back is
+	// just a matter of playing it on from wherever it was left.
 	document.querySelectorAll('.laptop__screen, .phone__screen').forEach((screen) => {
 		const img = screen.querySelector('img');
 		if (!img) return;
 
 		const anim = () => img.getAnimations()[0];
+		const calm = matchMedia('(prefers-reduced-motion: reduce)');
+		const hoverable = matchMedia('(hover: hover) and (pointer: fine)');
 
-		screen.addEventListener('pointerenter', () => {
-			const a = anim();
-			if (a) {
-				a.pause();
-				screen.classList.add('is-held');
-			}
-		});
+		// Where in the loop the page is actually travelling. The rest of it is
+		// the holds at either end and the fade, which are not page positions.
+		const span = (a) => {
+			const dur = a.effect.getTiming().duration;
+			return [dur * 0.1, dur * 0.92, dur];
+		};
 
-		screen.addEventListener('pointerleave', () => {
+		const scrub = (a, delta) => {
+			const [lo, hi, dur] = span(a);
+			const next = Math.min(hi, Math.max(lo, a.currentTime + delta * (dur / 2600)));
+			if (next === a.currentTime) return false;
+			a.currentTime = next;
+			return true;
+		};
+
+		const hold = () => {
 			const a = anim();
-			if (a) a.play();
+			if (!a) return;
+			a.pause();
+			screen.classList.add('is-held');
+		};
+
+		const release = () => {
+			const a = anim();
+			// Under reduced motion it stays where it was put; nothing should
+			// start moving again on its own.
+			if (a && !calm.matches) a.play();
 			screen.classList.remove('is-held');
+		};
+
+		// --- hover and wheel, for a mouse -------------------------------------
+		// Guarded: on a touch screen pointerenter fires on the tap itself and
+		// pointerleave never comes, which left the page paused for good.
+		if (hoverable.matches) {
+			screen.addEventListener('pointerenter', hold);
+			screen.addEventListener('pointerleave', release);
+
+			screen.addEventListener(
+				'wheel',
+				(e) => {
+					const a = anim();
+					if (!a || a.playState !== 'paused') return;
+					// at either end let the wheel go back to the document, so
+					// there is no scroll trap
+					if (scrub(a, e.deltaY)) e.preventDefault();
+				},
+				{ passive: false }
+			);
+		}
+
+		// --- drag, for a thumb or a held mouse button -------------------------
+		let from = null;
+
+		screen.addEventListener('pointerdown', (e) => {
+			const a = anim();
+			if (!a) return;
+			from = e.clientY;
+			hold();
+			screen.setPointerCapture(e.pointerId);
 		});
 
-		screen.addEventListener(
-			'wheel',
-			(e) => {
-				const a = anim();
-				if (!a || a.playState !== 'paused') return;
+		screen.addEventListener('pointermove', (e) => {
+			if (from === null) return;
+			const a = anim();
+			if (!a) return;
+			scrub(a, (from - e.clientY) * -1.6);
+			from = e.clientY;
+		});
 
-				const dur = a.effect.getTiming().duration;
-				// stay inside the travelling part of the loop; the ends of it
-				// are the holds and the fade, which are not page positions
-				const lo = dur * 0.1;
-				const hi = dur * 0.92;
-				const step = e.deltaY * (dur / 2600);
-				const next = Math.min(hi, Math.max(lo, a.currentTime + step));
+		const letGo = (e) => {
+			if (from === null) return;
+			from = null;
+			if (screen.hasPointerCapture?.(e.pointerId)) screen.releasePointerCapture(e.pointerId);
+			// A mouse that is still hovering keeps control; a finger does not.
+			if (!hoverable.matches || e.pointerType !== 'mouse') release();
+		};
 
-				// at either end of the page, let the wheel go back to the
-				// document rather than trapping it in here
-				if (next === a.currentTime) return;
-				e.preventDefault();
-				a.currentTime = next;
-			},
-			{ passive: false }
-		);
+		screen.addEventListener('pointerup', letGo);
+		screen.addEventListener('pointercancel', letGo);
 	});
 </script>
