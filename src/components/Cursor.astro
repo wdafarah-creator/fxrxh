@@ -24,10 +24,15 @@
 		let ry = y;
 		let raf = 0;
 
+		// How hard the ring chases the pointer each frame. 1 is locked to it,
+		// lower is more trail. Below about 0.25 the lag stops reading as
+		// weight and starts reading as lag.
+		const CHASE = 0.34;
+
 		const draw = () => {
 			raf = 0;
 			// the ring eases toward the pointer; the dot is always exact
-			const k = calm.matches ? 1 : 0.18;
+			const k = calm.matches ? 1 : CHASE;
 			rx += (x - rx) * k;
 			ry += (y - ry) * k;
 			dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;

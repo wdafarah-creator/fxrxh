@@ -3634,7 +3634,7 @@ body:not(.home) .index-list .row:focus-visible .row__title {
 	pointer-events: none;
 	mix-blend-mode: difference;
 	opacity: 0;
-	transition: opacity 0.25s var(--ease-smooth);
+	transition: opacity 0.15s var(--ease-smooth);
 }
 
 html.cursor-on .cur {
@@ -3666,10 +3666,10 @@ html.cursor-on .cur {
 	margin: -17px 0 0 -17px;
 	border: 1px solid rgba(255, 255, 255, 0.85);
 	transition:
-		width 0.3s var(--ease-smooth),
-		height 0.3s var(--ease-smooth),
-		margin 0.3s var(--ease-smooth),
-		opacity 0.3s var(--ease-smooth);
+		width 0.18s var(--ease-smooth),
+		height 0.18s var(--ease-smooth),
+		margin 0.18s var(--ease-smooth),
+		opacity 0.18s var(--ease-smooth);
 }
 
 /* over something you can act on, the ring opens out */
