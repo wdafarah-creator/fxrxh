@@ -7,6 +7,9 @@ interface Props {
 	/** Where "all work" points. */
 	indexHref?: string;
 	indexLabel?: string;
+	/** What the onward link is called. A project page goes to another
+	    project; a section index goes to another section. */
+	kicker?: string;
 	/** The contact block is the page's only one on most pages. Where the page
 	    already carries its own — About does — it is turned off here. */
 	contact?: boolean;
@@ -16,6 +19,7 @@ const {
 	indexHref = '/work/graphic-design',
 	indexLabel = 'All graphic design',
 	contact = true,
+	kicker = 'Next project',
 } = Astro.props;
 
 // Built, not hardcoded: a stale year is the clearest sign of an abandoned site.
@@ -35,8 +39,13 @@ const year = new Date().getFullYear();
 	{
 		next && (
 			<a class="foot__next" href={next.href ?? `/work/graphic-design/${next.slug}`}>
-				<span class="foot__kicker">Next project</span>
-				<span class="foot__title">{next.title}</span>
+				<span class="foot__kicker">{kicker}</span>
+				<span class="foot__title">
+					{next.title}
+					<svg class="foot__arrow" viewBox="0 0 16 16" aria-hidden="true">
+						<path d="M3 8 L13 8 M8.5 3 L13.5 8 L8.5 13" />
+					</svg>
+				</span>
 				{next.scope && <span class="foot__scope">{next.scope}</span>}
 			</a>
 		)

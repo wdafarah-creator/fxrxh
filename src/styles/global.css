@@ -54,6 +54,7 @@
 	--font-home: var(--font);
 	--hot: #ff66ff;
 	--acid: #e5ff76;
+	--violet: #a06bff;
 	--ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
 	--pad: clamp(1rem, 2.5vw, 2rem);
 	--fs-small: clamp(0.62rem, 0.78vw, 0.78rem);
@@ -2688,9 +2689,24 @@ body.has-fog .peek {
 /* ------------------------------------------------------------------ */
 
 .foot {
-	margin-top: clamp(3rem, 9vw, 7rem);
+	margin-top: clamp(2rem, 4.5vw, 3.5rem);
 	border-top: 1px solid color-mix(in srgb, currentColor 22%, transparent);
-	padding-top: clamp(1.4rem, 3.5vw, 2.4rem);
+	/* The page's own gutter. Without it the footer sat flush to the window
+	   while the content above was inset, which read as the footer sliding out
+	   from under the page. */
+	padding: clamp(1.4rem, 3.5vw, 2.4rem) var(--pad) 0;
+}
+
+/* Inside a project the article already supplies the gutter. */
+.project .foot {
+	padding-inline: 0;
+}
+
+/* Straight after the list, the list's own closing rule is the divider —
+   a second one with a gap between them read as a seam. */
+.index-list + .foot {
+	margin-top: 0;
+	border-top: 0;
 }
 
 .foot__next {
@@ -2726,7 +2742,7 @@ body.has-fog .peek {
 
 .foot__next:hover .foot__title,
 .foot__next:focus-visible .foot__title {
-	color: var(--acid);
+	color: var(--violet);
 }
 
 /* The acid yellow is 18:1 on black but barely 1.2:1 on the light project
@@ -2735,6 +2751,24 @@ body.has-fog .peek {
 .tint.is-tinted .foot__next:focus-visible .foot__title {
 	color: var(--page-ink);
 	opacity: 0.55;
+}
+
+/* The arrow is the affordance — it says this goes somewhere, which the
+   words alone did not. It leans into the link on hover. */
+.foot__arrow {
+	width: 0.52em;
+	height: 0.52em;
+	margin-left: 0.3em;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.6;
+	stroke-linecap: square;
+	transition: transform 0.35s var(--ease-smooth);
+}
+
+.foot__next:hover .foot__arrow,
+.foot__next:focus-visible .foot__arrow {
+	transform: translateX(0.28em);
 }
 
 .foot__scope {
