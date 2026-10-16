@@ -305,7 +305,9 @@ const cover = project.cover ?? project.images.find((i) => i.file)?.file;
 					<figure class="project__figure">
 						<div
 							class={`tilegrid${img.tight ? ' is-tight' : ''}`}
-							style={img.cols ? `--cols:${img.cols}` : undefined}
+							style={[img.cols && `--cols:${img.cols}`, img.ratio && `--ratio:${img.ratio}`]
+								.filter(Boolean)
+								.join(';') || undefined}
 						>
 							{img.grid.map((f, i) => (
 								<span class="tilegrid__cell">

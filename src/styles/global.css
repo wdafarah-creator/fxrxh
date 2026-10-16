@@ -2077,7 +2077,9 @@ body:has(.tint.is-tinted) .page-bar {
 .tilegrid__cell {
 	display: grid;
 	place-items: center;
-	aspect-ratio: 1;
+	/* square unless the block says otherwise — landscape artwork in a square
+	   cell is mostly empty cell */
+	aspect-ratio: var(--ratio, 1);
 	background: #0a0a0a;
 	overflow: hidden;
 }

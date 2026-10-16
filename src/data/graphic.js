@@ -209,10 +209,14 @@ export const graphicProjects = [
 			'A character drawn by hand for a client, then put through a set of scenes to ' +
 			'test how it holds up in different rooms, moods and company.',
 		images: [
-			{ file: 'scene-01.jpg', caption: 'Park bench' },
-			{ file: 'scene-02.jpg', caption: 'By the window' },
-			{ file: 'scene-03.jpg', caption: 'On the sofa' },
-			{ file: 'scene-04.jpg', caption: 'Spray and dry' },
+			// Four across, at the artwork's own 16:9 — they read as a set of
+			// frames rather than as four separate pieces.
+			{
+				grid: ['scene-01.jpg', 'scene-02.jpg', 'scene-03.jpg', 'scene-04.jpg'],
+				cols: 4,
+				ratio: '16 / 9',
+				caption: 'Character scenes',
+			},
 		],
 	},
 
@@ -256,6 +260,8 @@ export const graphicProjects = [
 			{ file: 'glitch.jpg', caption: 'Untitled' },
 			{ file: 'desert.jpg', caption: 'Sandstone — CGI' },
 			{ file: 'collage-planet.jpg', caption: 'Collage' },
+			{ file: 'legalize-humanity.jpg', caption: 'Legalize Humanity' },
+			{ file: 'men-of-quality.jpg', caption: 'Men of quality support women\u2019s equality' },
 			{ file: 'art-01.jpg', caption: 'Art poster' },
 			{ file: 'art-02.jpg', caption: 'Illustrated by hand' },
 			{ file: 'art-03.jpg', caption: 'Art poster' },
