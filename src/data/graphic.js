@@ -83,20 +83,19 @@ export const graphicProjects = [
 		// pieces beside each other, so the identity reads as one set instead
 		// of as a scroll of separate images.
 		images: [
-			{
-				grid: ['storefront.jpg', 'bag.jpg'],
-				cols: 2,
-				caption: 'Signage and packaging',
-			},
+			{ file: 'storefront.jpg', caption: 'Shopfront signage' },
 			{
 				grid: ['logo-variations.png', 'stickers.png'],
 				cols: 2,
 				caption: 'Marks and sticker set',
 			},
+			// On its own and at size: in a shared row it came out too small to
+			// read, and a menu nobody can read is not a menu.
+			{ file: 'menu.jpg', caption: 'Menu', mockup: true },
 			{
-				grid: ['menu.jpg', 'sticker-cookie.png', 'sticker-feedback.png'],
-				cols: 3,
-				caption: 'Menu and highlight covers',
+				grid: ['sticker-cookie.png', 'sticker-feedback.png'],
+				cols: 2,
+				caption: 'Instagram highlight covers',
 			},
 		],
 	},

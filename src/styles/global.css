@@ -1214,7 +1214,9 @@ html.menu-open {
 /* ------------------------------------------------------------------ */
 
 .project {
-	padding: calc(var(--pad) * 4) var(--pad) calc(var(--pad) * 4);
+	/* No bottom padding: the footer lives inside this article and brings its
+	   own, so anything here lands below the footer as dead space. */
+	padding: calc(var(--pad) * 4) var(--pad) 0;
 	max-width: 62rem;
 	margin: 0 auto;
 	color: var(--ink);
@@ -1549,7 +1551,9 @@ html.menu-open {
 	grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
 	gap: clamp(1rem, 2.4vw, 2.2rem);
 	align-items: start;
-	margin: 0 0 clamp(2rem, 5vw, 4rem);
+	/* no bottom margin — the footer brings its own, and the two stacked left
+	   a dead band under the last row */
+	margin: 0;
 }
 
 .gallery .project__figure {
@@ -2075,6 +2079,7 @@ body:has(.tint.is-tinted) .page-bar {
 }
 
 .tilegrid__cell {
+	position: relative;
 	display: grid;
 	place-items: center;
 	/* square unless the block says otherwise — landscape artwork in a square
@@ -2084,7 +2089,15 @@ body:has(.tint.is-tinted) .page-bar {
 	overflow: hidden;
 }
 
+/* Absolutely placed, which is the only way the percentages resolve here.
+   A cell sized by aspect-ratio has no definite height to measure against, so
+   both height:100% and max-height:100% fell back to the image's own height,
+   it overflowed, and the cell's overflow:hidden cropped it — which is how a
+   whole menu lost its prices. Against an abspos containing block they
+   resolve, and object-fit does the letterboxing. */
 .tilegrid__cell img {
+	position: absolute;
+	inset: 0;
 	width: 100%;
 	height: 100%;
 	object-fit: contain;
