@@ -54,7 +54,6 @@ export const artDirection = [
 
 	{ slug: 'apocalypse', sound: true, title: 'What\u2019s Left of Apocalypse', label: LABELS.ai, w: 1176, h: 1756, dur: '0:05',
 	  src: `${DESKTOP}/SIDEWORK/AI/Whats Left of Apocalypse.mp4` },
-	{ slug: 'ai-art', title: 'Fragments', label: LABELS.ai, w: 1660, h: 1244, dur: '0:05', src: `${WORK}/ai art .mp4` },
 	{ slug: 'ai-art-3', title: 'Floating Bath', label: LABELS.ai, w: 1920, h: 1080, dur: '0:06', src: `${WORK}/ai art 3.mp4` },
 	{ slug: 'ai-art-5', title: 'Uncomfortable Kisses', label: LABELS.ai, w: 1920, h: 1080, dur: '0:06', src: `${WORK}/ai art 5.mp4` },
 	{ slug: 'ai-art-6', title: 'Fashion Shoot Gone Wrong', label: LABELS.ai, w: 1764, h: 1176, dur: '0:08', src: `${WORK}/ai art 6.mp4` },

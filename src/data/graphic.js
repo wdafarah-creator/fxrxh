@@ -40,10 +40,7 @@ export const graphicProjects = [
 		year: '2026',
 		scope: 'Branding · Print',
 		cover: 'thumbnail.jpg',
-		blurb:
-			'Print collateral for a music and food venue — a table placemat that introduces ' +
-			'the place in its own voice, and the menus that sit on it. Acid yellow and black ' +
-			'on grey, with scrawled marks standing in for sound.',
+		blurb: 'Print collateral for a music and food venue.',
 		images: [
 			{ file: 'placemat-es.jpg', caption: 'Table placemat — Spanish' },
 			{ file: 'placemat-en.jpg', caption: 'Table placemat — English' },
@@ -163,7 +160,7 @@ export const graphicProjects = [
 
 			{
 				section: 'Lehar',
-				note: 'Instagram post / poster',
+				note: 'Instagram teaser post',
 			},
 			{
 				mockup: true,
@@ -286,9 +283,6 @@ export const graphicProjects = [
 		year: '2023',
 		scope: 'Editorial \u00b7 Publication',
 		cover: 'growing-01.jpg',
-		blurb:
-			'Two bodies of publication work: a catalogue series built around the idea of growth, ' +
-			'and cover designs submitted to the Penguin Books competition.',
 		images: [
 			{ section: 'Growth', note: 'Catalogue series' },
 			{ file: 'growing-01.jpg', caption: 'Growing \u2014 catalogue cover' },
