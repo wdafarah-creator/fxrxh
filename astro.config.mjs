@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 // absolute — social platforms and search engines reject relative ones.
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://fxrxh.com',
+	site: 'https://www.fxrxh.com',
 	integrations: [
 		sitemap(),
 	],
