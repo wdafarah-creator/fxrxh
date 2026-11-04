@@ -1075,13 +1075,17 @@ html.menu-open {
 	transition: color 0.3s var(--ease-smooth);
 }
 
+/* The titles are set the way the home page sets its corner line — caps
+   on tight tracking — so the two pages speak with one voice. The
+   disciplines beside them stay in sentence case, which keeps them
+   subordinate to the work's name. */
 .row__title {
 	font-family: var(--font);
 	font-weight: 400;
 	font-size: clamp(1.15rem, 3vw, 2.1rem);
 	line-height: 1.2;
-	letter-spacing: 0;
-	text-transform: none;
+	letter-spacing: var(--track);
+	text-transform: uppercase;
 }
 
 /* The rule of dots a contents page uses to carry the eye across. */
