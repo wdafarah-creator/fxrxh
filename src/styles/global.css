@@ -200,14 +200,24 @@ a {
    change one, change both. */
 .disciplines__word {
 	margin: 0;
-	font-size: clamp(0.95rem, 1.95vw, 1.5rem);
-	letter-spacing: var(--track);
-	line-height: 1.05;
-	text-transform: uppercase;
+	font-size: clamp(1rem, 2.1vw, 1.65rem);
+	/* Written the way it would be said, not stamped. Uppercase on tight
+	   tracking is what made this corner read as a readout. */
+	text-transform: none;
+	letter-spacing: 0;
+	line-height: 1.15;
 	transition:
 		opacity 0.3s var(--ease-smooth),
 		filter 0.3s var(--ease-smooth),
 		transform 0.3s var(--ease-smooth);
+}
+
+/* The home page is set in sentence case throughout — see the index for
+   the same move. Elsewhere the buttons stay as they were. */
+body.home .btn {
+	text-transform: none;
+	letter-spacing: 0;
+	padding: 0.68em 1.25em;
 }
 
 .disciplines__word.is-out {
