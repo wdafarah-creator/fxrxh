@@ -465,9 +465,18 @@ export const graphicProjects = [
 		coverBg: '#3f121a',
 		blurb: 'Identity and packaging for a London cookie brand, written as a note to someone.',
 		images: [
+			{ file: 'wordmark.jpg', caption: 'Wordmark' },
+			{ file: 'logo-colourways.jpg', caption: 'Colourways' },
+			{ file: 'palette.jpg', caption: 'Palette' },
+
 			{ file: 'box.jpg', caption: 'Box, card and ribbon' },
 			{ file: 'retro.jpg', caption: '' },
+
+			{ file: 'boxes.jpg', caption: 'Boxes \u2014 three of the ribbon colourways' },
+			{ file: 'note.jpg', caption: 'The note' },
+			{ file: 'ribbons.jpg', caption: 'Ribbons and bows' },
 			{ file: 'stickers.jpg', caption: 'Sticker set' },
+			{ file: 'system.jpg', caption: 'The set together' },
 		],
 	},
 ];
