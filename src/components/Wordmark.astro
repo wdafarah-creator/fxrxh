@@ -23,10 +23,9 @@ const { href = '/' } = Astro.props;
 	// swapped in. `fonts.ready` settles immediately if it is already cached.
 	const start = () => {
 		if (!slots.length) return;
-		// Letters only. The digits and symbols that used to be in here made
-		// the swap read as a terminal decoding something; letterforms read as
-		// a name being spelled.
-		const GLYPHS = 'AXKWMNVYZH'.split('');
+		// Capitals only, and similar in width, so the mark does not jitter
+		// while it cycles.
+		const GLYPHS = 'AXKWMNVYZH8#%&'.split('');
 		const HOLD = 2200;
 		const SCRAMBLE = 380;
 		const TICK = 55;
