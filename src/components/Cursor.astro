@@ -1,43 +1,27 @@
 																																																			---
-// Desktop only, and only where there is a real pointer. The ring trails the
-// dot slightly, which is what makes it read as attached to the hand rather
-// than painted on the screen.
+// Desktop only, and only where there is a real pointer. One coloured dot,
+// locked to the pointer: a trailing ring reads as lag once the thing it
+// trails is solid rather than a hairline.
 ---
 
 <div class="cur" aria-hidden="true">
 	<span class="cur__dot" data-cur-dot></span>
-	<span class="cur__ring" data-cur-ring></span>
 </div>
 
 <script>
 	const fine = matchMedia('(hover: hover) and (pointer: fine)');
 	if (fine.matches) {
 		const dot = document.querySelector('[data-cur-dot]');
-		const ring = document.querySelector('[data-cur-ring]');
-		const calm = matchMedia('(prefers-reduced-motion: reduce)');
 
 		document.documentElement.classList.add('has-cursor');
 
 		let x = innerWidth / 2;
 		let y = innerHeight / 2;
-		let rx = x;
-		let ry = y;
 		let raf = 0;
-
-		// How hard the ring chases the pointer each frame. 1 is locked to it,
-		// lower is more trail. Below about 0.25 the lag stops reading as
-		// weight and starts reading as lag.
-		const CHASE = 0.34;
 
 		const draw = () => {
 			raf = 0;
-			// the ring eases toward the pointer; the dot is always exact
-			const k = calm.matches ? 1 : CHASE;
-			rx += (x - rx) * k;
-			ry += (y - ry) * k;
 			dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-			ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
-			if (Math.abs(x - rx) > 0.1 || Math.abs(y - ry) > 0.1) raf = requestAnimationFrame(draw);
 		};
 
 		const tick = () => {
@@ -56,8 +40,8 @@
 			{ passive: true }
 		);
 
-		// Anything you can act on opens the ring; the two mockups say what the
-		// drag does, because a ring alone does not.
+		// Anything you can act on opens the dot out; over the two mockups it
+		// tightens instead, because there it means grip rather than click.
 		const TARGET = 'a, button, .row, .sheet__open, [role="button"]';
 		const DRAG = '.laptop__screen, .phone__screen';
 

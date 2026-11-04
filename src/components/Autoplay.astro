@@ -1,0 +1,54 @@
+---
+// Background loops are decoration, not media: they should never show a
+// control, never stop, and never need to be started by hand. Browsers
+// disagree — iOS Low Power Mode, Safari's autoplay rules and a tab that
+// has been in the background all pause them, and a paused <video> is
+// exactly when the native play button appears.
+---
+
+<script>
+	const loops = () => [...document.querySelectorAll('video[autoplay][loop]')];
+
+	const nudge = (v) => {
+		// Muted is the condition every browser attaches autoplay to; a loop
+		// that lost it will refuse to start and show its control instead.
+		v.muted = true;
+		v.defaultMuted = true;
+		v.setAttribute('muted', '');
+		v.playsInline = true;
+		v.controls = false;
+		if (v.paused) {
+			const p = v.play();
+			// A rejected play() is normal before the first gesture — the
+			// listeners below pick it up. Swallow it so it is not an error.
+			if (p && typeof p.catch === 'function') p.catch(() => {});
+		}
+	};
+
+	const nudgeAll = () => loops().forEach(nudge);
+
+	nudgeAll();
+	addEventListener('pageshow', nudgeAll);
+	addEventListener('focus', nudgeAll);
+	document.addEventListener('visibilitychange', () => {
+		if (!document.hidden) nudgeAll();
+	});
+
+	// First touch or click anywhere satisfies the gesture requirement on the
+	// browsers that still want one.
+	const once = { once: true, passive: true };
+	addEventListener('pointerdown', nudgeAll, once);
+	addEventListener('touchstart', nudgeAll, once);
+	addEventListener('keydown', nudgeAll, once);
+
+	// A loop that stalls or gets paused by the system restarts itself.
+	loops().forEach((v) => {
+		v.addEventListener('pause', () => {
+			// Not while the tab is hidden: waking it there wastes battery and
+			// the browser will pause it again anyway.
+			if (!document.hidden) nudge(v);
+		});
+		v.addEventListener('ended', () => nudge(v));
+		v.addEventListener('stalled', () => nudge(v));
+	});
+</script>

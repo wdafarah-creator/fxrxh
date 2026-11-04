@@ -3472,7 +3472,6 @@ body.has-fog .page-bar {
 	inset: 0;
 	z-index: 9999;
 	pointer-events: none;
-	mix-blend-mode: difference;
 	opacity: 0;
 	transition: opacity 0.15s var(--ease-smooth);
 }
@@ -3481,56 +3480,49 @@ html.cursor-on .cur {
 	opacity: 1;
 }
 
-.cur__dot,
-.cur__ring {
+/* One coloured dot. It used to be a white dot blended with `difference`
+   so it inverted against whatever was under it; colour has to give that
+   up, because difference would turn violet into its opposite over the
+   cream pages. */
+.cur__dot {
 	position: absolute;
 	top: 0;
 	left: 0;
 	display: block;
+	width: 13px;
+	height: 13px;
+	/* drawn from its own centre, so the transform is the pointer itself */
+	margin: -6.5px 0 0 -6.5px;
 	border-radius: 999px;
-	/* drawn from their own centre, so the transform is the pointer itself */
-	margin: -50% 0 0 -50%;
+	background: var(--violet);
 	will-change: transform;
-}
-
-.cur__dot {
-	width: 6px;
-	height: 6px;
-	margin: -3px 0 0 -3px;
-	background: #fff;
-}
-
-.cur__ring {
-	width: 34px;
-	height: 34px;
-	margin: -17px 0 0 -17px;
-	border: 1px solid rgba(255, 255, 255, 0.85);
 	transition:
 		width 0.18s var(--ease-smooth),
 		height 0.18s var(--ease-smooth),
 		margin 0.18s var(--ease-smooth),
-		opacity 0.18s var(--ease-smooth);
+		background-color 0.18s var(--ease-smooth);
 }
 
-/* over something you can act on, the ring opens out */
-html.cursor-live .cur__ring {
-	width: 56px;
-	height: 56px;
-	margin: -28px 0 0 -28px;
+/* over something you can act on, it opens out */
+html.cursor-live .cur__dot {
+	width: 26px;
+	height: 26px;
+	margin: -13px 0 0 -13px;
 }
 
-/* over a mockup it closes to a tight grip */
-html.cursor-drag .cur__ring {
-	width: 22px;
-	height: 22px;
-	margin: -11px 0 0 -11px;
+/* over a mockup it tightens and warms, because there it means grip */
+html.cursor-drag .cur__dot {
+	width: 16px;
+	height: 16px;
+	margin: -8px 0 0 -8px;
+	background: var(--hot);
 }
 
 /* pressed */
-html.cursor-down .cur__ring {
-	width: 18px;
-	height: 18px;
-	margin: -9px 0 0 -9px;
+html.cursor-down .cur__dot {
+	width: 9px;
+	height: 9px;
+	margin: -4.5px 0 0 -4.5px;
 }
 
 /* The native arrow goes, but only once ours is actually tracking, so a

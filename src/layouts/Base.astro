@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Cursor from '../components/Cursor.astro';
+import Autoplay from '../components/Autoplay.astro';
 
 interface Props {
 	title: string;
@@ -88,5 +89,6 @@ const ogImage = new URL(image, Astro.site).href;
 	<body class={bodyClass}>
 		<slot />
 		<Cursor />
+		<Autoplay />
 	</body>
 </html>

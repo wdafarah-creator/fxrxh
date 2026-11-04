@@ -1,0 +1,297 @@
+---
+// Scratch page — three warmer ways to set the index. The question is not
+// the layout, it is the typesetting. Delete once one is picked.
+import Base from '../layouts/Base.astro';
+import { graphicProjects } from '../data/graphic.js';
+
+const projects = [...graphicProjects].sort((a, b) => a.title.localeCompare(b.title));
+
+// Sentence case rather than the shouty uppercase the site uses everywhere.
+const soften = (s) =>
+	s
+		.split(' · ')
+		.map((w) => w.charAt(0) + w.slice(1).toLowerCase())
+		.join(', ');
+---
+
+<Base title="Index options" description="Scratch page." bodyClass="page">
+	<div class="opts">
+		<header class="opts__head">
+			<h1>Softer</h1>
+			<p>
+				The layouts were not the problem. What reads as technical is the typesetting:
+				all-caps, tight tracking, hard alignment and a hover mechanism. Each of these
+				drops those, and nothing here moves on its own.
+			</p>
+		</header>
+
+		{/* 01 — Contents */}
+		<section class="opt">
+			<header class="opt__head">
+				<span class="opt__num">01</span>
+				<h2>Contents</h2>
+				<p>
+					Set like the contents page of a book. Sentence case, roomy leading, the
+					discipline across the gutter on a soft rule. Nothing animates — it just sits
+					there and is read.
+				</p>
+			</header>
+
+			<ol class="contents">
+				{projects.map((p) => (
+					<li>
+						<a class="contents__row" href={`/work/graphic-design/${p.slug}`}>
+							<span class="contents__title">{p.title}</span>
+							<span class="contents__dots" aria-hidden="true"></span>
+							<span class="contents__scope">{soften(p.scope)}</span>
+						</a>
+					</li>
+				))}
+			</ol>
+		</section>
+
+		{/* 02 — Sentence */}
+		<section class="opt">
+			<header class="opt__head">
+				<span class="opt__num">02</span>
+				<h2>Sentence</h2>
+				<p>
+					The work written out as a line of prose rather than listed. Sentence case,
+					loose leading, ordinary commas. It stops looking like a menu and starts
+					looking like someone talking.
+				</p>
+			</header>
+
+			<p class="sentence">
+				<span class="sentence__lead">Lately:</span>{' '}
+				{projects.map((p, i) => (
+					<>
+						<a class="sentence__item" href={`/work/graphic-design/${p.slug}`}>{p.title}</a>
+						{i < projects.length - 2 && <span>, </span>}
+						{i === projects.length - 2 && <span> and </span>}
+					</>
+				))}
+				<span>.</span>
+			</p>
+		</section>
+
+		{/* 03 — Paper */}
+		<section class="opt">
+			<header class="opt__head">
+				<span class="opt__num">03</span>
+				<h2>Paper</h2>
+				<p>
+					The same contents list on a warm ground in a serif, the way the Dear A page
+					sits on cream. The typeface is doing nearly all of the work — this is a
+					stand-in serif, a licensed one would do it better.
+				</p>
+			</header>
+
+			<div class="paper">
+				<ol class="contents contents--serif">
+					{projects.map((p) => (
+						<li>
+							<a class="contents__row" href={`/work/graphic-design/${p.slug}`}>
+								<span class="contents__title">{p.title}</span>
+								<span class="contents__dots" aria-hidden="true"></span>
+								<span class="contents__scope">{soften(p.scope)}</span>
+							</a>
+						</li>
+					))}
+				</ol>
+			</div>
+		</section>
+	</div>
+</Base>
+
+<style>
+	.opts {
+		position: relative;
+		z-index: 2;
+		padding: calc(var(--pad) * 2) var(--pad) var(--pad);
+	}
+
+	.opts__head {
+		min-height: 40vh;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		max-width: 44rem;
+	}
+
+	.opts__head h1 {
+		font-size: clamp(2rem, 7vw, 5rem);
+		text-transform: uppercase;
+		letter-spacing: var(--track);
+		margin: 0 0 1rem;
+	}
+
+	.opts__head p,
+	.opt__head p {
+		font-size: var(--fs-small);
+		line-height: 1.6;
+		opacity: 0.7;
+		margin: 0;
+		max-width: 38rem;
+	}
+
+	.opt {
+		margin-block: clamp(5rem, 14vw, 10rem);
+	}
+
+	.opt__head {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 0.4rem clamp(1rem, 3vw, 2rem);
+		align-items: baseline;
+		margin-bottom: clamp(2rem, 5vw, 3rem);
+		padding-bottom: 1rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+	}
+
+	.opt__num {
+		font-size: var(--fs-small);
+		letter-spacing: var(--track-small);
+		color: var(--violet);
+	}
+
+	.opt__head h2 {
+		margin: 0;
+		font-size: clamp(1.1rem, 2.6vw, 1.6rem);
+		text-transform: uppercase;
+		letter-spacing: var(--track-small);
+	}
+
+	.opt__head p {
+		grid-column: 2;
+	}
+
+	/* ---- 01 Contents ------------------------------------------------- */
+	.contents,
+	.sentence {
+		/* The site sets `text-transform: uppercase` on body. Undoing it here
+		   is most of what makes these read warm rather than engineered. */
+		text-transform: none;
+	}
+
+	.contents {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.contents__row {
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: baseline;
+		gap: 0.9rem;
+		padding-block: clamp(0.55rem, 1.6vw, 1rem);
+		color: rgba(255, 255, 255, 0.88);
+		text-decoration: none;
+		transition: color 0.3s var(--ease-smooth);
+	}
+
+	.contents__title {
+		font-size: clamp(1.15rem, 3vw, 2.1rem);
+		letter-spacing: 0;
+		line-height: 1.2;
+	}
+
+	/* A rule of dots, the way a contents page carries the eye across. */
+	.contents__dots {
+		border-bottom: 1px dotted rgba(255, 255, 255, 0.28);
+		transform: translateY(-0.3em);
+	}
+
+	.contents__scope {
+		font-size: var(--fs-small);
+		opacity: 0.55;
+		letter-spacing: 0;
+		white-space: nowrap;
+	}
+
+	.contents__row:hover {
+		color: var(--violet);
+	}
+
+	.contents__row:hover .contents__dots {
+		border-bottom-color: var(--violet);
+	}
+
+	/* ---- 02 Sentence ------------------------------------------------- */
+	.sentence {
+		margin: 0;
+		max-width: 46rem;
+		font-size: clamp(1.3rem, 3.6vw, 2.5rem);
+		line-height: 1.5;
+		letter-spacing: 0;
+		color: rgba(255, 255, 255, 0.6);
+	}
+
+	.sentence__lead {
+		opacity: 0.45;
+	}
+
+	.sentence__item {
+		color: rgba(255, 255, 255, 0.92);
+		text-decoration: none;
+		text-underline-offset: 0.18em;
+		transition: color 0.25s var(--ease-smooth);
+	}
+
+	.sentence__item:hover {
+		color: var(--violet);
+		text-decoration: underline;
+		text-decoration-thickness: 1px;
+	}
+
+	/* ---- 03 Paper ---------------------------------------------------- */
+	.paper {
+		background: #f6eadb;
+		color: #2a2320;
+		padding: clamp(2rem, 7vw, 5rem) clamp(1.5rem, 6vw, 4.5rem);
+	}
+
+	.contents--serif .contents__row {
+		color: #2a2320;
+	}
+
+	.contents--serif .contents__title {
+		/* Georgia is on every machine; a stand-in for a licensed serif. */
+		font-family: Georgia, 'Times New Roman', serif;
+		font-size: clamp(1.25rem, 3.2vw, 2.3rem);
+	}
+
+	.contents--serif .contents__scope {
+		font-family: Georgia, 'Times New Roman', serif;
+		font-style: italic;
+		opacity: 0.6;
+	}
+
+	.contents--serif .contents__dots {
+		border-bottom-color: rgba(42, 35, 32, 0.3);
+	}
+
+	.contents--serif .contents__row:hover {
+		color: #8a1222;
+	}
+
+	.contents--serif .contents__row:hover .contents__dots {
+		border-bottom-color: #8a1222;
+	}
+
+	@media (max-width: 620px) {
+		.contents__row {
+			grid-template-columns: 1fr;
+			gap: 0.15rem;
+		}
+
+		.contents__dots {
+			display: none;
+		}
+
+		.contents__scope {
+			white-space: normal;
+		}
+	}
+</style>
