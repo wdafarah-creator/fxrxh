@@ -97,6 +97,7 @@ export const graphicProjects = [
 		],
 	},
 
+
 	{
 		slug: 'posters',
 		title: 'Posters',
@@ -449,7 +450,27 @@ export const graphicProjects = [
 			{ section: 'Menu', note: 'In store' },
 			{ file: 'menu.jpg', caption: 'Menu board' },
 		],
-	}
+	},
+	{
+		slug: 'dear-a',
+		title: 'Dear A, cookies',
+		subtitle: 'Brand identity \u2014 packaging',
+		year: '2026',
+		scope: 'Branding \u00b7 Packaging',
+		// The brand's own two colours, so the page reads as the thing itself.
+		bg: '#f6eadb',
+		ink: '#3f121a',
+		cover: 'cover.jpg',
+		coverBg: '#3f121a',
+		blurb: 'Identity and packaging for a London cookie brand, written as a note to someone.',
+		images: [
+			{ file: 'cover.jpg', caption: 'Wordmark' },
+			{ file: 'logo-colourways.jpg', caption: 'Colourways' },
+			{ file: 'palette.jpg', caption: 'Palette' },
+			{ file: 'cards.jpg', caption: 'Thank\u2011you card' },
+			{ file: 'stickers.jpg', caption: 'Sticker set' },
+		],
+	},
 ];
 
 export const getProject = (slug) => graphicProjects.find((p) => p.slug === slug);
