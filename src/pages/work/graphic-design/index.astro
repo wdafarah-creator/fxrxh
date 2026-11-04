@@ -30,7 +30,7 @@ const projects = [...graphicProjects].sort((a, b) => a.title.localeCompare(b.tit
 
 	<ol class="index-list">
 		{
-			projects.map((p, i) => (
+			projects.map((p) => (
 				<li>
 					<a
 						class="row"
@@ -38,7 +38,6 @@ const projects = [...graphicProjects].sort((a, b) => a.title.localeCompare(b.tit
 						data-peek={`/img/work/${p.slug}/${p.cover ?? p.images[0].file}`}
 						data-peek-fit={p.coverContain ? 'contain' : null}
 					>
-						<span class="row__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
 						<span class="row__title">{p.title}</span>
 						<span class="row__scope">{p.scope}</span>
 					</a>
