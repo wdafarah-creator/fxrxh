@@ -472,7 +472,7 @@ export const graphicProjects = [
 
 			{ file: 'box.jpg', caption: 'Box, card and ribbon' },
 			{ file: 'retro.jpg', caption: '' },
-			{ file: 'boxes.jpg', caption: 'Boxes \u2014 three of the ribbon colourways' },
+			{ file: 'stickers.jpg', caption: 'Sticker set' },
 		],
 	},
 ];
