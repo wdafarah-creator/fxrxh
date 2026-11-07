@@ -16,6 +16,11 @@ const services = [
 		{ id: 's2', name: 'Brand Identity', d: '+ packaging, stickers, launch posts, guidelines', eur: 2000, aed: 8500 },
 		{ id: 's3', name: 'Brand + Website', d: 'Brand Identity + website, up to 5 pages', eur: 3500, aed: 14500 },
 	]},
+	{ title: 'Websites', unit: 'design + build', items: [
+		{ id: 'w1', name: 'Landing Page', d: 'One-page site, mobile-ready, live on your domain', eur: 900, aed: 3800 },
+		{ id: 'w2', name: 'Website', d: 'Up to 5 pages, custom design, basic SEO', eur: 1800, aed: 7600 },
+		{ id: 'w3', name: 'Custom Website', d: 'Motion, video, shop or CMS · from', eur: 3000, aed: 12600 },
+	]},
 	{ title: 'Social Media', unit: 'monthly', items: [
 		{ id: 's4', name: 'Starter', d: '8 designed posts', eur: 450, aed: 1900, mo: true },
 		{ id: 's5', name: 'Growth', d: '12 posts + 4 stories', eur: 750, aed: 3200, mo: true },
@@ -39,7 +44,7 @@ const services = [
 	]},
 ];
 const partnerships = [
-	{ id: 'm1', name: 'Essential', d: 'Ongoing design support · up to 12 h', eur: 1000, aed: 4200, mo: true },
+	{ id: 'm1', name: 'Essential', d: 'Ongoing design support · up to 12 h', eur: 1300, aed: 5500, mo: true },
 	{ id: 'm2', name: 'Creative', d: 'Design + direction · up to 24 h', eur: 2000, aed: 8500, mo: true },
 	{ id: 'm3', name: 'Extended', d: 'Your outsourced creative · up to 40 h', eur: 3500, aed: 14700, mo: true },
 ];
@@ -115,7 +120,8 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 		<li>PayPal or bank transfer</li>
 	</ul>
 
-	<p class="rates__neg">Prices are <span>negotiable.</span></p>
+	<p class="rates__neg">Custom <span>packages</span> available.</p>
+	<p class="rates__negnote">Booking more than one service? Prices are open for discussion.</p>
 
 	<div class="rates__links">
 		<a class="btn btn--with-icon" href="mailto:farah@fxrxh.com?subject=Project%20enquiry">farah@fxrxh.com</a>
@@ -214,6 +220,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 	.rates__terms li { border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 999px; padding: 0.55em 1em; }
 	.rates__neg { font-size: clamp(1.55rem, 4.4vw, 3.6rem); line-height: 1.02; letter-spacing: var(--track); font-style: italic; }
 	.rates__neg span { color: var(--hot); }
+	.rates__negnote { margin-top: -1.2rem; opacity: 0.55; }
 	.rates__links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 	.rates__links .btn { font-size: clamp(0.72rem, 1.05vw, 0.95rem); }
 
