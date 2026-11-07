@@ -26,6 +26,11 @@ const services = [
 		{ id: 's8', name: 'AI Product Video', d: '10–15 sec, ready for social', eur: 500, aed: 2100 },
 		{ id: 's9', name: 'AI Campaign Video', d: 'Up to 30 sec, concept to final edit', eur: 900, aed: 3800 },
 	]},
+	{ title: 'Merch & Stickers', unit: 'per project', items: [
+		{ id: 's14', name: 'Sticker Pack', d: '6 custom stickers, print-ready files', eur: 350, aed: 1500 },
+		{ id: 's15', name: 'Merch Design', d: 'One graphic for a tee, tote or hoodie + mockups', eur: 400, aed: 1700 },
+		{ id: 's16', name: 'Merch Capsule', d: '3–5 pieces in one collection, print-ready + mockups', eur: 1200, aed: 5000 },
+	]},
 	{ title: 'Photo & Film', unit: 'per day / edit', items: [
 		{ id: 's10', name: 'Half-Day Shoot', d: 'Up to 4 hours', eur: 350, aed: 1500 },
 		{ id: 's11', name: 'Full-Day Shoot', d: 'Up to 8 hours', eur: 600, aed: 2500 },
@@ -113,7 +118,6 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 	<p class="rates__neg">Prices are <span>negotiable.</span></p>
 
 	<div class="rates__links">
-		<a class="btn btn--with-icon" href="/rates/Farah-Rates-2026.pdf" target="_blank" rel="noopener">Rates PDF</a>
 		<a class="btn btn--with-icon" href="mailto:farah@fxrxh.com?subject=Project%20enquiry">farah@fxrxh.com</a>
 	</div>
 
@@ -200,6 +204,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 	.rate[aria-pressed='true'] .rate__name::before { content: '● '; }
 
 	.rates__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.8rem, 4vw, 3rem) clamp(1.5rem, 4vw, 3rem); }
+	.rates__grid > .rates__group:last-child:nth-child(odd) { grid-column: 1 / -1; }
 	.rates__three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 	.rate--card { grid-template-columns: 1fr; padding: 1.1rem 1rem 1.1rem 0; border-bottom: 0; }
 	.rate--card + .rate--card { padding-left: 1rem; border-left: 1px solid rgba(255, 255, 255, 0.16); }
