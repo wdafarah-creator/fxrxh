@@ -30,15 +30,6 @@ import Rates from '../components/Rates.astro';
 			</h1>
 			<p>Directing and editing AI-generated content and CGI video alongside work shot on camera.</p>
 
-			{/* Sits in the run of the text, not beside it — a beat between what
-			    the work is and where it is made from. */}
-			<figure class="about__film">
-				<video autoplay muted loop playsinline disablepictureinpicture controlslist="nodownload noplaybackrate noremoteplayback" preload="metadata" poster="/video/about-poster.jpg">
-					<source src="/video/about.webm" type="video/webm" />
-					<source src="/video/about.mp4" type="video/mp4" />
-				</video>
-			</figure>
-
 			<p>Based in Spain &amp; wherever the work takes me.</p>
 
 			<p class="about__reach">
@@ -60,6 +51,15 @@ import Rates from '../components/Rates.astro';
 				>
 			</div>
 		</div>
+
+		{/* Holds the right-hand column on a wide screen, beside the words;
+		    on a phone it follows them. */}
+		<figure class="about__film">
+			<video autoplay muted loop playsinline disablepictureinpicture controlslist="nodownload noplaybackrate noremoteplayback" preload="metadata" poster="/video/about-poster.jpg">
+				<source src="/video/about.webm" type="video/webm" />
+				<source src="/video/about.mp4" type="video/mp4" />
+			</video>
+		</figure>
 
 		<Rates />
 	</main>
