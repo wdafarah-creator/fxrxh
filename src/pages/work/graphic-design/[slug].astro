@@ -325,6 +325,28 @@ const cover = project.cover ?? project.images.find((i) => i.file)?.file;
 						</div>
 						{img.caption && <figcaption>{img.caption}</figcaption>}
 					</figure>
+				) : img.laptop ? (
+					/* A website in sequence with the rest of the work, rather
+					   than hoisted above it the way `project.laptop` is. */
+					<figure class="project__figure">
+						<div class="laptop">
+							<div class="laptop__lid">
+								<div
+									class={`laptop__screen${img.scroll === false ? '' : ' is-scrolling'}`}
+									style={img.plate ? `--screen-plate:${img.plate}` : undefined}
+								>
+									<img
+										src={`/img/work/${project.slug}/${img.laptop}`}
+										alt={img.caption ?? `${project.title} \u2014 website`}
+										loading="lazy"
+									/>
+									<span class="screen-hint">Drag to scroll</span>
+								</div>
+							</div>
+							<div class="laptop__base" />
+						</div>
+						{img.caption && <figcaption>{img.caption}</figcaption>}
+					</figure>
 				) : img.video ? (
 					<figure class="project__figure">
 						<video

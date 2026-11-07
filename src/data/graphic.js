@@ -473,6 +473,12 @@ export const graphicProjects = [
 			{ file: 'box.jpg', caption: 'Box, card and ribbon' },
 			{ file: 'retro.jpg', caption: '' },
 			{ file: 'stickers.jpg', caption: 'Sticker set' },
+
+			{ section: 'The shop', note: 'purplesocialclub.com' },
+			// Both pages end on the oxblood footer, so the plate under the
+			// scroll is oxblood too and the loop ends on the page, not on a gap.
+			{ laptop: 'site-deara.jpg', plate: '#3f121a', caption: 'Dear A, cookies \u2014 the shop' },
+			{ laptop: 'site-psc.jpg', plate: '#3f121a', caption: 'Purple Social Club \u2014 the house it sits in' },
 		],
 	},
 ];

@@ -1777,11 +1777,12 @@ body.about-page { background: #000; }
 	position: relative;
 	aspect-ratio: 16 / 10;
 	overflow: hidden;
-	/* The green of the page's own footer. The loop fades out onto this at
+	/* The colour the page itself ends on. The loop fades out onto this at
 	   the bottom, so the end of the scroll reads as the end of the page
 	   rather than as the screen going blank — which is what a white plate
-	   under a faded-out page looked like. */
-	background: #bfd9b0;
+	   under a faded-out page looked like. Each screen can name its own;
+	   the green is CBD's footer, which was the first one here. */
+	background: var(--screen-plate, #bfd9b0);
 	border-radius: 3px;
 }
 
