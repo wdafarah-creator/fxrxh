@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
+import Rates from '../components/Rates.astro';
 ---
 
 <Base
@@ -15,6 +16,7 @@ import Icon from '../components/Icon.astro';
 		<a class="btn btn--round" href="/"><span>Index</span></a>
 		<nav class="top__nav">
 			<a class="btn btn--round" href="/work"><span>Work</span></a>
+			<a class="btn btn--round" href="#rates"><span>Rates</span></a>
 			<Nav bare />
 		</nav>
 	</header>
@@ -58,6 +60,8 @@ import Icon from '../components/Icon.astro';
 				>
 			</div>
 		</div>
+
+		<Rates />
 	</main>
 
 	{/* contact is off: the page already ends on the two buttons */}
