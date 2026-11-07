@@ -1543,7 +1543,9 @@ body.about-page .bar-scrim {
 	grid-template-columns: minmax(0, 1fr);
 	align-items: start;
 	gap: clamp(1.5rem, 4vw, 3rem);
-	padding: calc(var(--pad) * 3) var(--pad) var(--pad);
+	/* clears the fixed bar (its buttons run taller on a phone) before the
+	   first line, so the name never starts underneath them */
+	padding: calc(var(--pad) * 2 + 4.6rem) var(--pad) var(--pad);
 	color: var(--ink);
 	text-transform: uppercase;
 	letter-spacing: var(--track-small);

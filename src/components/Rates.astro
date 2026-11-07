@@ -248,6 +248,8 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 		max-width: calc(100vw - 2rem);
 	}
 	.estimate[hidden] { display: none; }
+	/* the running total only floats while the rates are open */
+	.rates__panel[hidden] ~ .estimate { display: none; }
 	.estimate__count { opacity: 0.55; }
 	.estimate__total { color: var(--hot); font-size: clamp(0.9rem, 1.4vw, 1.1rem); }
 	.estimate__send { background: var(--hot); border-color: var(--hot); color: #000; }
