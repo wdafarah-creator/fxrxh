@@ -1511,6 +1511,13 @@ html.menu-open {
 /* ------------------------------------------------------------------ */
 
 body.about-page { background: #000; }
+/* the bar floats over the words as they scroll, so it gets the same soft
+   scrim every other page has, in the About black */
+body.about-page { --page-bg: #000; }
+body.about-page .bar-scrim {
+	height: calc(var(--pad) * 2 + 4.6rem);
+	background: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%);
+}
 
 .about__bar {
 	position: fixed;

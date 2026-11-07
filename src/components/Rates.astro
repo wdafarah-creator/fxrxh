@@ -59,13 +59,13 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 
 	<div class="rates__panel" id="rates-panel" hidden>
 	<div class="rates__head">
-		<span class="rates__title"></span>
+		<p class="rates__tap"><span class="rates__dot" aria-hidden="true"></span><span><em>Tap</em> the services you need to build your estimate</span></p>
 		<div class="rates__cur" role="group" aria-label="Currency">
 			<button class="btn is-on" type="button" data-cur="eur" aria-pressed="true">EUR €</button>
 			<button class="btn" type="button" data-cur="aed" aria-pressed="false">AED</button>
 		</div>
 	</div>
-	<p class="rates__hint">Starting prices. Tap anything to build an estimate.</p>
+	<p class="rates__hint">Starting prices · Your total appears at the bottom of the screen</p>
 
 	<div class="rates__group">
 		<h3 class="rates__label">Packages</h3>
@@ -139,7 +139,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 
 <style>
 	.rates {
-		scroll-margin-top: calc(var(--pad) * 3);
+		scroll-margin-top: calc(var(--pad) * 2 + 5rem);
 		display: grid;
 		gap: clamp(1.8rem, 4vw, 3rem);
 		margin-top: clamp(2rem, 6vh, 4rem);
@@ -176,6 +176,11 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 	.rates__cur .btn { background: none; color: inherit; cursor: pointer; }
 	.rates__cur .btn.is-on { background: var(--hot); border-color: var(--hot); color: #000; }
 	.rates__hint { margin-top: -1rem; opacity: 0.55; }
+	.rates__tap { display: flex; align-items: center; gap: 0.7rem; font-size: clamp(1.1rem, 2.4vw, 1.9rem); line-height: 1.1; letter-spacing: var(--track); max-width: 40rem; }
+	.rates__tap em { font-style: italic; color: var(--hot); }
+	.rates__dot { flex-shrink: 0; width: 0.6em; height: 0.6em; border-radius: 50%; background: var(--hot); animation: rates-pulse 1.8s ease-in-out infinite; }
+	@keyframes rates-pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.55); opacity: 0.5; } }
+	@media (prefers-reduced-motion: reduce) { .rates__dot { animation: none; } }
 
 	.rates__group { display: grid; }
 	.rates__label { font-weight: 400; font-size: var(--fs-small); padding-bottom: 0.7rem; border-bottom: 1px solid currentColor; display: flex; justify-content: space-between; }
@@ -207,7 +212,9 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 	.rate--pkg .rate__price { font-size: clamp(1.25rem, 2.8vw, 2.3rem); }
 	.rate__price small { display: block; font-size: var(--fs-small); color: #fff; opacity: 0.55; letter-spacing: var(--track-small); }
 	.rate--pkg .rate__price small { display: inline; margin-right: 0.4em; }
-	.rate[aria-pressed='true'] .rate__name::before { content: '● '; }
+	.rate__name::before { content: '○ '; opacity: 0.7; }
+	.rate[aria-pressed='true'] .rate__name::before { content: '● '; opacity: 1; }
+	.rate:hover .rate__name { text-decoration: underline; text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
 
 	.rates__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.8rem, 4vw, 3rem) clamp(1.5rem, 4vw, 3rem); }
 	.rates__grid > .rates__group:last-child:nth-child(odd) { grid-column: 1 / -1; }
