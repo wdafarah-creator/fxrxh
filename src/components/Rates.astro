@@ -41,9 +41,15 @@ const partnerships = [
 const fmt = (n: number) => n.toLocaleString('en-US');
 ---
 
-<section class="rates" id="rates" aria-labelledby="rates-title">
+<section class="rates" id="rates">
+	<button class="rates__open" type="button" aria-expanded="false" aria-controls="rates-panel">
+		<span>Rates &amp; packages <em>— take a look</em></span>
+		<svg class="rates__chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2 L8 13 M3 8.5 L8 14 L13 8.5" /></svg>
+	</button>
+
+	<div class="rates__panel" id="rates-panel" hidden>
 	<div class="rates__head">
-		<h2 class="rates__title" id="rates-title">Rates &amp; packages</h2>
+		<span class="rates__title"></span>
 		<div class="rates__cur" role="group" aria-label="Currency">
 			<button class="btn is-on" type="button" data-cur="eur" aria-pressed="true">EUR €</button>
 			<button class="btn" type="button" data-cur="aed" aria-pressed="false">AED</button>
@@ -111,6 +117,8 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 		<a class="btn btn--with-icon" href="mailto:farah@fxrxh.com?subject=Project%20enquiry">farah@fxrxh.com</a>
 	</div>
 
+	</div>
+
 	<div class="estimate" hidden>
 		<span class="estimate__count"></span>
 		<span class="estimate__total"></span>
@@ -124,13 +132,34 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 		scroll-margin-top: calc(var(--pad) * 3);
 		display: grid;
 		gap: clamp(1.8rem, 4vw, 3rem);
-		margin-top: clamp(3rem, 10vh, 7rem);
+		margin-top: clamp(2rem, 6vh, 4rem);
 		padding-top: clamp(1.5rem, 3vw, 2.5rem);
-		padding-bottom: 6rem;
+		padding-bottom: 4rem;
 		border-top: 1px solid currentColor;
 		max-width: 72rem;
 		width: 100%;
 	}
+	.rates__panel { display: grid; gap: clamp(1.8rem, 4vw, 3rem); }
+	.rates__panel[hidden] { display: none; }
+	.rates__open {
+		all: unset;
+		box-sizing: border-box;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		font-size: clamp(1.55rem, 4.4vw, 3.6rem);
+		line-height: 1.02;
+		letter-spacing: var(--track);
+		text-transform: uppercase;
+		transition: color 0.2s ease;
+	}
+	.rates__open em { font-style: italic; opacity: 0.55; transition: opacity 0.2s ease; }
+	.rates__open:hover, .rates__open[aria-expanded='true'] { color: var(--hot); }
+	.rates__open:hover em { opacity: 1; }
+	.rates__open:focus-visible { outline: 1px solid var(--hot); outline-offset: 4px; }
+	.rates__chev { width: 0.7em; height: 0.7em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: square; flex-shrink: 0; transition: transform 0.3s var(--ease-smooth); }
+	.rates__open[aria-expanded='true'] .rates__chev { transform: rotate(180deg); }
 	.rates__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; }
 	.rates__title { font-weight: 400; font-size: clamp(1.55rem, 4.4vw, 3.6rem); line-height: 1.02; letter-spacing: var(--track); }
 	.rates__cur { display: flex; gap: 0.4rem; }
@@ -217,6 +246,23 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 <script>
 	const root = document.getElementById('rates');
 	if (root) {
+		const opener = root.querySelector<HTMLButtonElement>('.rates__open')!;
+		const panel = root.querySelector<HTMLElement>('.rates__panel')!;
+		const setOpen = (open: boolean) => {
+			panel.hidden = !open;
+			opener.setAttribute('aria-expanded', String(open));
+		};
+		opener.addEventListener('click', () => setOpen(panel.hidden));
+		// Arriving from the menu's Rates link (/about#rates) opens it straight away.
+		const fromHash = () => {
+			if (location.hash === '#rates') {
+				setOpen(true);
+				root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}
+		};
+		fromHash();
+		window.addEventListener('hashchange', fromHash);
+
 		let cur: 'eur' | 'aed' = 'eur';
 		const picked = new Set<HTMLElement>();
 		const bar = root.querySelector<HTMLElement>('.estimate')!;
