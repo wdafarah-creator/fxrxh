@@ -474,6 +474,19 @@ export const graphicProjects = [
 			{ file: 'retro.jpg', caption: '' },
 			{ file: 'stickers.jpg', caption: 'Sticker set' },
 
+			{ section: 'Instagram', note: 'CGI' },
+			{
+				slides: [
+					{ file: 'cgi-01.jpg', caption: 'Boxing ring' },
+					{ file: 'cgi-02.jpg', caption: 'Bullseye' },
+					{ file: 'cgi-03.jpg', caption: 'Poker table' },
+					{ file: 'cgi-04.jpg', caption: 'Pool table' },
+					{ file: 'cgi-05.jpg', caption: 'Cake stand' },
+					{ file: 'cgi-06.jpg', caption: 'Diner counter' },
+					{ file: 'cgi-07.jpg', caption: 'Front seat' },
+				],
+			},
+
 			{ section: 'The shop', note: 'purplesocialclub.com' },
 			// Both pages end on the oxblood footer, so the plate under the
 			// scroll is oxblood too and the loop ends on the page, not on a gap.
