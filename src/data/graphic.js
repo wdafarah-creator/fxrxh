@@ -476,15 +476,18 @@ export const graphicProjects = [
 
 			{ section: 'Instagram', note: 'CGI' },
 			{
-				slides: [
-					{ file: 'cgi-01.jpg', caption: 'Boxing ring' },
-					{ file: 'cgi-02.jpg', caption: 'Bullseye' },
-					{ file: 'cgi-03.jpg', caption: 'Poker table' },
-					{ file: 'cgi-04.jpg', caption: 'Pool table' },
-					{ file: 'cgi-05.jpg', caption: 'Cake stand' },
-					{ file: 'cgi-06.jpg', caption: 'Diner counter' },
-					{ file: 'cgi-07.jpg', caption: 'Front seat' },
-				],
+				feed: {
+					handle: 'deara.cookies',
+					posts: [
+						'cgi-01.jpg',
+						'cgi-02.jpg',
+						'cgi-03.jpg',
+						'cgi-04.jpg',
+						'cgi-05.jpg',
+						'cgi-06.jpg',
+						'cgi-07.jpg',
+					],
+				},
 			},
 
 			{ section: 'The shop', note: 'purplesocialclub.com' },
